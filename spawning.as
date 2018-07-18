@@ -70,7 +70,7 @@
 	{
 		if (shad.sp_x == undefined)	shad.sp_x = 0; 
 		if (shad.sp_y == undefined)	shad.sp_y = 0; 
-		if (shad.acs == undefined)	shad.acs = 0.35; 
+		if (shad.acs == undefined)	shad.acs = 0.75; 
 		if (shad.spd_mult == undefined) shad.spd_mult = 1;
 		if (shad.lastDirection == undefined) shad.lastDirection = "face";
 		shad.slotsForExecute.push(function(who:MovieClip){
@@ -97,8 +97,8 @@
 		if (shad.sp_x == undefined)	shad.sp_x = 0; 
 		if (shad.sp_y == undefined)	shad.sp_y = 0; 
 		if (shad.spd_mult == undefined) shad.spd_mult = 1;
-		if (shad.max_spd == undefined)			{shad.max_spd = 5; shad.max_spd_squared = shad.max_spd * shad.max_spd;}
-		if (shad.spd_resid == undefined)		shad.spd_resid = .1;
+		if (shad.max_spd == undefined)			{shad.max_spd = 4; shad.max_spd_squared = shad.max_spd * shad.max_spd;}
+		if (shad.spd_resid == undefined)		shad.spd_resid = 1;
 		shad.slotsForExecute.push(function(who:MovieClip){
 			who.sp_x -= deltaTime() * who.sp_x * who.spd_resid;
 			who.sp_y -= deltaTime() * who.sp_y * who.spd_resid;

@@ -2,7 +2,6 @@
 	static var worldTimeSpeed:Number = 1;
 	static var worldYKoeff:Number = .5;
 	static function animate (who, stat, speed){
-	trace (who + '/' + stat + '/' + speed);
 		who.stop();
 		if (!(who.isAnimating == true)){
 			who.isAnimating = true; who.animatingTimer = 0;
