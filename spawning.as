@@ -36,10 +36,12 @@
 		else
 			trace("Created a model for " + unitName + " :: " + newModel);
 		newModel._x = X; newModel._y = Y;
+		newModel.xs = newModel._xscale;
 		// linking
 		newModel.shadow = newShadow;
 		newShadow.model = newModel;
 		newShadow.slotsForExecute = new Array();
+		newShadow.slotsForExecute.push(function(who:MovieClip){ who.model._x = who._x; who.model._y = who._y; });
 		// set executing order
 		newShadow.onEnterFrame = function(){
 			for (var i = 0; i < this.slotsForExecute.length; ++i){
@@ -70,6 +72,7 @@
 		if (shad.sp_y == undefined)	shad.sp_y = 0; 
 		if (shad.acs == undefined)	shad.acs = 0.5; 
 		if (shad.spd_mult == undefined) shad.spd_mult = 1;
+		if (shad.lastDirection == undefined) shad.lastDirection = "face";
 		shad.slotsForExecute.push(function(who:MovieClip){
 			dir_x = dir_y = 0;
 			if (Key.isDown(keyLeft())) dir_x -= 1;	
@@ -81,6 +84,10 @@
 			who.sp_y += dir_y * who.acs * deltaTimeSquared();
 			who.isMoving = (dir_x != 0 || dir_y != 0);
 			// . . . animation
+			if (dir_x != 0){ shad.lastDirection = "side"; shad.model._xscale = shad.model.xs * dir_x * (-1); }
+			if (dir_y == 1 && dir_x == 0) shad.lastDirection = "face";
+			if (dir_y == -1) shad.lastDirection = "back";
+			
 		});
 		
 		return makeShadowMovable(shad);
@@ -107,10 +114,16 @@
 		return shad;
 	}
 	static var statCalculated:String = "none";
-	static var spdCalculated:Number = 1;
+	static var spdCalculated:Number = .2;
 	static function makeHeroAnimation(shad:MovieClip):MovieClip{
+		if (shad.lastDirection == undefined) shad.lastDirection = "face";
+		
 		shad.slotsForExecute.push(function(who:MovieClip){
-			animating.animate(who.model, statCalculated, spdCalculated);
+			statCalculated = "idle";
+			spdCalculated = 1 / 30;
+			if (who.spd_squared > .5){ statCalculated = "walk"; spdCalculated = 1/ 15;}
+			if (who.spd_squared > who.max_spd_squared / 4){ statCalculated = "run"; spdCalculated = 1/ 7;}			
+			animating.animate(who.model, statCalculated + "_" + who.lastDirection, spdCalculated);
 		});
 		return shad;
 	}
