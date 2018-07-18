@@ -70,7 +70,7 @@
 	{
 		if (shad.sp_x == undefined)	shad.sp_x = 0; 
 		if (shad.sp_y == undefined)	shad.sp_y = 0; 
-		if (shad.acs == undefined)	shad.acs = 0.5; 
+		if (shad.acs == undefined)	shad.acs = 0.35; 
 		if (shad.spd_mult == undefined) shad.spd_mult = 1;
 		if (shad.lastDirection == undefined) shad.lastDirection = "face";
 		shad.slotsForExecute.push(function(who:MovieClip){
