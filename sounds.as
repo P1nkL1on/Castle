@@ -16,10 +16,13 @@
 	static function footStepName(stepGroundType){
 		return "footsteps/" + stepGroundType + "/stp";
 	}
+	static var footStepsTypes:Array = new Array();
+	static var footStepsCount:Array = new Array();
+	
 	static function footstepSounds():Array{
 		var sos:Array = new Array();
-		var footStepsTypes:Array = new Array("ground", "met", "water");
-		var footStepsCount:Array = new Array(15,		4,	  4		 );
+		footStepsTypes = new Array("ground", "met", "water");
+		footStepsCount = new Array(15,		4,	  4		 );
 		for (var i = 0; i < footStepsCount.length; i++)
 			for (var j = 1; j <= footStepsCount[i]; j++)
 				sos.push(footStepName(footStepsTypes[i]+"") + "" + j);
@@ -43,17 +46,18 @@
 	
 	// Воспроизвести звук по имени. (Звук выбирается из массива sounds)
 	static public function playSound(nam:String){
+		trace("Asking for sound " + nam);
 		for (var i=0; i<soundFiles.length; i++)
 			if (soundFiles[i].name == nam){ soundFiles[i].start(0,1); return; }															//воспроизвести звук совпадающий по имени
 		trace("No sound '"+nam+"' in library!"); 																			//если звука нет, бупнем и сообщим об ошибкe
 	}
 	//
-	static public function playFootStepSound(who:MovieClip){
+	static public function playHeroFootStepSound(who:MovieClip){
 		if (who.standingOn == undefined) who.standingOn = null;
 		if (who.standingOn == null){
 			trace("This is no step sound for " + who + ". Because he do not standing on anything;");
 			return;
 		}
-		
+		playSound(footStepName(who.standingOn.groundType) + ""+(random(who.standingOn.groundSoundVariant)+1));
 	}
 }

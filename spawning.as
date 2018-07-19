@@ -1,6 +1,7 @@
 ﻿class spawning{
 	static var layers:Array = new Array();
 	static var units:Array = new Array();
+	static var grounds:Array = new Array();
 	static var shadowLayer:String = "layer_background_shadow";
 	static var unitLayer:String = "layer_unit";
 	static var unitCountScene:Number = 0;
@@ -19,6 +20,24 @@
 			if (layers[i].layerName == layerName)
 				return layers[i];
 		return null;
+	}
+	static function spawnGround(groundName){
+		if (_root.layer_background == undefined)
+			{createLayer("layer_background");}		// make a background if need
+		var newGround = _root.layer_background.attachMovie("ground_" + groundName, "ground_"+groundName+"_"+grounds.length, _root.layer_background.getNextHighestDepth());
+		if (newGround == null)
+			{trace("Can not create ground " + groundName); return;}
+		ground.makeGround(newGround, groundName);
+		newGround.onEnterFrame = function (){
+			if (animating.animate(this, 'none', 1 / 30) > 0)
+				// 4 times in frame
+				for (var i = 0; i < units.length; i++)
+					if (this.hitTest(units[i]._x, units[i]._y, false))
+						units[i].standingOn = this;
+		}
+		grounds.push(newGround);
+		newGround = null;
+		return newGround[newGround.length - 1];
 	}
 	static function spawnUnit(unitName, X, Y){
 		if (X == undefined){X = 0; trace("Spawning a " + unitName + " do not declare its X coordinate;");}
@@ -73,6 +92,7 @@
 		if (shad.acs == undefined)	shad.acs = 0.75; 
 		if (shad.spd_mult == undefined) shad.spd_mult = 1;
 		if (shad.lastDirection == undefined) shad.lastDirection = "face";
+		if (shad.stepTimer == undefined) shad.stepTimer = 0;
 		shad.slotsForExecute.push(function(who:MovieClip){
 			dir_x = dir_y = 0;
 			if (Key.isDown(keyLeft())) dir_x -= 1;	
@@ -87,7 +107,12 @@
 			if (dir_x != 0){ shad.lastDirection = "side"; shad.model._xscale = shad.model.xs * dir_x * (-1); }
 			if (dir_y == 1 && dir_x == 0) shad.lastDirection = "face";
 			if (dir_y == -1) shad.lastDirection = "back";
-			
+			// . . . sounding
+			who.stepTimer += Math.abs(who.sp_x) + Math.abs(who.sp_y);
+			var playStep:Boolean = false;
+			while (who.stepTimer > 40 ){who.stepTimer -= 40; playStep = true;}
+			if (playStep)
+				sounds.playHeroFootStepSound(who);
 		});
 		
 		return makeShadowMovable(shad);
