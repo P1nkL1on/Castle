@@ -88,6 +88,7 @@
 	static var distanceForStep:Number=  80;
 	static function makeShadowControllable(shad:MovieClip):MovieClip
 	{
+		shad.controllable = true;
 		if (shad.sp_x == undefined)	shad.sp_x = 0; 
 		if (shad.sp_y == undefined)	shad.sp_y = 0; 
 		if (shad.acs == undefined)	shad.acs = 0.75; 
