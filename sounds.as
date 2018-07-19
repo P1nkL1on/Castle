@@ -58,5 +58,6 @@
 			return;
 		}
 		playSound(footStepName(who.standingOn.groundType) + ""+(random(who.standingOn.groundSoundVariant)+1));
+		ground.spawnEffect("effect_step_" + who.standingOn.groundType, who._x, who._y);
 	}
 }
