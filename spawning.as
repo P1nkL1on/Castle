@@ -85,6 +85,7 @@
 	static function deltaTimeSquared(){return animating.worldTimeSpeed * animating.worldTimeSpeed;}
 	static var dir_x:Number = 0;
 	static var dir_y:Number = 0;
+	static var distanceForStep:Number=  80;
 	static function makeShadowControllable(shad:MovieClip):MovieClip
 	{
 		if (shad.sp_x == undefined)	shad.sp_x = 0; 
@@ -109,8 +110,8 @@
 			if (dir_y == -1) shad.lastDirection = "back";
 			// . . . sounding
 			who.stepTimer += Math.abs(who.sp_x) + Math.abs(who.sp_y);
-			var playStep:Boolean = false;
-			while (who.stepTimer > 40 ){who.stepTimer -= 40; playStep = true;}
+			var playStep:Boolean = (who.stepTimer > distanceForStep );
+			while (who.stepTimer > distanceForStep )who.stepTimer -= distanceForStep;
 			if (playStep)
 				sounds.playHeroFootStepSound(who);
 		});

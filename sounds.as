@@ -40,15 +40,14 @@
 			soundFiles[i].loadSound(soundFolder+"/"+soundNames[i]+soundFileType,false); 
 			soundFiles[i].name = soundNames[i];
 			soundFiles[i].isLoaded = false;
-			soundFiles[i].onLoad = function(success:Boolean):Void { if (success) this.isLoaded = true;}	
+			soundFiles[i].onLoad = function(success:Boolean):Void { if (success){ this.isLoaded = true; trace(this.name + '\t\tDuration: ' + this.duration);}}	
 		}
 	}
 	
 	// Воспроизвести звук по имени. (Звук выбирается из массива sounds)
 	static public function playSound(nam:String){
-		trace("Asking for sound " + nam);
 		for (var i=0; i<soundFiles.length; i++)
-			if (soundFiles[i].name == nam){ soundFiles[i].start(0,1); return; }															//воспроизвести звук совпадающий по имени
+			if (soundFiles[i].name == nam){ soundFiles[i].start(0,1);return; }															//воспроизвести звук совпадающий по имени
 		trace("No sound '"+nam+"' in library!"); 																			//если звука нет, бупнем и сообщим об ошибкe
 	}
 	//
