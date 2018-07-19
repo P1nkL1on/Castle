@@ -21,6 +21,13 @@
 				return layers[i];
 		return null;
 	}
+	static function spawnReflect(reflectionName):MovieClip{
+		if (_root.layer_reflection == undefined)
+			{createLayer("layer_reflection");}		// make a reflection if need
+		var dep = _root.layer_reflection.getNextHighestDepth();	
+		var newReflect = _root.layer_reflection.attachMovie(reflectionName, reflectionName + dep, dep);
+		return newReflect;	
+	}
 	static function spawnGround(groundName){
 		if (_root.layer_background == undefined)
 			{createLayer("layer_background");}		// make a background if need
@@ -28,16 +35,14 @@
 		if (newGround == null)
 			{trace("Can not create ground " + groundName); return;}
 		ground.makeGround(newGround, groundName);
+		newGround.slotsForExecute = new Array();
 		newGround.onEnterFrame = function (){
-			if (animating.animate(this, 'none', 1 / 30) > 0)
-				// 4 times in frame
-				for (var i = 0; i < units.length; i++)
-					if (this.hitTest(units[i]._x, units[i]._y, false))
-						units[i].standingOn = this;
+			for (var i = 0; i < this.slotsForExecute.length; ++i)
+				this.slotsForExecute[i](this);
 		}
 		grounds.push(newGround);
 		newGround = null;
-		return newGround[newGround.length - 1];
+		return grounds[grounds.length - 1];
 	}
 	static function spawnUnit(unitName, X, Y){
 		if (X == undefined){X = 0; trace("Spawning a " + unitName + " do not declare its X coordinate;");}
@@ -137,6 +142,12 @@
 			}
 			who._x += who.sp_x;
 			who._y += who.sp_y * animating.worldYKoeff;
+			// . . . a place of standing
+			if (who.spd_squared > 0 && animating.each(who, 1 / 15) > 0)
+				// 4 times in second
+				for (var i = grounds.length - 1; i >= 0 ; i--)
+					if (grounds[i].hitTest(who._x, who._y, true))
+						{ who.standingOn = grounds[i]; break;} 
 		});
 		return shad;
 	}

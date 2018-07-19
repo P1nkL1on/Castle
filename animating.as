@@ -24,4 +24,14 @@
 		}
 		return times;
 	}
+	static function each (who, speed):Number{
+		if (who.triggerTimer == undefined) who.triggerTimer = 0;
+		who.triggerTimer += worldTimeSpeed * speed;
+		var times:Number = 0;
+		while (who.triggerTimer >= 1){
+			times++;
+			who.triggerTimer --;
+		}
+		return times;
+	}
 }
