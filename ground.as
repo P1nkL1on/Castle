@@ -9,16 +9,13 @@
 			{ who.groundSoundVariant = sounds.footStepsCount[i]; return;}
 		trace("Type pf ground '" + typ + "' is strange; No matchs with existed: " + sounds.footStepsTypes);
 	}
-	static function makeReflection (shad:MovieClip, mask:MovieClip):MovieClip{
-		trace("Made reflection for " + shad +' (' + shad.model + ') :: with mask :: ' + mask);
-		var newReflection:MovieClip = shad.model.duplicateMovieClip(shad.model._name + '_reflection', shad.model.getDepth() - 1);
+	static function makeReflection (shad:MovieClip):MovieClip{
+		var newReflection:MovieClip = _root.layer_unit_reflection.attachMovie
+			(shad.model.modelName, shad.model._name + '_reflection', _root.layer_unit_reflection.getNextHighestDepth());
+		//shad.model.duplicateMovieClip(, shad.model.getDepth() * (-1) - 10);
 		newReflection._yscale *= -1;
-		newReflection._alpha = 30;
+		newReflection._alpha = 50;
 		newReflection.shad = shad;
-		newReflection.setMask(mask);
-		if (mask.reflections == undefined)
-			mask.reflections = new Array();
-		mask.reflections.push(newReflection);
 		shad.hasReflection = true;
 		newReflection.onEnterFrame = function (){
 			this._x = this.shad._x;
@@ -42,13 +39,18 @@
 				newWater.V += littrs;
 				return;
 			}
-				
 		newWater = spawning.spawnGround("water");
 		var newReflection:MovieClip = spawning.spawnReflect("effect_water_drop");
 		trace(newWater + '/' + newReflection);
 		newWater._x = X; newWater._y = Y; newWater.V = littrs;
+		// . . . drawing
 		newWater.slotsForExecute.push(function(who:MovieClip){
 			who.drop.gotoAndStop(1 + Math.round((who.V / 20) * 35));
+		});
+		newWater.temperature = 20;
+		// . . . deleting
+		newWater.slotsForExecute.push(function(who:MovieClip){
+			// isparenie
 		});
 		newReflection._x = X; newReflection._y = Y;
 		newReflection.water = newWater;
@@ -60,8 +62,8 @@
 		waters.push(newWater);
 		if (waters.length > 0){
 			for (var i = 0; i < spawning.units.length; i++)
-				if (not(spawning.units[i].hasReflection == true))
-					makeReflection(spawning.units[i], _root.layer_reflection);
+				if (not(spawning.units[i].hasReflection == true) && spawning.units[i].mustHaveReflection == true)
+					makeReflection(spawning.units[i]);
 				
 		}
 		return newWater;

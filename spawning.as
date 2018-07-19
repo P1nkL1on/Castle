@@ -61,6 +61,7 @@
 			trace("Created a model for " + unitName + " :: " + newModel);
 		newModel._x = X; newModel._y = Y;
 		newModel.xs = newModel._xscale;
+		newModel.modelName = "model_" + unitName;
 		// linking
 		newModel.shadow = newShadow;
 		newShadow.model = newModel;
@@ -121,7 +122,7 @@
 			if (playStep)
 				sounds.playHeroFootStepSound(who);
 		});
-		
+		shad.mustHaveReflection = true;
 		return makeShadowMovable(shad);
 	}
 	static function makeShadowMovable(shad:MovieClip):MovieClip
