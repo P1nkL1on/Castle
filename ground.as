@@ -24,6 +24,7 @@
 		newReflection._alpha = 50;
 		newReflection.shad = shad;
 		shad.hasReflection = true;
+		shad.lastCreatedReflection = newReflection;
 		newReflection.onEnterFrame = function (){
 			this._x = this.shad._x;
 			this._y = this.shad._y;
@@ -67,6 +68,24 @@
 				spawning.grounds[i].checkingForOther = true;	// at first moment make all water searching
 		newWater.temperature = 20;
 		// . . . deleting
+		newWater.slotsForExecute.push(function(who:MovieClip){
+			if (who.V < .1){
+				who.reflection.removeMovieClip();
+				trace('Removed water :: ' + who);
+				who.waterLeft = 0;
+				for (var i = 0; i < spawning.grounds.length; i++)
+					if (spawning.grounds[i].isWater == true)
+						who.waterLeft ++;
+				if (who.waterLeft == 1)
+					for (var i = 0; i < spawning.units.length; i++)
+						if (spawning.units[i].hasReflection == true){
+							trace('Removed a reflection :: ' + spawning.units[i].lastCreatedReflection);
+							spawning.units[i].lastCreatedReflection.removeMovieClip();
+							spawning.units[i].hasReflection = false;
+						}
+				who.removeMovieClip();
+			}
+		});
 		newWater.slotsForExecute.push(function(who:MovieClip){
 			// isparenie
 			who.tt.text = Math.round(who.V * 1000) / 1000;
