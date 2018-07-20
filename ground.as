@@ -37,7 +37,7 @@
 		trace('Created reflection for ' + shad + ' :: ' + newReflection);
 		return newReflection;
 	}	
-	static var waterCollisionK = .4;
+	static var waterCollisionK = .45;
 	static var deltaWater:Number = 0;
 	static var waterExchangeSpeed = .05;
 	static function addWater(X, Y, littrs){
@@ -47,6 +47,7 @@
 			if (waters[i].hitTest(X, Y, true)){
 				newWater = waters[i];
 				newWater.V += littrs;
+				newWater.checkingForOther = true;
 				return;
 			}
 		newWater = spawning.spawnGround("water");
@@ -59,6 +60,11 @@
 		newWater.slotsForExecute.push(function(who:MovieClip){
 			who.drop.gotoAndStop(1 + Math.round((who.V / 20) * who.maxFrame));
 		});
+		// . . . newightboor checkong
+		newWater.checkingForOther = true;
+		for (var i = 0; i < spawning.grounds.length; ++i)
+			if (spawning.grounds[i].isWater == true)
+				spawning.grounds[i].checkingForOther = true;	// at first moment make all water searching
 		newWater.temperature = 20;
 		// . . . deleting
 		newWater.slotsForExecute.push(function(who:MovieClip){
@@ -66,20 +72,27 @@
 			who.tt.text = Math.round(who.V * 1000) / 1000;
 			if (animating.each(who, 1 / 15) > 0){
 				who.V -= animating.worldTimeSpeed * (who.maxFrame + 2 - who.drop._currentframe) / (15 * /*number of seconds*/ 30 * 20 / who.temperature);
-				for (var i = 0; i < spawning.grounds.length; i++){
-					var gr:MovieClip = spawning.grounds[i];
-					if (gr.isWater == true && (
-						Math.abs(gr.V - who.V) > 1
-						&& gr._x + gr._width * waterCollisionK > who._x - who._width * waterCollisionK
-						&& gr._x - gr._width * waterCollisionK < who._x + who._width * waterCollisionK
-						&& gr._y + gr._height * waterCollisionK > who._y - who._height * waterCollisionK
-						&& gr._y - gr._height * waterCollisionK < who._y + who._height * waterCollisionK)){
-							// exchange V
-							deltaWater = (gr.V - who.V) * waterExchangeSpeed * animating.worldTimeSpeed;
-							gr.V -= deltaWater;
-							who.V += deltaWater;
-						}
-				}
+				who.foundNeightboors = 0;
+				if (who.checkingForOther == true)
+					for (var i = 0; i < spawning.grounds.length; i++){
+						var gr:MovieClip = spawning.grounds[i];
+						if (gr != who && gr.isWater == true && (
+							gr._x + gr._width * waterCollisionK > who._x - who._width * waterCollisionK
+							&& gr._x - gr._width * waterCollisionK < who._x + who._width * waterCollisionK
+							&& gr._y + gr._height * waterCollisionK > who._y - who._height * waterCollisionK
+							&& gr._y - gr._height * waterCollisionK < who._y + who._height * waterCollisionK)){
+								// exchange V
+								who.foundNeightboors++;
+								if (Math.abs(gr.V - who.V) > 1){
+									gr.checkingForOther = true;
+									deltaWater = (gr.V - who.V) * waterExchangeSpeed * animating.worldTimeSpeed;
+									gr.V -= deltaWater;
+									who.V += deltaWater;
+								}
+							}
+					}
+				who._alpha = 50 + 50 * who.checkingForOther;	
+				who.checkingForOther = (who.foundNeightboors > 0);
 			}
 		});
 		newReflection._x = X; newReflection._y = Y;
