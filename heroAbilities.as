@@ -9,12 +9,19 @@
 			return now+1;
 		return 0;
 	}
+	static function move(who, spd, ang){
+		who._x -= spd * Math.cos(ang) * animating.worldTimeSpeed;
+		who._y += spd * Math.sin(ang) * animating.worldTimeSpeed;
+	}
 	static function moveBullet(bul){
-		if (bul.spd == undefined) bul.spd = 10;
-		bul._x -= bul.spd * Math.cos(bul._rotation / 180 * Math.PI) * animating.worldTimeSpeed;
-		bul._y += bul.spd * Math.sin(bul._rotation / 180 * Math.PI) * animating.worldTimeSpeed;
+		bul.ang = bul._rotation / 180 * Math.PI;
+		if (bul.spd == undefined){ bul.spd = 10; move(bul, 20 / animating.worldTimeSpeed, bul.ang);}
+		bul._visible = true;
+		move(bul, bul.spd, bul.ang);
 		bul.spd /= 1 + (.2* animating.worldTimeSpeed);
 		bul._alpha = bul.spd * 20;
+		if (bul._alpha < 3)
+			bul.removeMovieClip();
 	}
 	static var nowFrame = 0;
 	static function giveBottle(shad:MovieClip):MovieClip{
@@ -71,14 +78,21 @@
 				}
 			}
 			// , , ,
-			if (who.swordUse > 15 && listenKey(0, swordKey) == 1){ // still pressed
+			if (who.swordUse > 15 && listenKey(0, swordKey) == 0
+				&& (who.model.righthand._currentframe == 2 || who.model.righthand.sword_use.stat == 'stop')){ // still pressed
 				who.model.righthand.gotoAndStop('sword_use');
 				animating.changeStat(who.model.righthand.sword_use, 'start');
 				swordFrame = who.model.righthand._currentframe;
+				who.model.righthand.attacked = false;
 			}
+			if (who.model.righthand.attacked == false && who.model.righthand.sword_use._currentframe == 6){
+				who.model.righthand.attacked = true;
+				ground.spawnEffect('effect_sword_slash', who.model._x, who.model._y - 20);
+			}
+			// spawnEffect
 			// . . . key listener
 			who.swordUse = listenKey(who.swordUse, swordKey);
-			animating.animateOnly(who.model.righthand.sword_use, 1/2);
+			animating.animateOnly(who.model.righthand.sword_use, 1/7);
 		});
 		return shad;
 	}
