@@ -44,8 +44,9 @@
 			soundFiles[i].loadSound(soundFolder+"/"+soundNames[i]+soundFileType,false); 
 			soundFiles[i].name = soundNames[i];
 			soundFiles[i].isLoaded = false;
-			soundFiles[i].onLoad = function(success:Boolean):Void { if (success){ this.isLoaded = true; trace(this.name + '\t\tDuration: ' + this.duration);}}	
+			soundFiles[i].onLoad = function(success:Boolean):Void { if (success){ this.isLoaded = true;}}	
 		}
+		isLoaded = true;
 	}
 	
 	// Воспроизвести звук по имени. (Звук выбирается из массива sounds)

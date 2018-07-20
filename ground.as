@@ -30,9 +30,10 @@
 			this._y = this.shad._y;
 			this.gotoAndStop(this.shad.model._currentframe);
 			this._xscale = this.shad.model._xscale;
-			if (this.shad.isControllable){
+			
+			if (this.shad.isControllable == true){
 				this.lefthand.gotoAndStop(this.shad.model.lefthand._currentframe);
-				this.righthand.gotoAndStop(this.shad.model.righthandthand._currentframe);
+				this.righthand.gotoAndStop(this.shad.model.righthand._currentframe);
 			}
 		}
 		trace('Created reflection for ' + shad + ' :: ' + newReflection);
@@ -58,12 +59,13 @@
 		var newReflection:MovieClip = spawning.spawnReflect("effect_water_drop");
 		trace(newWater + '/' + newReflection);
 		newWater._x = X; newWater._y = Y; newWater.V = littrs;
-		newWater.maxFrame = 35;
+		newWater.maxFrame = 69;
 		newWater.isWater = true;
+		newWater.areFrame = 0;
 		//newWater.instanciateCD = 0;
 		// . . . drawing
 		newWater.slotsForExecute.push(function(who:MovieClip){
-			who.needFrame = 1 + Math.round((who.V / 30) * who.maxFrame);
+			who.needFrame = Math.round((who.V / 30) * who.maxFrame);
 			/* who.instanciateCD -= animating.worldTimeSpeed;
 			if (who.instanciateCD <= 0 && who.needFrame > who.maxFrame){
 				who.rad = who._width / 2;
@@ -74,7 +76,8 @@
 				who.V -= 1;
 				who.instanciateCD = 10 * 60;
 			} */
-			who.drop.gotoAndStop(who.needFrame);
+			who.areFrame += (who.needFrame - who.areFrame) / (1 + 10/ animating.worldTimeSpeed); 
+			who.drop.gotoAndStop(Math.round(who.areFrame) + 1);
 		});
 		// . . . newightboor checkong
 		newWater.checkingForOther = true;
@@ -105,7 +108,7 @@
 			// isparenie
 			who.tt.text = Math.round(who.V * 1000) / 1000;
 			if (animating.each(who, 1 / 15) > 0){
-				who.V -= animating.worldTimeSpeed * (who.maxFrame + 2 - who.drop._currentframe) / (15 * /*number of seconds*/ 30 * 20 / who.temperature);
+				who.V -= animating.worldTimeSpeed * (who.maxFrame + 2 - who.drop._currentframe)/who.maxFrame / (10 * 20 / who.temperature);
 				who.foundNeightboors = 0;
 				if (who.checkingForOther == true)
 					for (var i = 0; i < spawning.grounds.length; i++){

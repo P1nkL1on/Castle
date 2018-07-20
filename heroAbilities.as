@@ -1,6 +1,9 @@
 ﻿class heroAbilities{
-	static var bottleKey:Number = 65;
+	static var bottleKey:Number = 87;
 	static var bottleFrame:Number = -1;
+	static var swordKey:Number = 65;
+	static var swordFrame:Number = -1;
+	
 	static function listenKey(now:Number, key:Number):Number{
 		if (Key.isDown(key))
 			return now+1;
@@ -12,8 +15,13 @@
 		shad.slotsForExecute.push(function(who:MovieClip){
 			
 			// . . . using
-			if (who.bottleUse > 3 && who.bottleUse <= 20 && listenKey(0, bottleKey) == 0)
-				trace('drink');
+			if (who.bottleUse > 3 && who.bottleUse <= 20 && listenKey(0, bottleKey) == 0){
+				if (who.model.lefthand._currentframe == 1){
+					who.model.lefthand.gotoAndStop('bottle');
+				}
+				else
+					who.model.lefthand.gotoAndStop('empty');
+			}
 			if (who.bottleUse > 20 && listenKey(0, bottleKey) == 0){
 				animating.changeStat(who.model.lefthand.bottle_use, 'stop');
 				trace('stop');
@@ -35,7 +43,25 @@
 			
 			who.model.lefthand.bottle._rotation = -who.model.lefthand._rotation - 30;
 			who.model.lefthand.bottle_use._rotation = -who.model.lefthand._rotation;
+			who.lastCreatedReflection.lefthand.bottle_use.gotoAndStop(who.model.lefthand.bottle_use._currentframe);
 			animating.animateOnly(who.model.lefthand.bottle_use, 1/4);
+		});
+		return shad;
+	}
+	
+	static function giveSword(shad:MovieClip):MovieClip{
+		shad.swordUse = 0;
+		shad.slotsForExecute.push(function(who:MovieClip){
+			// . . . using
+			if (who.swordUse > 3 && who.swordUse <= 20 && listenKey(0, swordKey) == 0){
+				if (who.model.righthand._currentframe == 1){
+					who.model.righthand.gotoAndStop('sword');
+				}
+				else
+					who.model.righthand.gotoAndStop('empty');
+			}
+			// . . . key listener
+			who.swordUse = listenKey(who.swordUse, swordKey);
 		});
 		return shad;
 	}

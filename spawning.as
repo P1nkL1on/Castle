@@ -7,11 +7,19 @@
 	static var unitCountScene:Number = 0;
 	static var newLayer:MovieClip = null;
 	
-	
+	static function clearLayers(){
+		var layerCount:Number = layers.length;
+		for (var i = 0; i < layers.length; ++i){
+			trace('Deleting layer :: ' + layers[i]);
+			layers[i].removeMovieClip();
+		}
+		layers = new Array();
+		trace(layerCount + " layers cleared;");
+	}
 	static function createLayer (layerName){
 		newLayer  = _root.attachMovie("layer", layerName, _root.getNextHighestDepth());
 		newLayer.layerName = layerName;
-		trace(newLayer);
+		trace('Created layer :: ' + newLayer);
 		layers.push(newLayer);
 		return;
 	}
@@ -94,7 +102,7 @@
 	static var distanceForStep:Number=  80;
 	static function makeShadowControllable(shad:MovieClip):MovieClip
 	{
-		shad.controllable = true;
+		shad.isControllable = true;
 		if (shad.sp_x == undefined)	shad.sp_x = 0; 
 		if (shad.sp_y == undefined)	shad.sp_y = 0; 
 		if (shad.acs == undefined)	shad.acs = 0.75; 
