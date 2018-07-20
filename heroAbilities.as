@@ -9,6 +9,13 @@
 			return now+1;
 		return 0;
 	}
+	static function moveBullet(bul){
+		if (bul.spd == undefined) bul.spd = 10;
+		bul._x -= bul.spd * Math.cos(bul._rotation / 180 * Math.PI) * animating.worldTimeSpeed;
+		bul._y += bul.spd * Math.sin(bul._rotation / 180 * Math.PI) * animating.worldTimeSpeed;
+		bul.spd /= 1 + (.2* animating.worldTimeSpeed);
+		bul._alpha = bul.spd * 20;
+	}
 	static var nowFrame = 0;
 	static function giveBottle(shad:MovieClip):MovieClip{
 		shad.bottleUse = 0;
@@ -54,7 +61,7 @@
 		shad.swordUse = 0;
 		shad.slotsForExecute.push(function(who:MovieClip){
 			// . . . using
-			if (who.swordUse > 3 && who.swordUse <= 20 && listenKey(0, swordKey) == 0){
+			if (who.swordUse > 3 && who.swordUse <= 15 && listenKey(0, swordKey) == 0){
 				if (who.model.righthand._currentframe == 1){
 					who.model.righthand.gotoAndStop('sword');
 					sounds.playSound('weapons/sword_in');
@@ -63,8 +70,15 @@
 					sounds.playSound('weapons/sword_out');
 				}
 			}
+			// , , ,
+			if (who.swordUse > 15 && listenKey(0, swordKey) == 1){ // still pressed
+				who.model.righthand.gotoAndStop('sword_use');
+				animating.changeStat(who.model.righthand.sword_use, 'start');
+				swordFrame = who.model.righthand._currentframe;
+			}
 			// . . . key listener
 			who.swordUse = listenKey(who.swordUse, swordKey);
+			animating.animateOnly(who.model.righthand.sword_use, 1/2);
 		});
 		return shad;
 	}

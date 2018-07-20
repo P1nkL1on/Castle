@@ -149,8 +149,8 @@
 				who.sp_x /= 1.2; who.sp_y /= 1.2;
 				who.spd_squared /= 1.44;
 			}
-			who._x += who.sp_x;
-			who._y += who.sp_y * animating.worldYKoeff;
+			who._x += who.sp_x * deltaTime();
+			who._y += who.sp_y * animating.worldYKoeff * deltaTime();
 			// . . . a place of standing
 			if (who.spd_squared > 0 && animating.each(who, 1 / 15) > 0)
 				// 4 times in second
