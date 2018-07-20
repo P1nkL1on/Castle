@@ -1,17 +1,22 @@
 ﻿class animating{
 	static var worldTimeSpeed:Number = 1;
 	static var worldYKoeff:Number = .5;
-	static function animate (who, stat, speed):Number{
+	static function changeStat(who, stat){
+		if (stat != who.stat){
+			who.gotoAndStop(stat);
+			who.stat = stat;
+		}
+	}
+	static function animate(who, stat, speed):Number{
+		changeStat(who, stat);
+		return animateOnly(who, speed);
+	}
+	static function animateOnly (who, speed):Number{
 		who.stop();
 		if (!(who.isAnimating == true)){
 			who.isAnimating = true; who.animatingTimer = 0;
 			who.stat = 'none';
 			return 0;
-		}
-		// switching a state
-		if (stat != who.stat){
-			who.gotoAndStop(stat);
-			who.stat = stat;
 		}
 		// adding a frames
 		who.animatingTimer += worldTimeSpeed * speed;

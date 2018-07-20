@@ -41,6 +41,9 @@
 	static var waterCollisionK = .45;
 	static var deltaWater:Number = 0;
 	static var waterExchangeSpeed = .05;
+	static var xOff:Number = 0;
+	static var yOff:Number = 0;
+	static var angOff:Number = 0;
 	static function addWater(X, Y, littrs){
 		if (littrs == undefined) littrs = .5;
 		var newWater:MovieClip = null;
@@ -57,9 +60,21 @@
 		newWater._x = X; newWater._y = Y; newWater.V = littrs;
 		newWater.maxFrame = 35;
 		newWater.isWater = true;
+		//newWater.instanciateCD = 0;
 		// . . . drawing
 		newWater.slotsForExecute.push(function(who:MovieClip){
-			who.drop.gotoAndStop(1 + Math.round((who.V / 20) * who.maxFrame));
+			who.needFrame = 1 + Math.round((who.V / 30) * who.maxFrame);
+			/* who.instanciateCD -= animating.worldTimeSpeed;
+			if (who.instanciateCD <= 0 && who.needFrame > who.maxFrame){
+				who.rad = who._width / 2;
+				angOff = random(629)/100;
+				xOff = who.rad * Math.cos(angOff);
+				yOff = who.rad * Math.sin(angOff) / 2;
+				ground.addWater(who._x + xOff, who._y + yOff, 1);
+				who.V -= 1;
+				who.instanciateCD = 10 * 60;
+			} */
+			who.drop.gotoAndStop(who.needFrame);
 		});
 		// . . . newightboor checkong
 		newWater.checkingForOther = true;
@@ -110,7 +125,7 @@
 								}
 							}
 					}
-				who._alpha = 50 + 50 * who.checkingForOther;	
+				//who._alpha = 50 + 50 * who.checkingForOther;	
 				who.checkingForOther = (who.foundNeightboors > 0);
 			}
 		});

@@ -163,7 +163,6 @@
 			if (who.spd_squared > .5){ statCalculated = "walk"; spdCalculated = 1/ 15;}
 			if (who.spd_squared > who.max_spd_squared / 4){ statCalculated = "run"; spdCalculated = 1/ 7;}			
 			animating.animate(who.model, statCalculated + "_" + who.lastDirection, spdCalculated);
-			who.model.lefthand.bottle._rotation = -who.model.lefthand._rotation - 30;
 		});
 		return shad;
 	}
