@@ -10,7 +10,7 @@
 		trace("Type pf ground '" + typ + "' is strange; No matchs with existed: " + sounds.footStepsTypes);
 	}
 	static function spawnEffect(effectName:String, X, Y):MovieClip{
-		trace(effectName + ' / ' + X +' / ' + Y);
+		//trace(effectName + ' / ' + X +' / ' + Y);
 		var dep:Number =  _root.layer_background.getNextHighestDepth();
 		var newEffect = _root.layer_background.attachMovie(effectName, "effect_" + effectName + "_" + dep, dep);
 		newEffect._x = X; newEffect._y = Y;
@@ -37,6 +37,9 @@
 		trace('Created reflection for ' + shad + ' :: ' + newReflection);
 		return newReflection;
 	}	
+	static var waterCollisionK = .4;
+	static var deltaWater:Number = 0;
+	static var waterExchangeSpeed = .05;
 	static function addWater(X, Y, littrs){
 		if (littrs == undefined) littrs = .5;
 		var newWater:MovieClip = null;
@@ -50,14 +53,34 @@
 		var newReflection:MovieClip = spawning.spawnReflect("effect_water_drop");
 		trace(newWater + '/' + newReflection);
 		newWater._x = X; newWater._y = Y; newWater.V = littrs;
+		newWater.maxFrame = 35;
+		newWater.isWater = true;
 		// . . . drawing
 		newWater.slotsForExecute.push(function(who:MovieClip){
-			who.drop.gotoAndStop(1 + Math.round((who.V / 20) * 35));
+			who.drop.gotoAndStop(1 + Math.round((who.V / 20) * who.maxFrame));
 		});
 		newWater.temperature = 20;
 		// . . . deleting
 		newWater.slotsForExecute.push(function(who:MovieClip){
 			// isparenie
+			who.tt.text = Math.round(who.V * 1000) / 1000;
+			if (animating.each(who, 1 / 15) > 0){
+				who.V -= animating.worldTimeSpeed * (who.maxFrame + 2 - who.drop._currentframe) / (15 * /*number of seconds*/ 30 * 20 / who.temperature);
+				for (var i = 0; i < spawning.grounds.length; i++){
+					var gr:MovieClip = spawning.grounds[i];
+					if (gr.isWater == true && (
+						Math.abs(gr.V - who.V) > 1
+						&& gr._x + gr._width * waterCollisionK > who._x - who._width * waterCollisionK
+						&& gr._x - gr._width * waterCollisionK < who._x + who._width * waterCollisionK
+						&& gr._y + gr._height * waterCollisionK > who._y - who._height * waterCollisionK
+						&& gr._y - gr._height * waterCollisionK < who._y + who._height * waterCollisionK)){
+							// exchange V
+							deltaWater = (gr.V - who.V) * waterExchangeSpeed * animating.worldTimeSpeed;
+							gr.V -= deltaWater;
+							who.V += deltaWater;
+						}
+				}
+			}
 		});
 		newReflection._x = X; newReflection._y = Y;
 		newReflection.water = newWater;
