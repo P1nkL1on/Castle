@@ -29,7 +29,7 @@
 		return sos;
 	}
 	static function abilitySounds():Array{
-		return new Array("footsteps/water/flush","weapons/sword_in","weapons/sword_out","weapons/item_in");
+		return new Array("footsteps/water/flush","weapons/sword_in","weapons/sword_attack","weapons/sword_out","weapons/item_in");
 	}
 	static function pushAllSounds(){
 		pushSounds(footstepSounds());

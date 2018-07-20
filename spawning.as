@@ -97,8 +97,7 @@
 	
 	static function deltaTime(){return animating.worldTimeSpeed;}
 	static function deltaTimeSquared(){return animating.worldTimeSpeed * animating.worldTimeSpeed;}
-	static var dir_x:Number = 0;
-	static var dir_y:Number = 0;
+	
 	static var distanceForStep:Number=  80;
 	static function makeShadowControllable(shad:MovieClip):MovieClip
 	{
@@ -110,19 +109,19 @@
 		if (shad.lastDirection == undefined) shad.lastDirection = "face";
 		if (shad.stepTimer == undefined) shad.stepTimer = 0;
 		shad.slotsForExecute.push(function(who:MovieClip){
-			dir_x = dir_y = 0;
-			if (Key.isDown(keyLeft())) dir_x -= 1;	
-			if (Key.isDown(keyRight())) dir_x += 1;
-			if (Key.isDown(keyDown())) dir_y += 1;
-			if (Key.isDown(keyUp())) dir_y -= 1; 
+			who.dir_x = who.dir_y = 0;
+			if (Key.isDown(keyLeft())) who.dir_x -= 1;	
+			if (Key.isDown(keyRight())) who.dir_x += 1;
+			if (Key.isDown(keyDown())) who.dir_y += 1;
+			if (Key.isDown(keyUp())) who.dir_y -= 1; 
 			who.spd_mult = (isSloving())? .4 : 1;
-			who.sp_x += dir_x * who.acs * deltaTimeSquared();			
-			who.sp_y += dir_y * who.acs * deltaTimeSquared();
-			who.isMoving = (dir_x != 0 || dir_y != 0);
+			who.sp_x += who.dir_x * who.acs * deltaTimeSquared();			
+			who.sp_y += who.dir_y * who.acs * deltaTimeSquared();
+			who.isMoving = (who.dir_x != 0 || who.dir_y != 0);
 			// . . . animation
-			if (dir_x != 0){ shad.lastDirection = "side"; shad.model._xscale = shad.model.xs * dir_x * (-1); }
-			if (dir_y == 1 && dir_x == 0) shad.lastDirection = "face";
-			if (dir_y == -1) shad.lastDirection = "back";
+			if (who.dir_x != 0){ shad.lastDirection = "side"; shad.model._xscale = shad.model.xs * who.dir_x * (-1); }
+			if (who.dir_y == 1 && who.dir_x == 0) shad.lastDirection = "face";
+			if (who.dir_y == -1) shad.lastDirection = "back";
 			// . . . sounding
 			who.stepTimer += Math.abs(who.sp_x) + Math.abs(who.sp_y);
 			var playStep:Boolean = (who.stepTimer > distanceForStep );

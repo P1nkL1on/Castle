@@ -10,7 +10,7 @@
 		return 0;
 	}
 	static function move(who, spd, ang){
-		who._x -= spd * Math.cos(ang) * animating.worldTimeSpeed;
+		who._x += spd * Math.cos(ang) * animating.worldTimeSpeed;
 		who._y += spd * Math.sin(ang) * animating.worldTimeSpeed;
 	}
 	static function moveBullet(bul){
@@ -63,10 +63,22 @@
 		});
 		return shad;
 	}
-	
+	static var swordRotation:Number = 0;
+	static var swordNowRotation:Number = 0;
 	static function giveSword(shad:MovieClip):MovieClip{
 		shad.swordUse = 0;
 		shad.slotsForExecute.push(function(who:MovieClip){
+			// sword current rotation
+			if (who.dir_x == 1 && who.dir_y == 1) swordRotation = 45;
+			if (who.dir_x == -1 && who.dir_y == -1) swordRotation = -135;
+			if (who.dir_x == 1 && who.dir_y == -1) swordRotation = -45;
+			if (who.dir_x == -1 && who.dir_y == 1) swordRotation = 135;
+			if (who.dir_x == 1 && who.dir_y == 0) swordRotation = 0;
+			if (who.dir_x == -1 && who.dir_y == 0) swordRotation = 180;
+			if (who.dir_x == 0 && who.dir_y == 1) swordRotation = 90;
+			if (who.dir_x == 0 && who.dir_y == -1) swordRotation = -90;
+			
+			swordNowRotation += (swordRotation - swordNowRotation) / (1 + .1 * animating.worldTimeSpeed);
 			// . . . using
 			if (who.swordUse > 3 && who.swordUse <= 15 && listenKey(0, swordKey) == 0){
 				if (who.model.righthand._currentframe == 1){
@@ -78,7 +90,7 @@
 				}
 			}
 			// , , ,
-			if (who.swordUse > 15 && listenKey(0, swordKey) == 0
+			if (who.swordUse > 15 /* && listenKey(0, swordKey) == 0 */
 				&& (who.model.righthand._currentframe == 2 || who.model.righthand.sword_use.stat == 'stop')){ // still pressed
 				who.model.righthand.gotoAndStop('sword_use');
 				animating.changeStat(who.model.righthand.sword_use, 'start');
@@ -87,12 +99,15 @@
 			}
 			if (who.model.righthand.attacked == false && who.model.righthand.sword_use._currentframe == 6){
 				who.model.righthand.attacked = true;
-				ground.spawnEffect('effect_sword_slash', who.model._x, who.model._y - 20);
+				var newEffect:MovieClip = ground.spawnEffect('effect_sword_slash', who.model._x, who.model._y - 20);
+				newEffect._rotation = swordNowRotation;
 			}
 			// spawnEffect
 			// . . . key listener
 			who.swordUse = listenKey(who.swordUse, swordKey);
-			animating.animateOnly(who.model.righthand.sword_use, 1/7);
+			animating.animateOnly(who.model.righthand.sword_use, 1/4);
+			who.model.righthand.sword_use._rotation = who.model.righthand._rotation * (-1) + swordNowRotation;
+			
 		});
 		return shad;
 	}
