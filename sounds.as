@@ -28,8 +28,12 @@
 				sos.push(footStepName(footStepsTypes[i]+"") + "" + j);
 		return sos;
 	}
+	static function abilitySounds():Array{
+		return new Array("footsteps/water/flush");
+	}
 	static function pushAllSounds(){
 		pushSounds(footstepSounds());
+		pushSounds(abilitySounds());
 	}
 	static function loadAllSounds(){
 		if (isLoaded) return;

@@ -6,6 +6,7 @@
 			return now+1;
 		return 0;
 	}
+	static var nowFrame = 0;
 	static function giveBottle(shad:MovieClip):MovieClip{
 		shad.bottleUse = 0;
 		shad.slotsForExecute.push(function(who:MovieClip){
@@ -25,6 +26,10 @@
 				bottleFrame = who.model.lefthand._currentframe;
 				trace('flush');
 			}
+			nowFrame = who.model.lefthand.bottle_use._currentframe;
+			if (nowFrame == 5 || nowFrame == 6)
+				ground.addWater(who._x + (who.model._xscale / who.model.xs)*(20), who._y, .3);
+				
 			// . . . key listener
 			who.bottleUse = listenKey(who.bottleUse, bottleKey);
 			
