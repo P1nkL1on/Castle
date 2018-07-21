@@ -2,11 +2,12 @@ class hazards{
 	static function manFree(who, from){
 		if (from.man == null)
 			return;
-		trace('Free ' + who);
+		trace('Free from '+from.model._name+' :: ' + who);
 		who.stat = 'idle_side';
 		who.locked = false;
 		from.CD = 30;
 		from.checked = !from.checked;
+		from.model.stat = 'none';
 		from.man = null;
 	}
 	static function spawnLever (X, Y, checked):MovieClip{
@@ -17,6 +18,7 @@ class hazards{
 			newLever.checked = false;	
 		else
 			newLever.checked = checked;
+		newLever.model.gotoAndStop(27);
 		newLever.canBeActivatedBy = new Array();
 		for (var i = 0; i < spawning.units.length; ++i)
 			if (spawning.units[i].isControllable)
@@ -26,35 +28,38 @@ class hazards{
 		newLever.hX = 0;
 		newLever.CD = 0;
 		newLever.slotsForExecute.push(function(who:MovieClip){
-			if (who.model._currentframe >= 3)
-				animating.animateOnly(who.model, 1/6);
-			if (who.CD > 0){who.CD -= animating.worldTimeSpeed; return;}
+			who.model.tt.text = who.man;
+			who.model.tt2.text = who.model.stat+'  '+who.model._currentframe+'----'+who.man.model.stat;
+			animating.animateOnly(who.model, 1/6);
+			if (who.CD >= 0){who.CD -= animating.worldTimeSpeed; return;}
 			if (who.man == null){	
 				for (var i = 0; i < who.canBeActivatedBy.length; ++i){
 					who.h = who.canBeActivatedBy[i];
 					if (who.hitTest(who.h) && heroAbilities.anyKeyPressed() == true && who.h.locked == false){
-						trace('Lock on lever :: ' + who.h);
+						trace('Lock on lever '+who.model._name+' :: ' + who.h);
 						who.man = who.h;
 						who.man.locked = true;
 						who.hX = who._x - 30 * (who.checked * 2 - 1);
+						who.sp_x = who.sp_y = 0;
 						who.man.model._xscale = - (who.man.model.xs * (who.checked * 2 - 1));
+						animating.changeStat(who.man.model, 'run_side');
 						break;
 					}
 				}
 				return;
 			}
-			if (who.hX != 0 && (Math.abs(who.man._y - who._y) > 1 || Math.abs(who.hX - who.man._x)> 1) ){
+			
+			if ((who.man.model.stat != 'lever_pull') && (Math.abs(who.man._y - who._y) > 1 || Math.abs(who.hX - who.man._x)> 1) ){
 				who.attachSpd = (1 + 4 / animating.worldTimeSpeed);
 				who.man._x += (who.hX - who.man._x) / who.attachSpd;
 				who.man._y += (who._y - who.man._y) / who.attachSpd;
 				return;
 			}
-			
-			if (who.man.model.stat != 'level_pull'){
-				who.hX = 0;
-				animating.changeStat(who.man.model, 'level_pull');
-				animating.changeStat(who.model, 'check_' + who.checked);
+			if (who.man.model.stat != 'lever_pull'){
+				//trace(who.model._currentframe);
 				who.model.gotoAndStop('check_' + who.checked);
+				animating.changeStat(who.man.model, 'lever_pull');
+				animating.changeStat(who.model, 'check_' + who.checked);
 			}
 		});
 		return newLever;	

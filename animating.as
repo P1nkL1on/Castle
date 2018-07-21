@@ -2,6 +2,8 @@
 	static var worldTimeSpeed:Number = 1;
 	static var worldYKoeff:Number = .5;
 	static function changeStat(who, stat){
+		if ((who+"").indexOf('lever')>=0)
+			trace(stat);
 		if (stat != who.stat){
 			who.gotoAndStop(stat);
 			who.stat = stat;
