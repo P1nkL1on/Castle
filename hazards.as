@@ -53,8 +53,8 @@ class hazards{
 			if (who.man.model.stat != 'level_pull'){
 				who.hX = 0;
 				animating.changeStat(who.man.model, 'level_pull');
-				animating.changeStat(who.model, 'check_true');
-				trace('Lever is pulled');
+				animating.changeStat(who.model, 'check_' + who.checked);
+				who.model.gotoAndStop('check_' + who.checked);
 			}
 		});
 		return newLever;	
