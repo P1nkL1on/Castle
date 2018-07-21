@@ -58,11 +58,23 @@ class hazards{
 			if (who.man.model.stat != 'lever_pull'
 				&& who.model._currentframe != 14
 				&& who.model._currentframe != 28){
-				trace(who.model._currentframe);
 				animating.changeStat(who.man.model, 'lever_pull');
 				animating.changeStat(who.model, 'check_' + who.checked);
 			}
 		});
+		// newLever.slotsForExecute.push(function(who:MovieClip){
+			// who.hs = _root.layer_background.effect_sword_slash;
+			// if (who.hs == undefined || who.hs == null)
+				// return;
+			// if (who.model.stat == 'idle' && who.hs.hitTest(who._x, who._y)){
+				// who.hs._alpha -= 20;
+				// if ((who.checked == false && who.hs._x > who._x) || (who.checked == true && who.hs._x < who._x)){
+					// who.checked = !who.checked;
+					// animating.changeStat(who.model, 'check_' + who.checked);
+					// nextFrame();nextFrame();nextFrame();nextFrame();nextFrame();
+				// }
+			// }
+		// });
 		return newLever;	
 	}
 }

@@ -128,7 +128,7 @@
 			}
 			if (who.model.righthand.attacked == false && who.model.righthand.sword_use._currentframe == 6){
 				who.model.righthand.attacked = true;
-				var newEffect:MovieClip = ground.spawnEffect('effect_sword_slash', who.model._x, who.model._y - 20);
+				var newEffect:MovieClip = ground.spawnEffect('effect_sword_slash', who.model._x, who.model._y - 20, true);
 				newEffect._rotation = swordRotation;
 			}
 			// spawnEffect

@@ -9,10 +9,10 @@
 			{ who.groundSoundVariant = sounds.footStepsCount[i]; return;}
 		trace("Type pf ground '" + typ + "' is strange; No matchs with existed: " + sounds.footStepsTypes);
 	}
-	static function spawnEffect(effectName:String, X, Y):MovieClip{
+	static function spawnEffect(effectName:String, X, Y, notUniqName):MovieClip{
 		//trace(effectName + ' / ' + X +' / ' + Y);
 		var dep:Number =  _root.layer_background.getNextHighestDepth();
-		var newEffect = _root.layer_background.attachMovie(effectName, "effect_" + effectName + "_" + dep, dep);
+		var newEffect = _root.layer_background.attachMovie(effectName, effectName + ((notUniqName == undefined)?("_" + dep):""), dep);
 		newEffect._x = X; newEffect._y = Y;
 		return newEffect;
 	}
