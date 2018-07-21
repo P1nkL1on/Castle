@@ -24,6 +24,7 @@
 			bul.removeMovieClip();
 	}
 	static var nowFrame = 0;
+	static var bottleCd = 0;
 	static function giveBottle(shad:MovieClip):MovieClip{
 		shad.bottleUse = 0;
 		shad.slotsForExecute.push(function(who:MovieClip){
@@ -50,9 +51,14 @@
 				trace('flush');
 			}
 			nowFrame = who.model.lefthand.bottle_use._currentframe;
-			if (nowFrame == 5 || nowFrame == 6)
-				ground.addWater(who._x + (who.model._xscale / who.model.xs)*(20), who._y, .3);
-				
+			if (nowFrame == 5 || nowFrame == 6){
+				if (bottleCd > 0) 
+					bottleCd -= animating.worldTimeSpeed;
+				else {
+						bottleCd = 10;
+						ground.addWater(who._x + (who.model._xscale / who.model.xs)*(20), who._y, 1);
+					}
+			}				
 			// . . . key listener
 			who.bottleUse = listenKey(who.bottleUse, bottleKey);
 			
@@ -64,11 +70,12 @@
 		return shad;
 	}
 	static var swordRotation:Number = 0;
+	static var swordModelRotation:Number = 0;
 	static var swordNowRotation:Number = 0;
 	static function giveSword(shad:MovieClip):MovieClip{
 		shad.swordUse = 0;
 		shad.slotsForExecute.push(function(who:MovieClip){
-			// sword current rotation
+			// where does the sword projectile flew
 			if (who.dir_x == 1 && who.dir_y == 1) swordRotation = 45;
 			if (who.dir_x == -1 && who.dir_y == -1) swordRotation = -135;
 			if (who.dir_x == 1 && who.dir_y == -1) swordRotation = -45;
@@ -78,7 +85,13 @@
 			if (who.dir_x == 0 && who.dir_y == 1) swordRotation = 90;
 			if (who.dir_x == 0 && who.dir_y == -1) swordRotation = -90;
 			
-			swordNowRotation += (swordRotation - swordNowRotation) / (1 + .1 * animating.worldTimeSpeed);
+			// position of drawed sword
+			if (who.dir_x != 0) swordModelRotation = 0;
+				else {
+					if (who.dir_x == -1) swordModelRotation = 90;
+					if (who.dir_y == 1) swordModelRotation = -90;
+				}
+			swordNowRotation += (swordModelRotation - swordNowRotation) / (1 + .1 * animating.worldTimeSpeed);
 			// . . . using
 			if (who.swordUse > 3 && who.swordUse <= 15 && listenKey(0, swordKey) == 0){
 				if (who.model.righthand._currentframe == 1){
@@ -100,13 +113,14 @@
 			if (who.model.righthand.attacked == false && who.model.righthand.sword_use._currentframe == 6){
 				who.model.righthand.attacked = true;
 				var newEffect:MovieClip = ground.spawnEffect('effect_sword_slash', who.model._x, who.model._y - 20);
-				newEffect._rotation = swordNowRotation;
+				newEffect._rotation = swordRotation;
 			}
 			// spawnEffect
 			// . . . key listener
 			who.swordUse = listenKey(who.swordUse, swordKey);
 			animating.animateOnly(who.model.righthand.sword_use, 1/4);
 			who.model.righthand.sword_use._rotation = who.model.righthand._rotation * (-1) + swordNowRotation;
+			who.lastCreatedReflection.righthand.sword_use.gotoAndStop(who.model.righthand.sword_use._currentframe);
 			
 		});
 		return shad;
