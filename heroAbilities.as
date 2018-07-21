@@ -39,6 +39,8 @@
 	static function giveBottle(shad:MovieClip):MovieClip{
 		shad.bottleUse = 0;
 		shad.slotsForExecute.push(function(who:MovieClip){
+			if (who.locked == true)
+				return;
 			if (who.shieldUse > 0)
 				who.bottleUse = 0;
 			// . . . using
@@ -87,6 +89,8 @@
 	static function giveSword(shad:MovieClip):MovieClip{
 		shad.swordUse = 0;
 		shad.slotsForExecute.push(function(who:MovieClip){
+			if (who.locked == true)
+				return;
 			// where does the sword projectile flew
 			if (who.dir_x == 1 && who.dir_y == 1) swordRotation = 45;
 			if (who.dir_x == -1 && who.dir_y == -1) swordRotation = -135;
@@ -141,6 +145,8 @@
 		shad.shieldUse = 0;
 		shad.isBlocking = false;
 		shad.slotsForExecute.push(function(who:MovieClip){
+			if (who.locked == true)
+				return;
 			if (who.bottleUse > 0)
 				who.shieldUse = 0;
 			// . . . using

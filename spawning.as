@@ -109,6 +109,8 @@
 		if (shad.lastDirection == undefined) shad.lastDirection = "face";
 		if (shad.stepTimer == undefined) shad.stepTimer = 0;
 		shad.slotsForExecute.push(function(who:MovieClip){
+			if (who.locked == true)
+				return;
 			who.dir_x = who.dir_y = 0;
 			if (Key.isDown(keyLeft())) who.dir_x -= 1;	
 			if (Key.isDown(keyRight())) who.dir_x += 1;
@@ -135,6 +137,7 @@
 	static function makeShadowMovable(shad:MovieClip):MovieClip
 	{
 		shad.slowing = 0;
+		shad.locked = false;
 		if (shad.sp_x == undefined)	shad.sp_x = 0; 
 		if (shad.sp_y == undefined)	shad.sp_y = 0; 
 		if (shad.spd_mult == undefined) shad.spd_mult = 1;
@@ -165,9 +168,8 @@
 	static var checkSpdSquare:Number = 1;
 	static function makeHeroAnimation(shad:MovieClip):MovieClip{
 		if (shad.lastDirection == undefined) shad.lastDirection = "face";
-		shad.lockPose = false;
 		shad.slotsForExecute.push(function(who:MovieClip){
-			if (who.lockPose){
+			if (who.locked){
 				animating.animateOnly(who.model, 1/6);
 				return;
 			}
