@@ -123,7 +123,7 @@
 			if (who.dir_y == 1 && who.dir_x == 0) shad.lastDirection = "face";
 			if (who.dir_y == -1) shad.lastDirection = "back";
 			// . . . sounding
-			who.stepTimer += Math.abs(who.sp_x) + Math.abs(who.sp_y);
+			who.stepTimer += (Math.abs(who.sp_x) + Math.abs(who.sp_y)) * (1 - who.slowing);
 			var playStep:Boolean = (who.stepTimer > distanceForStep );
 			while (who.stepTimer > distanceForStep )who.stepTimer -= distanceForStep;
 			if (playStep)
@@ -134,6 +134,7 @@
 	}
 	static function makeShadowMovable(shad:MovieClip):MovieClip
 	{
+		shad.slowing = 0;
 		if (shad.sp_x == undefined)	shad.sp_x = 0; 
 		if (shad.sp_y == undefined)	shad.sp_y = 0; 
 		if (shad.spd_mult == undefined) shad.spd_mult = 1;
@@ -142,14 +143,14 @@
 		shad.slotsForExecute.push(function(who:MovieClip){
 			who.sp_x -= deltaTime() * who.sp_x * who.spd_resid;
 			who.sp_y -= deltaTime() * who.sp_y * who.spd_resid;
-			who.spd_squared = who.sp_x * who.sp_x + who.sp_y * who.sp_y;
+			who.spd_squared = (who.sp_x * who.sp_x + who.sp_y * who.sp_y);
 			who.spd_resid = (who.isMoving == false && who.spd_squared < .2)? 1 : .1;
 			while (who.spd_squared > who.max_spd_squared * who.spd_mult * who.spd_mult){
 				who.sp_x /= 1.2; who.sp_y /= 1.2;
 				who.spd_squared /= 1.44;
 			}
-			who._x += who.sp_x * deltaTime();
-			who._y += who.sp_y * animating.worldYKoeff * deltaTime();
+			who._x += who.sp_x * deltaTime() * (1 - who.slowing);
+			who._y += who.sp_y * animating.worldYKoeff * deltaTime() * (1 - who.slowing);
 			// . . . a place of standing
 			if (who.spd_squared > 0 && animating.each(who, 1 / 15) > 0)
 				// 4 times in second
@@ -161,14 +162,20 @@
 	}
 	static var statCalculated:String = "none";
 	static var spdCalculated:Number = .2;
+	static var checkSpdSquare:Number = 1;
 	static function makeHeroAnimation(shad:MovieClip):MovieClip{
 		if (shad.lastDirection == undefined) shad.lastDirection = "face";
-		
+		shad.lockPose = false;
 		shad.slotsForExecute.push(function(who:MovieClip){
+			if (who.lockPose){
+				animating.animateOnly(who.model, 1/6);
+				return;
+			}
 			statCalculated = "idle";
 			spdCalculated = 1 / 30;
-			if (who.spd_squared > .5){ statCalculated = "walk"; spdCalculated = 1/ 15;}
-			if (who.spd_squared > who.max_spd_squared / 4){ statCalculated = "run"; spdCalculated = 1/ 7;}			
+			checkSpdSquare = who.spd_squared * (1 - who.slowing) * (1 - who.slowing);
+			if (checkSpdSquare > .1){ statCalculated = "walk"; spdCalculated = 1/ 15;}
+			if (checkSpdSquare > who.max_spd_squared / 4){ statCalculated = "run"; spdCalculated = 1/ 7;}			
 			animating.animate(who.model, statCalculated + "_" + who.lastDirection, spdCalculated);
 		});
 		return shad;
