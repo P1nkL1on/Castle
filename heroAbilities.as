@@ -83,6 +83,7 @@
 	}
 	static var swordRotation:Number = 0;
 	static var swordNowRotation:Number = 0;
+	static var swordModelRotation:Number = 0;
 	static function giveSword(shad:MovieClip):MovieClip{
 		shad.swordUse = 0;
 		shad.slotsForExecute.push(function(who:MovieClip){
@@ -102,6 +103,7 @@
 					if (who.dir_x == -1) swordNowRotation = 90;
 					if (who.dir_y == 1) swordNowRotation = -90;
 				}
+			swordModelRotation += (swordNowRotation - swordModelRotation) / (1 + 4 / animating.worldTimeSpeed);
 			// . . . using
 			if (who.swordUse > 3 && (who.swordUse <= 15) && listenKey(0, swordKey) == 0){
 				if (who.model.righthand._currentframe == 1){
@@ -129,7 +131,7 @@
 			// . . . key listener
 			who.swordUse = listenKey(who.swordUse, swordKey);
 			animating.animateOnly(who.model.righthand.sword_use, 1/4);
-			who.model.righthand.sword_use._rotation = who.model.righthand._rotation * (-1) + swordNowRotation;
+			who.model.righthand.sword_use._rotation = who.model.righthand._rotation * (-1) + swordModelRotation;
 			who.lastCreatedReflection.righthand.sword_use.gotoAndStop(who.model.righthand.sword_use._currentframe);
 			
 		});
