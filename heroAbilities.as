@@ -8,21 +8,63 @@
 	static var bookKey:Number = 81;
 	
 	static var anyKey:Array = new Array(bottleKey, swordKey, shieldKey, bookKey);
+	static var anyLeftKey:Array = new Array(bottleKey, shieldKey);
+	static var anyRightKey:Array = new Array(swordKey, bookKey);
 	
 	static function listenKey(now:Number, key:Number):Number{
 		if (Key.isDown(key))
 			return now+1;
 		return 0;
 	}
+	static function anyLeftKeyPress():Boolean{
+		return aKeyPressedIn(anyLeftKey);
+	}
+	static function anyRightKeyPress():Boolean{
+		return aKeyPressedIn(anyRightKey);
+	}
 	static function anyKeyPressed():Boolean{
-		for (var i = 0; i < anyKey.length; ++i)
-			if (Key.isDown(anyKey[i]))
+		return aKeyPressedIn(anyKey);
+	}
+	static function aKeyPressedIn(arr:Array):Boolean{
+		for (var i = 0; i < arr.length; ++i)
+			if (Key.isDown(arr[i]))
 				return true;
 		return false;
 	}
 	static function move(who, spd, ang){
 		who._x += spd * Math.cos(ang) * animating.worldTimeSpeed;
 		who._y += spd * Math.sin(ang) * animating.worldTimeSpeed;
+	}
+	static function dropLeftItem(shad:MovieClip){
+		if (shad.canHandleItems != true)
+			return;
+		shad.leftItem = null;
+	}
+	static function canHandleItems(shad:MovieClip):MovieClip{
+		shad.leftItem = null;
+		shad.rightItem = null;
+		shad.canHandleItems = true;
+		shad.slotsForExecute.push(function(who:MovieClip){
+			who.abilityLocked = false;
+			for (var i = 0; i < items.allItems.length; ++i){
+				who.wantItem = items.allItems[i];
+				if (who.hitTest(who.wantItem)){
+					who.abilityLocked = true;
+					if (anyLeftKeyPress()){
+						who.leftItem = who.wantItem.itemName;
+						who.model.lefthand.gotoAndStop('item');
+						who.wantItem.model._visible = false;
+						break;
+					}
+					if (anyRightKeyPress()){
+						break;
+					}
+				}
+			}
+			who.model.lefthand.item.gotoAndStop(who.leftItem.itemName);
+			who.model.righthand.item.gotoAndStop(who.rightItem.itemName);
+		});
+		return shad;
 	}
 	static function moveBullet(bul){
 		bul.ang = bul._rotation / 180 * Math.PI;
@@ -39,7 +81,7 @@
 	static function giveBottle(shad:MovieClip):MovieClip{
 		shad.bottleUse = 0;
 		shad.slotsForExecute.push(function(who:MovieClip){
-			if (who.locked == true)
+			if (who.locked == true || who.abilityLocked == true)
 				return;
 			if (who.shieldUse > 0)
 				who.bottleUse = 0;
@@ -89,7 +131,7 @@
 	static function giveSword(shad:MovieClip):MovieClip{
 		shad.swordUse = 0;
 		shad.slotsForExecute.push(function(who:MovieClip){
-			if (who.locked == true)
+			if (who.locked == true || who.abilityLocked == true)
 				return;
 			// where does the sword projectile flew
 			if (who.dir_x == 1 && who.dir_y == 1) swordRotation = 45;
@@ -145,7 +187,7 @@
 		shad.shieldUse = 0;
 		shad.isBlocking = false;
 		shad.slotsForExecute.push(function(who:MovieClip){
-			if (who.locked == true)
+			if (who.locked == true || who.abilityLocked == true)
 				return;
 			if (who.bottleUse > 0)
 				who.shieldUse = 0;

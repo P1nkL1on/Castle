@@ -67,14 +67,16 @@
 			{trace("Error in spawning model of " + unitName); newShadow.removeMovieClip(); return null;}
 		else
 			trace("Created a model for " + unitName + " :: " + newModel);
-		newModel._x = X; newModel._y = Y;
+		newModel._x = X; newModel._y = Y; 
+		newShadow._z = 0;
+		newShadow.sp_z = 0; newShadow.G = .2;
 		newModel.xs = newModel._xscale;
 		newModel.modelName = "model_" + unitName;
 		// linking
 		newModel.shadow = newShadow;
 		newShadow.model = newModel;
 		newShadow.slotsForExecute = new Array();
-		newShadow.slotsForExecute.push(function(who:MovieClip){ who.model._x = who._x; who.model._y = who._y; });
+		newShadow.slotsForExecute.push(function(who:MovieClip){ who.model._x = who._x; who.model._y = who._y - who._z;});
 		// set executing order
 		newShadow.onEnterFrame = function(){
 			for (var i = 0; i < this.slotsForExecute.length; ++i){
