@@ -27,7 +27,8 @@
 		shad.lastCreatedReflection = newReflection;
 		newReflection.onEnterFrame = function (){
 			this._x = this.shad._x;
-			this._y = this.shad._y;
+			this._y = this.shad._y + this.shad._z;
+			this._visible = this.shad.model._visible;
 			this.gotoAndStop(this.shad.model._currentframe);
 			this._xscale = this.shad.model._xscale;
 			

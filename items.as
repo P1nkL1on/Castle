@@ -19,6 +19,7 @@ class items{
 		newItem._z = 100;
 		newItem.itemName = itemName;
 		newItem.CD = 0;
+		newItem.mustHaveReflection = true;
 		newItem.slotsForExecute.push(function(who:MovieClip){ 
 			who.minZ = who.model._height / 2;
 			if (who.CD > -1)

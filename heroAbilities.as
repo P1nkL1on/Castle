@@ -128,6 +128,8 @@
 				}
 			who.model.lefthand.item.gotoAndStop(who.leftItem.itemName);
 			who.model.righthand.item.gotoAndStop(who.rightItem.itemName);
+			who.lastCreatedReflection.righthand.item.gotoAndStop(who.rightItem.itemName);
+			who.lastCreatedReflection.lefthand.item.gotoAndStop(who.leftItem.itemName);
 		});
 		return shad;
 	}
