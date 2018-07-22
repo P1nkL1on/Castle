@@ -7,6 +7,15 @@
 	static var unitCountScene:Number = 0;
 	static var newLayer:MovieClip = null;
 	
+	static function colorLayer(layerName, r, g, b, rOther, gOther, bOther){
+		for (var i = 0; i < layers.length; ++i){
+			var clr:Color = new Color(layers[i]); 
+			if (layers[i].layerName == layerName)
+				clr.setTransform({rb:r, gb:g, bb:b});
+			else
+				clr.setTransform({rb:rOther, gb:gOther, bb:bOther});
+		}
+	}
 	static function clearLayers(){
 		var layerCount:Number = layers.length;
 		for (var i = 0; i < layers.length; ++i){
