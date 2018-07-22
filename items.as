@@ -5,8 +5,11 @@ class items{
 		newItem.model.gotoAndStop(itemName);	
 		newItem._z = 100;
 		newItem.itemName = itemName;
+		newItem.CD = 0;
 		newItem.slotsForExecute.push(function(who:MovieClip){ 
-			who.minZ = who.model._height / 2
+			who.minZ = who.model._height / 2;
+			if (who.CD > -1)
+				who.CD -= animating.worldTimeSpeed;
 			if (who._z > who.minZ){
 				 if (-who.sp_z >= who._z - who.minZ){
 					if (Math.abs(who.sp_z) > 2){
