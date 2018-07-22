@@ -65,6 +65,8 @@
 		shad.leftItem._z = 80;
 		shad.leftItem.sp_z = 5;
 		shad.leftItem.model._visible = true;
+		shad.leftItem.model._x = shad._x + 30;
+		shad.leftItem.model._y = shad._y - 80;
 		shad.leftItem.CD = 95;
 		var droppedItem:MovieClip = shad.leftItem;
 		shad.leftItem = null;
@@ -86,6 +88,8 @@
 		shad.rightItem._z = 80;
 		shad.rightItem.sp_z = 5;
 		shad.rightItem.model._visible = true;
+		shad.rightItem.model._x = shad._x - 30;
+		shad.rightItem.model._y = shad._y - 80;
 		shad.rightItem.CD = 95;
 		var droppedItem:MovieClip = shad.rightItem;
 		shad.rightItem = null;
@@ -97,6 +101,13 @@
 		shad.leftItem = null;
 		shad.rightItem = null;
 		shad.canHandleItems = true;
+		//
+		shad.slotsForExecute.push(function(who:MovieClip){
+			dropLeftIfCan(who, bottleKey);
+			dropLeftIfCan(who, shieldKey);
+			dropRightIfCan(who, swordKey);
+			dropRightIfCan(who, bookKey);
+		});
 		shad.slotsForExecute.push(function(who:MovieClip){
 			who.abilityLockedItem = false;
 			for (var i = 0; i < items.allItems.length; ++i)
@@ -148,7 +159,6 @@
 	static function giveBottle(shad:MovieClip):MovieClip{
 		shad.bottleUse = 0;
 		shad.slotsForExecute.push(function(who:MovieClip){
-			dropLeftIfCan(who, bottleKey);
 			if (who.locked == true || who.abilityLockedItem == true || who.abilityLockedLeft == true)
 				return;
 			if (who.shieldUse > 0)
@@ -199,7 +209,6 @@
 	static function giveSword(shad:MovieClip):MovieClip{
 		shad.swordUse = 0;
 		shad.slotsForExecute.push(function(who:MovieClip){
-			dropRightIfCan(who, swordKey);
 			if (who.locked == true || who.abilityLockedItem == true || who.abilityLockedRight == true)
 				return;
 			// where does the sword projectile flew
@@ -256,7 +265,6 @@
 		shad.shieldUse = 0;
 		shad.isBlocking = false;
 		shad.slotsForExecute.push(function(who:MovieClip){
-			dropLeftIfCan(who, shieldKey);
 			if (who.abilityLockedLeft==true && Key.isDown(shieldKey))
 				dropLeftItem(who);
 			if (who.locked == true || who.abilityLockedItem == true || who.abilityLockedLeft == true)
