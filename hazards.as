@@ -10,6 +10,48 @@ class hazards{
 		from.model.stat = 'none';
 		from.man = null;
 	}
+	
+	static function makeKeyReciever(shad:MovieClip, rad, keyCount){
+		if (keyCount == undefined)
+			shad.keyLeft = 1;
+		else
+			shad.keyLeft = keyCount;
+		shad.triggerFunction;
+		shad.openFunction;
+		shad.slotsForExecute.push(function(who:MovieClip){
+		if (who.keyLeft <= 0)
+			return;
+		if (animating.each(who, 1 / 15) > 0)
+			for (var i = 0; i < spawning.units.length; ++i)
+				if (Math.abs(spawning.units[i]._x - who._x) < rad
+					&& Math.abs(spawning.units[i]._y - who._y) < rad / 2){
+						//
+						if (spawning.units[i].canHandleItems != true)
+							continue;
+						who.devour = 'none';	
+						if (spawning.units[i].leftItem.itemName == 'key')
+							who.devour = 'left';
+						if (who.devour == 'none' && spawning.units[i].rightItem.itemName == 'key')		
+							who.devour = 'right';
+						if (who.devour == 'none')
+							continue;
+						var droppedItem:MovieClip = null;
+						if (who.devour == 'left')
+							droppedItem = heroAbilities.dropLeftItem(spawning.units[i]);
+						if (who.devour == 'right')
+							droppedItem = heroAbilities.dropRightItem(spawning.units[i]);
+						//
+						items.removeItem(droppedItem);
+						//
+						trace('Keys need to interact '+who.keyLeft+'->'+(who.keyLeft-1)+' :: ' + who);
+						who.keyLeft--;
+						who.triggerFunction(who, who.keyLeft);
+						if (who.keyLeft == 0)
+							who.openFunction(who);
+					}
+		});
+		return shad;	
+	}
 	static function spawnLever (X, Y, checked):MovieClip{
 		var newLever:MovieClip = spawning.spawnUnit("lever", X, Y);
 		if (!(newLever._x > Number.MIN_VALUE))

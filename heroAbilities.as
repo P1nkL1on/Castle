@@ -51,7 +51,7 @@
 					shad.rightItem.canBeDropped = true;
 			}
 	}
-	static function dropLeftItem(shad:MovieClip){
+	static function dropLeftItem(shad:MovieClip):MovieClip{
 		if (shad.canHandleItems != true)
 			return;
 		if (shad.leftItem == null)
@@ -66,11 +66,13 @@
 		shad.leftItem.sp_z = 5;
 		shad.leftItem.model._visible = true;
 		shad.leftItem.CD = 95;
+		var droppedItem:MovieClip = shad.leftItem;
 		shad.leftItem = null;
 		shad.model.lefthand.gotoAndStop('empty');
 		shad.abilityLockedLeft = false;
+		return droppedItem;
 	}
-	static function dropRightItem(shad:MovieClip){
+	static function dropRightItem(shad:MovieClip):MovieClip{
 		if (shad.canHandleItems != true)
 			return;
 		if (shad.rightItem == null)
@@ -79,15 +81,17 @@
 			return;
 		trace('Dropped item (right) :: ' + shad.rightItem);
 		shad.rightItem.canBeDropped = false;
-		shad.rightItem._x = shad._x + 30;
+		shad.rightItem._x = shad._x - 30;
 		shad.rightItem._y = shad._y;
 		shad.rightItem._z = 80;
 		shad.rightItem.sp_z = 5;
 		shad.rightItem.model._visible = true;
 		shad.rightItem.CD = 95;
+		var droppedItem:MovieClip = shad.rightItem;
 		shad.rightItem = null;
 		shad.model.righthand.gotoAndStop('empty');
 		shad.abilityLockedRight = false;
+		return droppedItem;
 	}
 	static function canHandleItems(shad:MovieClip):MovieClip{
 		shad.leftItem = null;
@@ -101,7 +105,10 @@
 					if (who.hitTest(who.wantItem)){
 						if (who.wantItem.model._visible == true)
 							who.abilityLockedItem = true;
-						if (who.wantItem != who.leftItem && anyLeftKeyPress()){
+						if (who.wantItem == who.leftItem
+							|| who.wantItem == who.rightItem)
+							continue;
+						if (who.leftItem == null && anyLeftKeyPress()){
 							who.leftItem = who.wantItem;
 							who.model.lefthand.gotoAndStop('item');
 							who.wantItem.model._visible = false;
@@ -109,7 +116,7 @@
 							trace('Geted item (left) :: ' + shad.leftItem);
 							break;
 						}
-						if (who.wantItem != who.rightItem && anyRightKeyPress()){
+						if (who.rightItem == null && anyRightKeyPress()){
 							who.rightItem = who.wantItem;
 							who.model.righthand.gotoAndStop('item');
 							who.wantItem.model._visible = false;
@@ -190,7 +197,7 @@
 	static function giveSword(shad:MovieClip):MovieClip{
 		shad.swordUse = 0;
 		shad.slotsForExecute.push(function(who:MovieClip){
-			dropRightIfCan(who, shieldKey);
+			dropRightIfCan(who, swordKey);
 			if (who.locked == true || who.abilityLockedItem == true || who.abilityLockedRight == true)
 				return;
 			// where does the sword projectile flew

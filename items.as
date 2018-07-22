@@ -1,5 +1,18 @@
 class items{
 	static var allItems:Array = new Array();
+	static function removeItem(item:MovieClip){
+		trace('Deleteing item :: '+item);
+		for (var i = 0; i < allItems.length; ++i)
+			if (allItems[i] == item){
+				var tmp:MovieClip = allItems[i];
+				allItems[i] = allItems[allItems.length - 1];
+				allItems[allItems.length - 1] = tmp;
+				allItems.pop();
+				item.model.removeMovieClip();
+				item.removeMovieClip();
+				return;
+			}
+	}
 	static function spawnItem(itemName:String, X, Y){
 		var newItem:MovieClip = spawning.spawnUnit('item', X, Y);
 		newItem.model.gotoAndStop(itemName);	
