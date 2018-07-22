@@ -43,6 +43,7 @@ class hazards{
 						//
 						items.removeItem(droppedItem);
 						//
+						sounds.playSound("background/key_open");
 						trace('Keys need to interact '+who.keyLeft+'->'+(who.keyLeft-1)+' :: ' + who);
 						who.keyLeft--;
 						who.triggerFunction(who, who.keyLeft);
@@ -69,6 +70,8 @@ class hazards{
 		newLever.man = null;
 		newLever.hX = 0;
 		newLever.CD = 0;
+		newLever.checkFunction;
+		newLever.uncheckFunction;
 		newLever.slotsForExecute.push(function(who:MovieClip){
 			//who.model.tt.text = who.man;
 			//who.model.tt2.text = who.model.stat+'  '+who.model._currentframe+'----'+who.man.model.stat;

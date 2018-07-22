@@ -32,7 +32,7 @@
 		return new Array("footsteps/water/flush","weapons/sword_in","weapons/sword_attack","weapons/sword_out","weapons/item_in");
 	}
 	static function interactiveSounds():Array{
-		return new Array("background/lever","background/door_open");
+		return new Array("background/lever","background/door_open","background/key_open");
 	}
 	static function pushAllSounds(){
 		pushSounds(footstepSounds());

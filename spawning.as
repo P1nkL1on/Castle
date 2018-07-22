@@ -77,6 +77,10 @@
 		newShadow.model = newModel;
 		newShadow.slotsForExecute = new Array();
 		newShadow.slotsForExecute.push(function(who:MovieClip){ who.model._x = who._x; who.model._y = who._y - who._z;});
+		//this.model.swapDepths(-16000+Math.round(this._y)*30+Math.round(_x/20));
+		newShadow.slotsForExecute.push(function(who:MovieClip){ 
+			who.model.swapDepths(-16000+Math.round(who._y)*30+Math.round(who._x/20));
+		});
 		// set executing order
 		newShadow.onEnterFrame = function(){
 			for (var i = 0; i < this.slotsForExecute.length; ++i){

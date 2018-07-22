@@ -8,8 +8,13 @@ class items{
 				allItems[i] = allItems[allItems.length - 1];
 				allItems[allItems.length - 1] = tmp;
 				allItems.pop();
+				//item._x = item._y = item.model._x = item.model._y = -1000;
 				item.model.removeMovieClip();
+				if (item.model != undefined)
+					{trace('Error in deleting model'); item.model._visible = false;	}
 				item.removeMovieClip();
+				if (item.model != undefined)
+					trace('Error in deleting shadow');
 				return;
 			}
 	}
