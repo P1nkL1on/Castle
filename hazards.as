@@ -42,6 +42,7 @@ class hazards{
 							droppedItem = heroAbilities.dropRightItem(spawning.units[i]);
 						//
 						items.removeItem(droppedItem);
+						levels.checkGUI();
 						//
 						sounds.playSound("background/key_open");
 						trace('Keys need to interact '+who.keyLeft+'->'+(who.keyLeft-1)+' :: ' + who);

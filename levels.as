@@ -44,14 +44,19 @@ class levels{
 			this.gotoAndStop(this.keyP+"_"+((Key.isDown(this.keyP))?"pressed" : ""));
 		}
 	}
+	static var prevItem:MovieClip = null;
 	static function makeGUI(){
 		if (_root.layer_GUI == undefined)
 			{spawning.createLayer("layer_GUI");}
 		var thinker:MovieClip = _root.layer_GUI.attachMovie('GUI_thinker', 'thinker', _root.layer_GUI.getNextHighestDepth());
+		prevItem = null;
 		thinker.onEnterFrame = function (){
 			if (heroAbilities.anyKeyPressed() == true)
 				this.updateNeed = true;
-
+			if (levels.hero.wantFirstItem != prevItem){
+				prevItem = levels.hero.wantFirstItem;
+				checkGUI();
+			}
 			if (this.updateNeed && animating.each(this, 1/60)){
 				this.updateNeed = false;	
 				checkGUI();	
@@ -71,7 +76,7 @@ class levels{
 					this.numX = GUIkeys[this.numY].length - 1;
 				}
 				else
-					this.descr.text = '--';
+					this.descr.text = '	';
 				GUIplace(this, this.numX, this.numY);
 			}
 		}
@@ -97,54 +102,55 @@ class levels{
 		return Arr;
 	}
 	static function checkGUI(){
-		trace('GUI rechecked;');
 		GUIactions = new Array();
 		GUIkeys = new Array();
-		// . . . book
-		if (hero.bookUse != undefined && hero.rightItem == null){
-			if (hero.model.righthand._currentframe == 2
-				|| hero.model.righthand._currentframe == 3){
-					GUIactions.push('hide spellbook');
-					GUIactions.push('HOLD : cast');
-					GUIkeys.push(A0(3), A0(3));
-				}else{
-					GUIactions.push('take spellbook');
-					GUIkeys.push(A0(3));
-				}
-		}
-		// . . . water
-		if (hero.bottleUse != undefined && hero.leftItem == null){
-			GUIkeys.push(A0(0), A0(0));
-			if (hero.model.lefthand._currentframe == 2
-				|| hero.model.lefthand._currentframe == 3){
-					GUIactions.push('hide bottle');
-				} else {
-					GUIactions.push('take bottle');
-				}
-			GUIactions.push('HOLD : spill water');
-		}
 		
-		// . . . shield
-		if (hero.shieldUse != undefined && hero.leftItem == null){
-			GUIkeys.push(A0(2), A0(2));
-			if (hero.model.lefthand._currentframe == 4
-				|| hero.model.lefthand._currentframe == 5){
-					GUIactions.push('hide shield');
-				} else {
-					GUIactions.push('take shield');
+		if (prevItem == null){
+				// . . . book
+				if (hero.bookUse != undefined && hero.rightItem == null){
+					if (hero.model.righthand._currentframe == 2
+						|| hero.model.righthand._currentframe == 3){
+							GUIactions.push('hide spellbook');
+							GUIactions.push('HOLD : cast');
+							GUIkeys.push(A0(3), A0(3));
+						}else{
+							GUIactions.push('take spellbook');
+							GUIkeys.push(A0(3));
+						}
 				}
-			GUIactions.push('HOLD : block');
-		}
-		// . . . sword
-		if (hero.swordUse != undefined && hero.rightItem == null){
-			if (hero.model.righthand._currentframe == 2
-				|| hero.model.righthand._currentframe == 3){
-					GUIactions.push('hide sword');
-					GUIactions.push('HOLD : attack');
-					GUIkeys.push(A0(1), A0(1));
-				}else{
-					GUIactions.push('take sword');
-					GUIkeys.push(A0(1));
+				// . . . water
+				if (hero.bottleUse != undefined && hero.leftItem == null){
+					GUIkeys.push(A0(0), A0(0));
+					if (hero.model.lefthand._currentframe == 2
+						|| hero.model.lefthand._currentframe == 3){
+							GUIactions.push('hide bottle');
+						} else {
+							GUIactions.push('take bottle');
+						}
+					GUIactions.push('HOLD : spill water');
+				}
+				// . . . shield
+				if (hero.shieldUse != undefined && hero.leftItem == null){
+					GUIkeys.push(A0(2), A0(2));
+					if (hero.model.lefthand._currentframe == 4
+						|| hero.model.lefthand._currentframe == 5){
+							GUIactions.push('hide shield');
+						} else {
+							GUIactions.push('take shield');
+						}
+					GUIactions.push('HOLD : block');
+				}
+				// . . . sword
+				if (hero.swordUse != undefined && hero.rightItem == null){
+					if (hero.model.righthand._currentframe == 2
+						|| hero.model.righthand._currentframe == 3){
+							GUIactions.push('hide sword');
+							GUIactions.push('HOLD : attack');
+							GUIkeys.push(A0(1), A0(1));
+						}else{
+							GUIactions.push('take sword');
+							GUIkeys.push(A0(1));
+						}
 				}
 		}
 		// . . . ITEMS
@@ -156,7 +162,27 @@ class levels{
 			GUIactions.push('drop ' + hero.rightItem.itemName);
 			GUIkeys.push(new Array(1,3));
 		}
+		// .. combo
+		if (prevItem != null){
+			// show prev Items
+			pushOrAdd('take ' + prevItem.itemName + ' in left hand', new Array(0,2));
+			pushOrAdd('take ' + prevItem.itemName + ' in right hand',new Array(1,3));
+		}
 		// . . . update 
 		updateGUI();
+	}
+	static function pushOrAdd(S:String, Keys:Array){
+		var isAdd:Number = -1;
+		if (Keys.length == 2 )
+			for (var i = 0; i < GUIkeys.length; ++i)
+				if (GUIkeys[i].length == 2
+					&& Keys[0] == GUIkeys[i][0] && Keys[1] == GUIkeys[i][1])
+					{ isAdd = i; break;}
+		if (isAdd < 0){
+			GUIactions.push(S);
+			GUIkeys.push(Keys);
+			return;
+		}	
+		GUIactions[isAdd] += " & " + S;	
 	}
 }

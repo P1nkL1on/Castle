@@ -110,6 +110,7 @@
 		});
 		shad.slotsForExecute.push(function(who:MovieClip){
 			who.abilityLockedItem = false;
+			who.wantFirstItem = null;
 			for (var i = 0; i < items.allItems.length; ++i)
 				if (items.allItems[i].CD < 0){
 					who.wantItem = items.allItems[i];
@@ -119,12 +120,15 @@
 						if (who.wantItem == who.leftItem
 							|| who.wantItem == who.rightItem)
 							continue;
+						if (who.wantFirstItem == null)
+							who.wantFirstItem = who.wantItem;
 						if (who.leftItem == null && anyLeftKeyPress()){
 							who.leftItem = who.wantItem;
 							who.model.lefthand.gotoAndStop('item');
 							who.wantItem.model._visible = false;
 							who.abilityLockedLeft = true;
 							trace('Geted item (left) :: ' + shad.leftItem);
+							levels.checkGUI();
 							break;
 						}
 						if (who.rightItem == null && anyRightKeyPress()){
@@ -133,6 +137,7 @@
 							who.wantItem.model._visible = false;
 							who.abilityLockedRight = true;
 							trace('Geted item (right) :: ' + shad.rightItem);
+							levels.checkGUI();
 							break;
 						}
 					}
