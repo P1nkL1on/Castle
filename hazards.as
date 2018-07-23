@@ -18,6 +18,27 @@ class hazards{
 			shad.keyLeft = keyCount;
 		shad.triggerFunction;
 		shad.openFunction;
+		if (shad.lockX == undefined){			
+			// . . . place for locked
+			shad.locksX = -20;
+			shad.locksY = -25;
+			shad.locksW = 40;
+			// . . .
+		}
+		// add a lockers
+		for (var i = 0; i < keyCount; ++i){
+			var newLocker:MovieClip = shad.model.attachMovie('locked', 'locked'+i, shad.model.getNextHighestDepth());
+			newLocker._x = shad.locksX + random(1+shad.locksW);
+			newLocker._y = shad.locksY + random(11)-5;
+			newLocker._rotation = random(41)-20;
+			newLocker.locked = true;
+			newLocker.cacheAsBitmap = true;
+			newLocker.onEnterFrame = function(){
+				if (!this.locked)
+					animating.animate(this, 'unlock', 1/4);
+			}
+		}
+		// . . .
 		shad.slotsForExecute.push(function(who:MovieClip){
 		if (who.keyLeft <= 0)
 			return;
@@ -37,9 +58,9 @@ class hazards{
 							continue;
 						var droppedItem:MovieClip = null;
 						if (who.devour == 'left')
-							droppedItem = heroAbilities.dropLeftItem(spawning.units[i]);
+							droppedItem = heroAbilities.dropLeftItem(spawning.units[i], true);
 						if (who.devour == 'right')
-							droppedItem = heroAbilities.dropRightItem(spawning.units[i]);
+							droppedItem = heroAbilities.dropRightItem(spawning.units[i], true);
 						//
 						items.removeItem(droppedItem);
 						levels.checkGUI();
@@ -47,6 +68,7 @@ class hazards{
 						sounds.playSound("background/key_open");
 						trace('Keys need to interact '+who.keyLeft+'->'+(who.keyLeft-1)+' :: ' + who);
 						who.keyLeft--;
+						who.model["locked" + who.keyLeft].locked = false;
 						who.triggerFunction(who, who.keyLeft);
 						if (who.keyLeft == 0)
 							who.openFunction(who);
@@ -73,6 +95,11 @@ class hazards{
 		newLever.CD = 0;
 		newLever.checkFunction;
 		newLever.uncheckFunction;
+		// . . . place for locked
+		newLever.locksX = -15;
+		newLever.locksY = -15;
+		newLever.locksW = 30;
+		// . . .
 		newLever.slotsForExecute.push(function(who:MovieClip){
 			//who.model.tt.text = who.man;
 			//who.model.tt2.text = who.model.stat+'  '+who.model._currentframe+'----'+who.man.model.stat;

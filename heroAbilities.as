@@ -51,12 +51,12 @@
 					shad.rightItem.canBeDropped = true;
 			}
 	}
-	static function dropLeftItem(shad:MovieClip):MovieClip{
+	static function dropLeftItem(shad:MovieClip, instant):MovieClip{
 		if (shad.canHandleItems != true)
 			return;
 		if (shad.leftItem == null)
 			return;
-		if (shad.leftItem.canBeDropped != true)
+		if (shad.leftItem.canBeDropped != true && instant == undefined)
 			return;
 		trace('Dropped item (left) :: ' + shad.leftItem);
 		shad.leftItem.canBeDropped = false;
@@ -74,12 +74,12 @@
 		shad.abilityLockedLeft = false;
 		return droppedItem;
 	}
-	static function dropRightItem(shad:MovieClip):MovieClip{
+	static function dropRightItem(shad:MovieClip, instant):MovieClip{
 		if (shad.canHandleItems != true)
 			return;
 		if (shad.rightItem == null)
 			return;
-		if (shad.rightItem.canBeDropped != true)
+		if (shad.rightItem.canBeDropped != true && instant == undefined)
 			return;
 		trace('Dropped item (right) :: ' + shad.rightItem);
 		shad.rightItem.canBeDropped = false;

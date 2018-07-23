@@ -14,6 +14,7 @@ class levels{
 		var trigger:MovieClip = spawning.spawnGround('trigger');
 		trigger._x = door._x + xOffset;
 		trigger._y = door._y + yOffset;
+		trigger._visible = false;
 		trigger.slotsForExecute.push(function(who:MovieClip){
 			if (animating.each(who, 1 / 15) > 0)
 				for (var i = 0; i < spawning.units.length; ++i)
@@ -39,6 +40,7 @@ class levels{
 		newButton.numX = X;
 		newButton.numY = Y;
 		newButton.keyP = heroAbilities.anyKey[KEY];
+		GUIplace(newButton, newButton.numX, newButton.numY);
 		newButton.onEnterFrame = function(){
 			GUIplace(this, this.numX, this.numY);
 			this.gotoAndStop(this.keyP+"_"+((Key.isDown(this.keyP))?"pressed" : ""));
