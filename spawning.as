@@ -151,10 +151,27 @@
 		shad.mustHaveReflection = true;
 		return makeShadowMovable(shad);
 	}
+	static function tryMoveX(who, dX){
+		//trace(who+"-----"+who.ignoreWalls+"----"+dX+" . . . " + ground.walls.length);
+		if (who.ignoreWalls == false)
+			for (var i = 0; i < ground.walls.length; ++i)
+				if (ground.walls[i].hitTest(who._x + dX, who._y, true))
+					return;
+		who._x += dX;			
+	}
+	static function tryMoveY(who, dY){
+
+		if (who.ignoreWalls == false)
+			for (var i = 0; i < ground.walls.length; ++i)
+				if (ground.walls[i].hitTest(who._x, who._y + dY, true))
+					return;
+		who._y += dY;			
+	}
 	static function makeShadowMovable(shad:MovieClip):MovieClip
 	{
 		shad.slowing = 0;
 		shad.locked = false;
+		shad.ignoreWalls = false;
 		if (shad.sp_x == undefined)	shad.sp_x = 0; 
 		if (shad.sp_y == undefined)	shad.sp_y = 0; 
 		if (shad.spd_mult == undefined) shad.spd_mult = 1;
@@ -169,8 +186,8 @@
 				who.sp_x /= 1.2; who.sp_y /= 1.2;
 				who.spd_squared /= 1.44;
 			}
-			who._x += who.sp_x * deltaTime() * (1 - who.slowing);
-			who._y += who.sp_y * animating.worldYKoeff * deltaTime() * (1 - who.slowing);
+			tryMoveX( who , who.sp_x * deltaTime() * (1 - who.slowing));
+			tryMoveY( who, who.sp_y * animating.worldYKoeff * deltaTime() * (1 - who.slowing));
 			// . . . a place of standing
 			if (who.spd_squared > 0 && animating.each(who, 1 / 15) > 0)
 				// 4 times in second

@@ -149,18 +149,11 @@
 		}
 		return newWater;
 	}
-	static var U:MovieClip = null;
-	static function makeWall(ground:MovieClip){
-		ground.onEnterFrame = function(){
-			for (var i = 0; i < spawning.units.length; ++i)
-				if (this.hitTest(spawning.units[i]._x, spawning.units[i]._y, true)){
-					U = spawning.units[i];
-					U._x -= U.sp_x;
-					U._y -= U.sp_y;
-					U.acs0 *= -1;
-					U.sp_x *= -.2;
-					U.sp_y *= -.2;
-				}
-		}
+	
+	static var walls:Array = new Array();
+	static function makeWall(newGround:MovieClip){
+		trace('Make a ground :: ' + newGround);
+		walls.push(newGround);
+		newGround._visible = false;
 	}
 }
