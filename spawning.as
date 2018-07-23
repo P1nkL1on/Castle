@@ -119,21 +119,23 @@
 		shad.isControllable = true;
 		if (shad.sp_x == undefined)	shad.sp_x = 0; 
 		if (shad.sp_y == undefined)	shad.sp_y = 0; 
-		if (shad.acs == undefined)	shad.acs = 0.75; 
+		if (shad.acs == undefined){	shad.acs = 0.75; shad.acs0 = shad.acs;}
 		if (shad.spd_mult == undefined) shad.spd_mult = 1;
 		if (shad.lastDirection == undefined) shad.lastDirection = "face";
 		if (shad.stepTimer == undefined) shad.stepTimer = 0;
 		shad.slotsForExecute.push(function(who:MovieClip){
 			if (who.locked == true)
 				return;
+			if (who.acs0 < who.acs) 
+				who.acs0 += .5;
 			who.dir_x = who.dir_y = 0;
 			if (Key.isDown(keyLeft())) who.dir_x -= 1;	
 			if (Key.isDown(keyRight())) who.dir_x += 1;
 			if (Key.isDown(keyDown())) who.dir_y += 1;
 			if (Key.isDown(keyUp())) who.dir_y -= 1; 
 			who.spd_mult = (isSloving())? .4 : 1;
-			who.sp_x += who.dir_x * who.acs * deltaTimeSquared();			
-			who.sp_y += who.dir_y * who.acs * deltaTimeSquared();
+			who.sp_x += who.dir_x * who.acs0 * deltaTimeSquared();			
+			who.sp_y += who.dir_y * who.acs0 * deltaTimeSquared();
 			who.isMoving = (who.dir_x != 0 || who.dir_y != 0);
 			// . . . animation
 			if (who.dir_x != 0){ shad.lastDirection = "side"; shad.model._xscale = shad.model.xs * who.dir_x * (-1); }

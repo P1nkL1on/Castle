@@ -83,6 +83,8 @@ class hazards{
 					who.h = who.canBeActivatedBy[i];
 					if (who.hitTest(who.h) && heroAbilities.anyKeyPressed() == true && who.h.locked == false){
 						trace('Lock on lever '+who.model._name+' :: ' + who.h);
+						//heroAbilities.dropLeftItem(who.man);
+						//heroAbilities.dropRightItem(who.man);
 						who.man = who.h;
 						who.man.locked = true;
 						who.hX = who._x - 30 * (who.checked * 2 - 1);
