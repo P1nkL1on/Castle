@@ -29,27 +29,134 @@ class levels{
 		who._y = 400 - (numY + 1) * 14;
 		who._x = 20 + numX * 14;
 	}
+	
+	static var GUIlever:Boolean = false;
+	static var GUIactions:Array = new Array();
+	static var GUIkeys:Array = new Array();
+	static var btnCount:Number = 0;
+	static function spawnKey(X,Y, KEY){
+		var newButton:MovieClip = _root.layer_GUI.attachMovie('GUI_button', 'bttn'+(++btnCount), _root.layer_GUI.getNextHighestDepth());
+		newButton.numX = X;
+		newButton.numY = Y;
+		newButton.keyP = heroAbilities.anyKey[KEY];
+		newButton.onEnterFrame = function(){
+			GUIplace(this, this.numX, this.numY);
+			this.gotoAndStop(this.keyP+"_"+((Key.isDown(this.keyP))?"pressed" : ""));
+		}
+	}
 	static function makeGUI(){
 		if (_root.layer_GUI == undefined)
-			{spawning.createLayer("layer_GUI");}	
+			{spawning.createLayer("layer_GUI");}
+		var thinker:MovieClip = _root.layer_GUI.attachMovie('GUI_thinker', 'thinker', _root.layer_GUI.getNextHighestDepth());
+		thinker.onEnterFrame = function (){
+			if (heroAbilities.anyKeyPressed() == true)
+				this.updateNeed = true;
+
+			if (this.updateNeed && animating.each(this, 1/60)){
+				this.updateNeed = false;	
+				checkGUI();	
+			}
+		}
 		for (var i = 0; i < 8; i++){
-			var newButton:MovieClip = _root.layer_GUI.attachMovie('GUI_button', 'bttn'+i, _root.layer_GUI.getNextHighestDepth());
 			var newLine:MovieClip = _root.layer_GUI.attachMovie('GUI_line', 'gui'+i, _root.layer_GUI.getNextHighestDepth());
-			newButton.numX = 0;
-			newButton.numY = i;
-			newButton.number = i;
-			
 			newLine.numX = 1;
 			newLine.numY = i;
-			newButton.onEnterFrame = function(){
-				GUIplace(this, this.numX, this.numY);
-				
-				if (this.number == 0)
-					return;
-			}
+			newLine.needUpdate = false;
 			newLine.onEnterFrame = function(){
+				if (!this.needUpdate)
+					return;
+				this.needUpdate = false;
+				if (GUIactions.length > this.numY){
+					this.descr.text = GUIactions[this.numY];
+					this.numX = GUIkeys[this.numY].length - 1;
+				}
+				else
+					this.descr.text = '--';
 				GUIplace(this, this.numX, this.numY);
 			}
 		}
+	}
+	static function clearButtons(){
+		for (var i = 0; i < btnCount + 1; ++i)
+			_root.layer_GUI['bttn'+i].removeMovieClip();
+	}
+	static function updateGUI(){
+		clearButtons();
+		for (var i = 0; i < 8; i++){
+			_root.layer_GUI['gui'+i].needUpdate = true;
+			if (i < GUIkeys.length)
+				for (var j = 0; j < GUIkeys[i].length; j++)
+					spawnKey(j,i, GUIkeys[i][j]);
+		}
+		trace('GUI updated;');
+	}
+	static var hero:MovieClip = null;
+	static function A0(X):Array{
+		var Arr:Array = new Array();
+		Arr.push(X);
+		return Arr;
+	}
+	static function checkGUI(){
+		trace('GUI rechecked;');
+		GUIactions = new Array();
+		GUIkeys = new Array();
+		// . . . book
+		if (hero.bookUse != undefined && hero.rightItem == null){
+			if (hero.model.righthand._currentframe == 2
+				|| hero.model.righthand._currentframe == 3){
+					GUIactions.push('hide spellbook');
+					GUIactions.push('HOLD : cast');
+					GUIkeys.push(A0(3), A0(3));
+				}else{
+					GUIactions.push('take spellbook');
+					GUIkeys.push(A0(3));
+				}
+		}
+		// . . . water
+		if (hero.bottleUse != undefined && hero.leftItem == null){
+			GUIkeys.push(A0(0), A0(0));
+			if (hero.model.lefthand._currentframe == 2
+				|| hero.model.lefthand._currentframe == 3){
+					GUIactions.push('hide bottle');
+				} else {
+					GUIactions.push('take bottle');
+				}
+			GUIactions.push('HOLD : spill water');
+		}
+		
+		// . . . shield
+		if (hero.shieldUse != undefined && hero.leftItem == null){
+			GUIkeys.push(A0(2), A0(2));
+			if (hero.model.lefthand._currentframe == 4
+				|| hero.model.lefthand._currentframe == 5){
+					GUIactions.push('hide shield');
+				} else {
+					GUIactions.push('take shield');
+				}
+			GUIactions.push('HOLD : block');
+		}
+		// . . . sword
+		if (hero.swordUse != undefined && hero.rightItem == null){
+			if (hero.model.righthand._currentframe == 2
+				|| hero.model.righthand._currentframe == 3){
+					GUIactions.push('hide sword');
+					GUIactions.push('HOLD : attack');
+					GUIkeys.push(A0(1), A0(1));
+				}else{
+					GUIactions.push('take sword');
+					GUIkeys.push(A0(1));
+				}
+		}
+		// . . . ITEMS
+		if (hero.leftItem != null){
+			GUIactions.push('drop ' + hero.leftItem.itemName);
+			GUIkeys.push(new Array(0,2));
+		}
+		if (hero.rightItem != null){
+			GUIactions.push('drop ' + hero.rightItem.itemName);
+			GUIkeys.push(new Array(1,3));
+		}
+		// . . . update 
+		updateGUI();
 	}
 }
