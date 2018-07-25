@@ -8,6 +8,7 @@ class hazards{
 		from.CD = 40;
 		from.checked = !from.checked;
 		from.model.stat = 'none';
+		from.man.anyKeyPressTo = null;
 		from.man = null;
 	}
 	
@@ -87,14 +88,17 @@ class hazards{
 		newLever.model.gotoAndStop(14*(1+1*(!newLever.checked)));
 		newLever.canBeActivatedBy = new Array();
 		for (var i = 0; i < spawning.units.length; ++i)
-			if (spawning.units[i].isControllable)
+			if (spawning.units[i].isControllable){
 				newLever.canBeActivatedBy.push(spawning.units[i]);
+				spawning.units[i].anyKeyPressTo = null;
+			}
 		trace('Lever can be activated by ('+newLever.canBeActivatedBy.length+'): ' + newLever.canBeActivatedBy);
 		newLever.man = null;
 		newLever.hX = 0;
 		newLever.CD = 0;
 		newLever.checkFunction;
 		newLever.uncheckFunction;
+		newLever.isLever = true;
 		// . . . place for locked
 		newLever.locksX = -15;
 		newLever.locksY = -15;
@@ -104,21 +108,33 @@ class hazards{
 			//who.model.tt.text = who.man;
 			//who.model.tt2.text = who.model.stat+'  '+who.model._currentframe+'----'+who.man.model.stat;
 			animating.animateOnly(who.model, 1/6);
+			
 			if (who.CD >= 0){who.CD -= animating.worldTimeSpeed; return;}
 			if (who.man == null){	
 				for (var i = 0; i < who.canBeActivatedBy.length; ++i){
 					who.h = who.canBeActivatedBy[i];
-					if (who.hitTest(who.h) && heroAbilities.anyKeyPressed() == true && who.h.locked == false){
-						trace('Lock on lever '+who.model._name+' :: ' + who.h);
-						//heroAbilities.dropLeftItem(who.man);
-						//heroAbilities.dropRightItem(who.man);
-						who.man = who.h;
-						who.man.locked = true;
-						who.hX = who._x - 30 * (who.checked * 2 - 1);
-						who.man.sp_x = who.man.sp_y = 0;
-						who.man.model._xscale = - (who.man.model.xs * (who.checked * 2 - 1));
-						animating.changeStat(who.man.model, 'run_side');
-						break;
+					if (who.hitTest(who.h) && who.h.locked == false){
+						if (who.h.anyKeyPressTo == null){
+							who.h.anyKeyPressTo = who;
+							levels.checkGUI();
+						}
+						if (heroAbilities.anyKeyPressed() == true){
+							trace('Lock on lever '+who.model._name+' :: ' + who.h);
+							//heroAbilities.dropLeftItem(who.man);
+							//heroAbilities.dropRightItem(who.man);
+							who.man = who.h;
+							who.man.locked = true;
+							who.hX = who._x - 30 * (who.checked * 2 - 1);
+							who.man.sp_x = who.man.sp_y = 0;
+							who.man.model._xscale = - (who.man.model.xs * (who.checked * 2 - 1));
+							animating.changeStat(who.man.model, 'run_side');
+							break;
+						}
+					}else{
+						if (who.h.anyKeyPressTo == who){
+							who.h.anyKeyPressTo = null;
+							levels.checkGUI();
+						}
 					}
 				}
 				return;

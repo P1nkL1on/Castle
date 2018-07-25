@@ -172,6 +172,7 @@
 			if (who.bottleUse > 3 && who.bottleUse <= 20 && listenKey(0, bottleKey) == 0){
 				if (who.model.lefthand._currentframe == 1){
 					who.model.lefthand.gotoAndStop('bottle');
+					sounds.playSound('weapons/bottle_out');
 				} else {
 					who.model.lefthand.gotoAndStop('empty');
 					sounds.playSound('weapons/item_in');
@@ -280,6 +281,7 @@
 			if (who.shieldUse > 3 && who.shieldUse <= 20 && listenKey(0, shieldKey) == 0){
 				if (who.model.lefthand._currentframe == 1){
 					who.model.lefthand.gotoAndStop('shield');
+					sounds.playSound('weapons/shield_out');
 				} else {
 					who.model.lefthand.gotoAndStop('empty');
 					sounds.playSound('weapons/item_in');

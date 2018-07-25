@@ -29,7 +29,7 @@
 		return sos;
 	}
 	static function abilitySounds():Array{
-		return new Array("footsteps/water/flush","weapons/sword_in","weapons/sword_attack","weapons/sword_out","weapons/item_in");
+		return new Array("footsteps/water/flush","weapons/sword_in","weapons/sword_attack","weapons/sword_out","weapons/item_in","weapons/shield_out","weapons/bottle_out","weapons/shield_block","weapons/shield_unblock");
 	}
 	static function interactiveSounds():Array{
 		return new Array("background/lever","background/door_open","background/key_open");

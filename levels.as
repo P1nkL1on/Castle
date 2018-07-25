@@ -106,7 +106,16 @@ class levels{
 	static function checkGUI(){
 		GUIactions = new Array();
 		GUIkeys = new Array();
-		
+		if (hero.anyKeyPressTo != undefined && hero.anyKeyPressTo != null){
+			if (hero.anyKeyPressTo.isLever)
+				GUIactions.push('use a lever');
+			else
+				GUIactions.push('interract');
+			GUIkeys.push(new Array(0,1,2,3));
+			// . . . update 
+			updateGUI();
+			return;
+		}
 		if (prevItem == null){
 				// . . . book
 				if (hero.bookUse != undefined && hero.rightItem == null){
