@@ -2,7 +2,7 @@ class levels{
 	static var testLevels:Array = new Array(2,3);
 	
 	static function selectNextLevel():Number{
-		return 2;
+		return 3;
 	}
 	static function completeLevel(number:Number){
 		trace('Level :: ' + number + " :: COMPLETED!");

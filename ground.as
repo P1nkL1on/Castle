@@ -2,12 +2,12 @@
 	static var waters:Array = new Array();
 	
 	static function makeGround (who:MovieClip, typ:String):MovieClip{
-		who.groundType = typ;
 		who.groundSoundVariant = 1;
-		for (var i = 0; i < sounds.footStepsTypes.length; i++)
-			if (sounds.footStepsTypes[i] == typ)
-			{ who.groundSoundVariant = sounds.footStepsCount[i]; return;}
-		trace("Type pf ground '" + typ + "' is strange; No matchs with existed: " + sounds.footStepsTypes);
+		for (var i = sounds.footStepsTypes.length - 1; i >= 0; i--)
+			if (typ.indexOf(sounds.footStepsTypes[i]) >= 0)
+			{ who.groundSoundVariant = sounds.footStepsCount[i]; who.groundType = sounds.footStepsTypes[i];
+			  trace("Decided, that ground type " + typ + " will use a sound " + sounds.footStepsTypes[i] + ";");return;}
+		trace("Type of ground '" + typ + "' is strange; No matchs with existed: " + sounds.footStepsTypes);
 	}
 	static function spawnEffect(effectName:String, X, Y, notUniqName, layer):MovieClip{
 		//trace(effectName + ' / ' + X +' / ' + Y);
