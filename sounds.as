@@ -34,10 +34,27 @@
 	static function interactiveSounds():Array{
 		return new Array("background/lever","background/door_open","background/key_open");
 	}
+	static function voiceName(path, number){
+		return "voices/" + path + ""+ number;
+	}
+	
+	static var voicesNames:Array = new Array();
+	static var voicesCounts:Array = new Array();
+	
+	static function voiceSounds():Array{
+		voicesNames = new Array("test/test", " ");
+		voicesCounts = new Array(3		   , 0);
+		var sos:Array = new Array();
+		for (var i = 0; i < voicesNames.length; i++)
+			for (var j = 1; j <= voicesCounts[i]; j++)
+				sos.push(voiceName(voicesNames[i], j));
+		return sos;
+	}
 	static function pushAllSounds(){
 		pushSounds(footstepSounds());
 		pushSounds(abilitySounds());
 		pushSounds(interactiveSounds());
+		pushSounds(voiceSounds());
 	}
 	static function loadAllSounds(){
 		if (isLoaded) return;
@@ -54,10 +71,11 @@
 	}
 	
 	// Воспроизвести звук по имени. (Звук выбирается из массива sounds)
-	static public function playSound(nam:String){
+	static public function playSound(nam:String):Sound{
 		for (var i=0; i<soundFiles.length; i++)
-			if (soundFiles[i].name == nam){ soundFiles[i].start(0,1);return; }															//воспроизвести звук совпадающий по имени
+			if (soundFiles[i].name == nam){ soundFiles[i].start(0,1);return soundFiles[i]; }															//воспроизвести звук совпадающий по имени
 		trace("No sound '"+nam+"' in library!"); 																			//если звука нет, бупнем и сообщим об ошибкe
+		return null;
 	}
 	//
 	static public function playHeroFootStepSound(who:MovieClip){

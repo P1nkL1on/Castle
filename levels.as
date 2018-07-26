@@ -41,8 +41,9 @@ class levels{
 		newButton.numY = Y;
 		newButton.keyP = heroAbilities.anyKey[KEY];
 		GUIplace(newButton, newButton.numX, newButton.numY);
+		newButton.gotoAndStop(newButton.keyP+"_");
 		newButton.onEnterFrame = function(){
-			GUIplace(this, this.numX, this.numY);
+			//GUIplace(this, this.numX, this.numY);
 			this.gotoAndStop(this.keyP+"_"+((Key.isDown(this.keyP))?"pressed" : ""));
 		}
 	}

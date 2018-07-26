@@ -156,8 +156,12 @@
 		move(bul, bul.spd, bul.ang);
 		bul.spd /= 1 + (.2* animating.worldTimeSpeed);
 		bul._alpha = bul.spd * 20;
-		if (bul._alpha < 3)
+		bul.hb._x = bul._x;
+		bul.hb._y = bul._y;
+		if (bul._alpha < 3){
+			bul.hb.removeMovieClip();
 			bul.removeMovieClip();
+		}
 	}
 	static var nowFrame = 0;
 	static var bottleCd = 0;
@@ -254,8 +258,9 @@
 			}
 			if (who.model.righthand.attacked == false && who.model.righthand.sword_use._currentframe == 6){
 				who.model.righthand.attacked = true;
-				var newEffect:MovieClip = ground.spawnEffect('effect_sword_slash', who.model._x, who.model._y - 20, true);
+				var newEffect:MovieClip = ground.spawnSlashWithHitbox('effect_sword_slash', who.model._x, who.model._y - 20, true);
 				newEffect._rotation = swordRotation;
+				newEffect.hb._rotation = swordRotation;
 			}
 			// spawnEffect
 			// . . . key listener

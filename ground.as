@@ -9,12 +9,22 @@
 			{ who.groundSoundVariant = sounds.footStepsCount[i]; return;}
 		trace("Type pf ground '" + typ + "' is strange; No matchs with existed: " + sounds.footStepsTypes);
 	}
-	static function spawnEffect(effectName:String, X, Y, notUniqName):MovieClip{
+	static function spawnEffect(effectName:String, X, Y, notUniqName, layer):MovieClip{
 		//trace(effectName + ' / ' + X +' / ' + Y);
-		var dep:Number =  _root.layer_background.getNextHighestDepth();
-		var newEffect = _root.layer_background.attachMovie(effectName, effectName + ((notUniqName == undefined)?("_" + dep):""), dep);
+		if (layer == undefined)
+			layer = _root.layer_background;
+		var dep:Number =  layer.getNextHighestDepth();
+		var newEffect = layer.attachMovie(effectName, effectName + ((notUniqName == undefined)?("_" + dep):""), dep);
 		newEffect._x = X; newEffect._y = Y;
 		return newEffect;
+	}
+	static function spawnSlashWithHitbox (slashName, X, Y, notUniqName):MovieClip{
+		var hb:MovieClip = spawnEffect(slashName +"_hitbox", X, Y, notUniqName);
+		var effect:MovieClip  = spawnEffect(slashName, X, Y, notUniqName, _root.layer_effects);
+		effect.hb = hb;
+		hb.effect = effect;
+		hb._visible = false;
+		return effect;
 	}
 	static function makeReflection (shad:MovieClip):MovieClip{
 		var newReflection:MovieClip = _root.layer_unit_reflection.attachMovie
