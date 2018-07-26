@@ -21,8 +21,8 @@ class hazards{
 		shad.openFunction;
 		if (shad.lockX == undefined){			
 			// . . . place for locked
-			shad.locksX = -20;
-			shad.locksY = -25;
+			shad.locksX = -30;
+			shad.locksY = 9;
 			shad.locksW = 40;
 			// . . .
 		}
@@ -105,6 +105,8 @@ class hazards{
 		newLever.locksW = 30;
 		// . . .
 		newLever.slotsForExecute.push(function(who:MovieClip){
+			if (who.keyLeft != undefined && who.keyLeft > 0)
+				return;
 			//who.model.tt.text = who.man;
 			//who.model.tt2.text = who.model.stat+'  '+who.model._currentframe+'----'+who.man.model.stat;
 			animating.animateOnly(who.model, 1/6);

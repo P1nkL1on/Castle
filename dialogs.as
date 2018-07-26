@@ -10,7 +10,16 @@ class dialogs{
 		model.lastSubtitle = "";
 		model.subtitleCurrentLetter = -1;
 		model.lastFrameBeforeTalking = -1;
+		model.lastFrame = -1;
 		model.wantTalk = false;
+		model.typingSpeed = 2;
+		
+		
+		// . . . functions
+		model.shadow.onTalkFinish; // who only
+		model.shadow.onStringStart;	// (who, int i)
+		
+		
 		// . . . CONTORLS
 		model.shadow.canBeActivatedBy = new Array();
 		for (var i = 0; i < spawning.units.length; ++i)
@@ -66,7 +75,7 @@ class dialogs{
 			}
 			// . . . FUNUSH
 			if (who.model.isTalking == true){
-				if (who.model.swapCD < -1)
+				if (who.model.swapCD != -1)
 					who.model.swapCD ++;
 				if (who.model.swapCD == -1 && (who.model.talkingFrames.length - 1 <= who.model.currentTalk
 					|| (who.model.saidOut == true && who.model.finishAfterOut == true))){
@@ -80,6 +89,7 @@ class dialogs{
 					who.talkingTo = null;
 					who.model.finishAfterOut = false;
 					who.model.saidOut = false;
+					who.onTalkFinish(who);
 					return;
 				}	
 					
@@ -91,6 +101,7 @@ class dialogs{
 						who.model.gotoAndStop(who.model.talkingFrames[who.model.currentTalk]);
 						who.model.lastSound = 
 							sounds.playSound(sounds.voiceName(who.model.voicePath, who.model.currentTalk + 1));
+						who.onStringStart(who, who.model.currentTalk + 1);
 					}else{
 						who.model.gotoAndStop('out');
 						who.model.lastSound = 
@@ -98,6 +109,7 @@ class dialogs{
 						who.model.finishAfterOut == true;
 						who.model.currentTalk = 100;
 					}
+					who.model.lastFrame = who.model._currentframe;
 					who.model.subtitleCurrentLetter = -1;
 					who.model.subtitleNeedLetter = 0;
 					who.model.lastSubtitle = who.model.descr.text; who.model.descr.text = "";
@@ -105,16 +117,21 @@ class dialogs{
 				}
 				
 				if (who.model.swapCD >= 0){
-					who.model.swapCD += animating.worldTimeSpeed;
 					who.model.subtitleNeedLetter = (who.model.lastSound.position / who.model.lastSound.duration);
 					if (who.model.subtitleNeedLetter >= .999 && who.model.swapCD > 30){
 						who.model.lastSound.position = 0;
 						who.model.swapCD = -30;
 					}
 					who.model.subtitleNeedLetter *= who.model.lastSubtitle.length;
-					if (who.model.subtitleCurrentLetter < who.model.subtitleNeedLetter || who.model.lastSubtitle.charAt(who.model.subtitleCurrentLetter) != ' ')
-						who.model.descr.text += who.model.lastSubtitle.charAt(++who.model.subtitleCurrentLetter);
-					
+						if (who.model.swapCD % who.model.typingSpeed == 0){
+						who.model.talkFast = false;
+						if (who.model.subtitleCurrentLetter < who.model.subtitleNeedLetter || who.model.lastSubtitle.charAt(who.model.subtitleCurrentLetter) != ' '){
+							who.model.descr.text += who.model.lastSubtitle.charAt(++who.model.subtitleCurrentLetter);
+							if (who.model.lastSound.position < who.model.lastSound.duration)
+								who.model.talkFast = true;
+						}
+						who.model.gotoAndStop(who.model.lastFrame + 1 * who.model.talkFast);
+					}
 				}
 			}
 		});

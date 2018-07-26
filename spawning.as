@@ -113,7 +113,7 @@
 	static function deltaTime(){return animating.worldTimeSpeed;}
 	static function deltaTimeSquared(){return animating.worldTimeSpeed * animating.worldTimeSpeed;}
 	
-	static var distanceForStep:Number=  80;
+	static var distanceForStep:Number=  100;
 	static function makeShadowControllable(shad:MovieClip):MovieClip
 	{
 		shad.isControllable = true;
