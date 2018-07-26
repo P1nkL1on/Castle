@@ -39,6 +39,19 @@ class dialogs{
 						}
 					}
 				}
+			}else{
+				if ((who.model.currentTalk+'').indexOf('_out') >= 0)
+					return;
+				if (who.model.saidOut != true && (
+					Math.abs(who.talkingTo._x - who._x) > 100
+					|| Math.abs(who.talkingTo._y - who._y) > 50)){
+					trace('Stop talking');
+					who.model.lastSound.stop();
+					who.model.saidOut = true;
+					who.model.swapCD = -30;
+					who.model.lastSubtitle = "";
+					who.model.subtitleCurrentLetter = -1;
+				}
 			}
 		});
 		// . . . ACTION
@@ -51,10 +64,12 @@ class dialogs{
 				who.model.swapCD = -1;
 				who.model.lastFrameBeforeTalking = who.model._currentframe;
 			}
+			// . . . FUNUSH
 			if (who.model.isTalking == true){
 				if (who.model.swapCD < -1)
 					who.model.swapCD ++;
-				if (who.model.swapCD == -1 && who.model.talkingFrames.length - 1 <= who.model.currentTalk){
+				if (who.model.swapCD == -1 && (who.model.talkingFrames.length - 1 <= who.model.currentTalk
+					|| (who.model.saidOut == true && who.model.finishAfterOut == true))){
 					trace('Talking stop :: ' + who.model.lastFrameBeforeTalking);
 					who.model.isTalking = false;
 					who.model.currentTalk = -1;
@@ -63,16 +78,28 @@ class dialogs{
 					who.model.subtitleCurrentLetter = -1;
 					who.model.gotoAndStop(who.model.lastFrameBeforeTalking);
 					who.talkingTo = null;
+					who.model.finishAfterOut = false;
+					who.model.saidOut = false;
 					return;
 				}	
 					
-				if (who.model.swapCD == -1 && who.model.talkingFrames.length - 1> who.model.currentTalk){
+				if (who.model.swapCD == -1 
+					&& who.model.talkingFrames.length - 1> who.model.currentTalk ){
 					who.model.swapCD = 0;
-					who.model.currentTalk ++;
+					if (who.model.saidOut != true){
+						who.model.currentTalk ++;
+						who.model.gotoAndStop(who.model.talkingFrames[who.model.currentTalk]);
+						who.model.lastSound = 
+							sounds.playSound(sounds.voiceName(who.model.voicePath, who.model.currentTalk + 1));
+					}else{
+						who.model.gotoAndStop('out');
+						who.model.lastSound = 
+							sounds.playSound(sounds.voiceName(who.model.voicePath, '_out'));
+						who.model.finishAfterOut == true;
+						who.model.currentTalk = 100;
+					}
 					who.model.subtitleCurrentLetter = -1;
 					who.model.subtitleNeedLetter = 0;
-					who.model.lastSound = sounds.playSound(sounds.voiceName(who.model.voicePath, who.model.currentTalk + 1));
-					who.model.gotoAndStop(who.model.talkingFrames[who.model.currentTalk]);
 					who.model.lastSubtitle = who.model.descr.text; who.model.descr.text = "";
 					trace("Talking :: " +who.model.currentTalk);
 				}

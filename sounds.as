@@ -45,9 +45,11 @@
 		voicesNames = new Array("test/test", "test_fast/test");
 		voicesCounts = new Array(3		   , 3);
 		var sos:Array = new Array();
-		for (var i = 0; i < voicesNames.length; i++)
+		for (var i = 0; i < voicesNames.length; i++){
 			for (var j = 1; j <= voicesCounts[i]; j++)
 				sos.push(voiceName(voicesNames[i], j));
+			sos.push(voiceName(voicesNames[i], '_out'));
+		}
 		return sos;
 	}
 	static function pushAllSounds(){
