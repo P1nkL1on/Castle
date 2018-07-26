@@ -10,11 +10,44 @@ class dialogs{
 		model.lastSubtitle = "";
 		model.subtitleCurrentLetter = -1;
 		model.lastFrameBeforeTalking = -1;
+		model.wantTalk = false;
+		// . . . CONTORLS
+		model.shadow.canBeActivatedBy = new Array();
+		for (var i = 0; i < spawning.units.length; ++i)
+			if (spawning.units[i].isControllable){
+				model.shadow.canBeActivatedBy.push(spawning.units[i]);
+				spawning.units[i].anyKeyPressTo = null;
+			}
+		model.shadow.canTalk = true;
+		model.shadow.slotsForExecute.push(function(who:MovieClip){
+			if (who.model.isTalking == false){
+				for (var i = 0; i < who.canBeActivatedBy.length; ++i){
+					who.h = who.canBeActivatedBy[i];
+					if (who.hitTest(who.h)/*  && who.h.locked == false */){
+						if (who.h.anyKeyPressTo == null){
+							who.h.anyKeyPressTo = who;
+							levels.checkGUI();
+						}
+						if (heroAbilities.anyKeyPressed() == true){
+							who.model.wantTalk = true;
+							who.talkingTo = who.h;
+						}
+					}else{
+						if (who.h.anyKeyPressTo == who){
+							who.h.anyKeyPressTo = null;
+							levels.checkGUI();
+						}
+					}
+				}
+			}
+		});
+		// . . . ACTION
 		model.shadow.slotsForExecute.push(function(who:MovieClip){ 
 			// . . .
-			if (who.model.isTalking == false && Key.isDown(1)) {
+			if (who.model.isTalking == false && who.model.wantTalk == true) {
 				who.model.isTalking = true;
-				trace('Starts talking :: ' + who.model);
+				who.model.wantTalk = false;
+ 				trace('Starts talking :: ' + who.model);
 				who.model.swapCD = -1;
 				who.model.lastFrameBeforeTalking = who.model._currentframe;
 			}
@@ -29,6 +62,7 @@ class dialogs{
 					who.model.lastSubtitle = "";
 					who.model.subtitleCurrentLetter = -1;
 					who.model.gotoAndStop(who.model.lastFrameBeforeTalking);
+					who.talkingTo = null;
 					return;
 				}	
 					
