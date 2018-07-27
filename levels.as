@@ -110,6 +110,7 @@ class levels{
 		if (hero.anyKeyPressTo != undefined && hero.anyKeyPressTo != null){
 			if (hero.anyKeyPressTo.isLever)
 				GUIactions.push('use a lever');
+			else
 			if (hero.anyKeyPressTo.canTalk)
 				GUIactions.push('talk to ' + hero.anyKeyPressTo._name);
 			else

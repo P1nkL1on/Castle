@@ -12,7 +12,7 @@ class dialogs{
 		model.lastFrameBeforeTalking = -1;
 		model.lastFrame = -1;
 		model.wantTalk = false;
-		model.typingSpeed = 2;
+		model.animatingSpeed = 20;
 		
 		
 		// . . . functions
@@ -123,15 +123,15 @@ class dialogs{
 						who.model.swapCD = -30;
 					}
 					who.model.subtitleNeedLetter *= who.model.lastSubtitle.length;
-						if (who.model.swapCD % who.model.typingSpeed == 0){
+					if (who.model.swapCD % who.model.animatingSpeed == 0)
 						who.model.talkFast = false;
-						if (who.model.subtitleCurrentLetter < who.model.subtitleNeedLetter || who.model.lastSubtitle.charAt(who.model.subtitleCurrentLetter) != ' '){
-							who.model.descr.text += who.model.lastSubtitle.charAt(++who.model.subtitleCurrentLetter);
-							if (who.model.lastSound.position < who.model.lastSound.duration)
-								who.model.talkFast = true;
-						}
-						who.model.gotoAndStop(who.model.lastFrame + 1 * who.model.talkFast);
+					if (who.model.subtitleCurrentLetter < who.model.subtitleNeedLetter || who.model.lastSubtitle.charAt(who.model.subtitleCurrentLetter) != ' '){
+						who.model.descr.text += who.model.lastSubtitle.charAt(++who.model.subtitleCurrentLetter);
+						if (who.model.lastSound.position < who.model.lastSound.duration)
+							who.model.talkFast = true;
 					}
+					who.model.gotoAndStop(who.model.lastFrame + 1 * who.model.talkFast);
+					
 				}
 			}
 		});
