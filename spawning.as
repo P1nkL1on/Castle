@@ -144,8 +144,10 @@
 			who.stepTimer += (Math.abs(who.sp_x) + Math.abs(who.sp_y)) * (1 - who.slowing);
 			var playStep:Boolean = (who.stepTimer > who.distanceForStep );
 			while (who.stepTimer > who.distanceForStep )who.stepTimer -= who.distanceForStep;
-			if (playStep)
+			if (playStep){
+				who.onStepFunction(who);
 				sounds.playHeroFootStepSound(who);
+			}
 		});
 		return shad;
 	}
