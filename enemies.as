@@ -1,4 +1,16 @@
 class enemies{
+	static var boltVariants:Array = new Array(2,2,2);
+	static function spawnBolt(X,Y,Xt,Yt){
+		var bolt:Array = new Array();
+		var boltNames:String = "bme";
+		for (var i = 0; i < 3; ++i){
+			var last = ground.spawnEffect('effect_bolt', 0, 0, undefined, _root.layer_effects);
+			last.gotoAndStop(boltNames.charAt(i) + random(boltVariants[i]));
+			bolt.push(last);
+		}
+		
+	}
+	//static function 
 	static function spawnElectroMage (X, Y):MovieClip{
 		var shad:MovieClip = spawning.makeShadowMovable(spawning.spawnUnit('electro_mage', X, Y));
 		// . . . model problems
