@@ -115,7 +115,8 @@
 	
 	static var distanceForStep:Number=  100;
 	static function makeShadowWantMove(shad:MovieClip):MovieClip{
-		shad.wantLeft = shad.wantRight = shad.wantUp = shad.wantDown = false;if (shad.sp_x == undefined)	shad.sp_x = 0; 
+		shad.wantLeft = shad.wantRight = shad.wantUp = shad.wantDown = false;
+		if (shad.sp_x == undefined)	shad.sp_x = 0; 
 		if (shad.sp_y == undefined)	shad.sp_y = 0; 
 		if (shad.acs == undefined){	shad.acs = 0.75; shad.acs0 = shad.acs;}
 		if (shad.spd_mult == undefined) shad.spd_mult = 1;
