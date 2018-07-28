@@ -1,6 +1,14 @@
 class enemies{
 	static var boltVariants:Array = new Array(2,2,2);
+	static var boltFrameLength:Array = new Array(3,3,4,6,7, 7, 8, 8, 7, 6, 5,4,3,2,1,1,1,1,1);
+	static var boltFrames:Array = new Array();
 	static function spawnBolt(X,Y,Xt,Yt){
+		if (boltFrames.length == 0){
+			for (var i = 0, summ = 0; i < boltFrameLength.length; summ += boltFrameLength[i], ++i)
+				boltFrames.push(summ);
+			trace(boltFrames);
+		}
+	
 		var bolt:Array = new Array();
 		var boltNames:String = "bme";
 		var dirX:Number = (X < Xt)? 1 : -1;
@@ -16,8 +24,18 @@ class enemies{
 		for (var i = 0; i < 3; ++i){
 			var last = ground.spawnEffect('effect_bolt', 0, 0, undefined, _root.layer_effects);
 			last.gotoAndStop(boltNames.charAt(i) + random(boltVariants[i]));
+			last.t = 1;
+			last.onEnterFrame = function(){
+				if (animating.each(this, 1 / enemies.boltFrames[this.t]) > 0){
+					this.nextFrame(); ++this.t;
+				}
+			}
 			bolt.push(last);
 		}
+		bolt[0]._xscale *= random(2)*2-1;
+		bolt[1]._yscale *= random(2)*2-1;
+		bolt[2]._xscale *= random(2)*2-1;
+		
 		bolt[0]._x = X; bolt[0]._y = Y;
 		bolt[0]._height *= distanceKBetween(X, Y, coordMid[0], coordMid[1], 100);
 		bolt[0]._rotation = angleBetween(X, Y, coordMid[0], coordMid[1]) + 90;
