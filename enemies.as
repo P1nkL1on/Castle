@@ -8,6 +8,8 @@ class enemies{
 		shad.model.stop(); shad.model.head.stop();
 		shad.stad = 0;
 		shad.nowStand = true;
+		shad.model.cosPhase = 0;
+		shad.model.cosA = 0;
 		shad.onStepFunction = function(who:MovieClip){
 			who.nowStand = !who.nowStand;
 			who.model.gotoAndStop(((who.nowStand == true)? "idle" : "move") + who.stad + "_"+who.direction);
@@ -33,6 +35,12 @@ class enemies{
 				if (who.sp_y < -.6)
 					shad.direction = 'back';
 			}	
+			// . . . model animation
+			if (who.model.cosA > .3){
+				who.model.cosA /= (1 + .15 * animating.worldTimeSpeed);
+				who.model.cosPhase += .6 * animating.worldTimeSpeed;
+				who.model._yscale = 100 - who.model.cosA * Math.cos(who.model.cosPhase);
+			}
 		});
 		// . . . want move and some options
 		shad = spawning.makeShadowWantMove(shad);
@@ -42,7 +50,7 @@ class enemies{
 		shad.max_spd_squared = 4;
 		shad.distanceForStep = 40;	
 		
-		shad.distanceForSteps = new Array(40, 90, 140, 190, 250, 300);
+		shad.distanceForSteps = new Array(40, 90, 140, 150, 160, 170);
 		shad.max_spds = new Array(1.5, 2, 2.5, 3, 4, 6);
 		shad.head_frames = new Array();
 		for (var i = 0; i < 6; ++i)
@@ -63,6 +71,9 @@ class enemies{
 			shad.max_spd = shad.max_spds[shad.stad];
 			shad.max_spd_squared = shad.max_spd_squareds[shad.stad];
 			shad.distanceForStep = shad.distanceForSteps[shad.stad];
+			shad.model.cosPhase = 0;
+			shad.model.cosA = 30;
+			shad.onStepFunction(shad);
 		}
 		return shad;
 	}
