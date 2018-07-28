@@ -3,12 +3,38 @@ class enemies{
 	static function spawnBolt(X,Y,Xt,Yt){
 		var bolt:Array = new Array();
 		var boltNames:String = "bme";
+		var dirX:Number = (X < Xt)? 1 : -1;
+		var dirY:Number = (Y < Yt)? 1 : -1;
+		var deltaX = Math.abs(X - Xt);
+		var deltaY = Math.abs(Y - Yt);
+		var coordMid:Array = new Array(
+			X + dirX * (random(Math.round(deltaX * .4)) + deltaX * .1),
+			Y + dirY * random(Math.round(deltaY)) - 80 - random(100),
+			Xt - dirX * (random(Math.round(deltaX * .4)) + deltaX * .1),
+			Yt - dirY * random(Math.round(deltaY)) - 80 - random(100)
+		);
 		for (var i = 0; i < 3; ++i){
 			var last = ground.spawnEffect('effect_bolt', 0, 0, undefined, _root.layer_effects);
 			last.gotoAndStop(boltNames.charAt(i) + random(boltVariants[i]));
 			bolt.push(last);
 		}
+		bolt[0]._x = X; bolt[0]._y = Y;
+		bolt[0]._height *= distanceKBetween(X, Y, coordMid[0], coordMid[1], 100);
+		bolt[0]._rotation = angleBetween(X, Y, coordMid[0], coordMid[1]) + 90;
 		
+		bolt[1]._x = coordMid[0]; bolt[1]._y = coordMid[1];
+		bolt[1]._width *= distanceKBetween(coordMid[0], coordMid[1],coordMid[2], coordMid[3], 150);
+		bolt[1]._rotation = angleBetween(coordMid[0], coordMid[1], coordMid[2], coordMid[3]);
+		
+		bolt[2]._x = coordMid[2]; bolt[2]._y = coordMid[3];
+		bolt[2]._height *= distanceKBetween(coordMid[2], coordMid[3], Xt, Yt, 150);
+		bolt[2]._rotation = angleBetween(coordMid[2], coordMid[3], Xt, Yt) - 90;
+	}
+	static function angleBetween(x0,y0,x1,y1):Number{
+		return Math.atan2(y1-y0, x1-x0)/Math.PI * 180;
+	}
+	static function distanceKBetween(x0,y0,x1,y1, originalDistance):Number{
+		return Math.sqrt(Math.pow(x0-x1,2) + Math.pow(y0-y1,2)) / originalDistance;
 	}
 	//static function 
 	static function spawnElectroMage (X, Y):MovieClip{
