@@ -16,7 +16,6 @@ class enemies{
 		shad.model.cosPhase = 0; // phase of all coses
 		shad.model.cosA = 0;	// amplitudes
 		shad.model.flyHeight = 0;	// height of flying
-		
 		// set random sparkle on body
 		shad.setElectricity = function(who:MovieClip){
 			ground.spawnEffect(
@@ -78,7 +77,7 @@ class enemies{
 				who.model._yscale = 100 - who.model.cosA * Math.cos(who.model.cosPhase);
 			}
 			// . . . extra
-			if (who.stad >= 4 && random(35) == 0)
+			if (who.stad >= 4 && (random(350)<= 5 * animating.worldTimeSpeed * (who.stad - 3)))
 				who.setElectricity(who);
 			// . . . flying
 			who._z = who.model.flyHeight + Math.cos(who.model.cosPhase / 10) * who.model.flyHeight * .5;
@@ -110,11 +109,11 @@ class enemies{
 			shad.max_spd_squareds.push(shad.max_spds[i] * shad.max_spds[i]);
 		// . . .
 		shad.targetX = shad._x;
-		shad.targetY = shad._y;
+		shad.targetY = shad._y + 30;
 		shad.slotsForExecute.push(function(who:MovieClip){
-			who.targetX = _root._xmouse;
-			who.targetY = _root._ymouse;
-			if (Math.abs(who._x - who.targetX) < 40 && Math.abs(who._y - who.targetY) < 40)
+			/* who.targetX = _root._xmouse;
+			who.targetY = _root._ymouse; */
+			if (Math.abs(who._x - who.targetX) < 20 && Math.abs(who._y - who.targetY) < 20)
 				{ who.wantLeft = who.wantRight = who.wantUp = who.wantDown = false; return;}
 			who.wantLeft = (who.targetX < who._x - 5);
 			who.wantRight = (who.targetX > who._x + 5);
@@ -137,7 +136,8 @@ class enemies{
 			else
 				if (Key.isDown(Key.DOWN))
 					shad.changeStad(shad, -1);
-			
+			shad.targetX = 100+random(600);
+			shad.targetY = 100+random(270);
 		}
 		return shad;
 	}

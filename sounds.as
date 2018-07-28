@@ -52,11 +52,18 @@
 		}
 		return sos;
 	}
+	static function effectSoudns():Array{
+		var sos:Array = new Array();
+		for (var i = 0; i <= 10; ++i)
+			sos.push('effects/crackle' + i);
+		return sos;
+	}
 	static function pushAllSounds(){
 		pushSounds(footstepSounds());
 		pushSounds(abilitySounds());
 		pushSounds(interactiveSounds());
 		pushSounds(voiceSounds());
+		pushSounds(effectSoudns());
 	}
 	static function loadAllSounds(){
 		if (isLoaded) return;
