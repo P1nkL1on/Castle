@@ -114,25 +114,24 @@
 	static function deltaTimeSquared(){return animating.worldTimeSpeed * animating.worldTimeSpeed;}
 	
 	static var distanceForStep:Number=  100;
-	static function makeShadowControllable(shad:MovieClip):MovieClip
-	{
-		shad.isControllable = true;
-		if (shad.sp_x == undefined)	shad.sp_x = 0; 
+	static function makeShadowWantMove(shad:MovieClip):MovieClip{
+		shad.wantLeft = shad.wantRight = shad.wantUp = shad.wantDown = false;if (shad.sp_x == undefined)	shad.sp_x = 0; 
 		if (shad.sp_y == undefined)	shad.sp_y = 0; 
 		if (shad.acs == undefined){	shad.acs = 0.75; shad.acs0 = shad.acs;}
 		if (shad.spd_mult == undefined) shad.spd_mult = 1;
 		if (shad.lastDirection == undefined) shad.lastDirection = "face";
 		if (shad.stepTimer == undefined) shad.stepTimer = 0;
+		shad.distanceForStep = distanceForStep;
 		shad.slotsForExecute.push(function(who:MovieClip){
 			if (who.locked == true)
 				return;
 			if (who.acs0 < who.acs) 
 				who.acs0 += .5;
 			who.dir_x = who.dir_y = 0;
-			if (Key.isDown(keyLeft())) who.dir_x -= 1;	
-			if (Key.isDown(keyRight())) who.dir_x += 1;
-			if (Key.isDown(keyDown())) who.dir_y += 1;
-			if (Key.isDown(keyUp())) who.dir_y -= 1; 
+			if (who.wantLeft == true) who.dir_x -= 1;	
+			if (who.wantRight == true) who.dir_x += 1;
+			if (who.wantDown == true) who.dir_y += 1;
+			if (who.wantUp == true) who.dir_y -= 1; 
 			who.spd_mult = (isSloving())? .4 : 1;
 			who.sp_x += who.dir_x * who.acs0 * deltaTimeSquared();			
 			who.sp_y += who.dir_y * who.acs0 * deltaTimeSquared();
@@ -143,10 +142,23 @@
 			if (who.dir_y == -1) shad.lastDirection = "back";
 			// . . . sounding
 			who.stepTimer += (Math.abs(who.sp_x) + Math.abs(who.sp_y)) * (1 - who.slowing);
-			var playStep:Boolean = (who.stepTimer > distanceForStep );
-			while (who.stepTimer > distanceForStep )who.stepTimer -= distanceForStep;
+			var playStep:Boolean = (who.stepTimer > who.distanceForStep );
+			while (who.stepTimer > who.distanceForStep )who.stepTimer -= who.distanceForStep;
 			if (playStep)
 				sounds.playHeroFootStepSound(who);
+		});
+		return shad;
+	}
+	static function makeShadowControllable(shad:MovieClip):MovieClip
+	{
+		shad.isControllable = true;
+		
+		shad = makeShadowWantMove(shad);
+		shad.slotsForExecute.push(function(who:MovieClip){
+			who.wantDown = Key.isDown(keyDown());
+			who.wantUp = Key.isDown(keyUp());
+			who.wantLeft = Key.isDown(keyLeft());
+			who.wantRight = Key.isDown(keyRight());
 		});
 		shad.mustHaveReflection = true;
 		return makeShadowMovable(shad);
