@@ -4,11 +4,11 @@ class enemies{
 	static var soundNumber:Number = 0;
 	static function spawnBolt(X,Y,Xt,Yt, who){
 		if (who != undefined){
-			if (who.model.right_hand.b.st._currentframe < 8){
+			if (who.model.right_hand.b.st._currentframe < 5){
 				who.model.right_hand.b.st.gotoAndStop(8);
 				who.model.right_hand.b.gotoAndStop('cast');
 			} else
-				if (who.model.left_hand.b.st._currentframe < 8){
+				if (who.model.left_hand.b.st._currentframe < 5){
 					who.model.left_hand.b.st.gotoAndStop(8);
 					who.model.left_hand.b.gotoAndStop('cast');
 				} else
@@ -118,6 +118,8 @@ class enemies{
 		}
 		// direction detection
 		shad.slotsForExecute.push(function(who:MovieClip){
+			if (who.destroyed == true)
+				return;
 			if (who.spd_squared > .2){
 				shad.direction = 'face';
 				if (who.sp_y < -.3)
@@ -178,7 +180,7 @@ class enemies{
 		shad.slotsForExecute.push(function(who:MovieClip){
 			/* who.targetX = _root._xmouse;
 			who.targetY = _root._ymouse; */
-			if (Math.abs(who._x - who.targetX) < 20 && Math.abs(who._y - who.targetY) < 20)
+			if (who.destroyed == true || (Math.abs(who._x - who.targetX) < 20 && Math.abs(who._y - who.targetY) < 20))
 				{ who.wantLeft = who.wantRight = who.wantUp = who.wantDown = false; return;}
 			who.wantLeft = (who.targetX < who._x - 5);
 			who.wantRight = (who.targetX > who._x + 5);
@@ -186,6 +188,10 @@ class enemies{
 			who.wantDown = (who.targetY > who._y + 5);
 		});
 		shad.changeStad = function(who:MovieClip, addStad:Number){
+			if (who.stad + addStad < 0)
+				shad.dead('low');
+			if (who.stad + addStad > 5)
+				shad.dead('high');
 			if (addStad == 0 || (who.stad + addStad < 0) || (who.stad + addStad > 5))
 				return;
 			shad.stad += addStad;
@@ -194,6 +200,11 @@ class enemies{
 			shad.model.cosA = 30;
 			shad.onStepFunction(shad);
 			shad.required_height = shad.required_heights[shad.stad];
+		}
+		shad.destroyed = false;
+		shad.dead = function(where:String){
+			shad.model.gotoAndStop(where);
+			shad.destroyed = true;
 		}
 		shad.onMouseUp = function(){
 			if (Key.isDown(Key.UP))
