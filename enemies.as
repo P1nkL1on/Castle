@@ -4,7 +4,15 @@ class enemies{
 	static var soundNumber:Number = 0;
 	static function spawnBolt(X,Y,Xt,Yt, who){
 		if (who != undefined){
-			
+			if (who.model.right_hand.b.st._currentframe < 8){
+				who.model.right_hand.b.st.gotoAndStop(8);
+				who.model.right_hand.b.gotoAndStop('cast');
+			} else
+				if (who.model.left_hand.b.st._currentframe < 8){
+					who.model.left_hand.b.st.gotoAndStop(8);
+					who.model.left_hand.b.gotoAndStop('cast');
+				} else
+					return;
 		}
 		var pre:Sound = sounds.playSound('effects/prelight'+((++soundNumber)%2));
 		pre.onSoundComplete = function(){
