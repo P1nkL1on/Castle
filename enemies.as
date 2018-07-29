@@ -1,52 +1,50 @@
 class enemies{
 	static var boltVariants:Array = new Array(2,2,2);
-	static var boltFrameLength:Array = new Array(2,2,2,20,10,6,4,4,3,2,1,1,1,1,1);
-	static var boltFrames:Array = new Array();
+	static var boltFrameLength:Array = new Array(3,2,1,5,6,7,8,9,10,11,12,13,14,15,16);//(5,5,5,10,16,12,10,8,6,6,4,4,2,2,2,1);
+	static var soundNumber:Number = 0;
 	static function spawnBolt(X,Y,Xt,Yt){
-		if (boltFrames.length == 0){
-			for (var i = 0, summ = 0; i < boltFrameLength.length; summ += boltFrameLength[i], ++i)
-				boltFrames.push(summ);
-			trace(boltFrames);
-		}
-	
-		var bolt:Array = new Array();
-		var boltNames:String = "bme";
-		var dirX:Number = (X < Xt)? 1 : -1;
-		var dirY:Number = (Y < Yt)? 1 : -1;
-		var deltaX = Math.abs(X - Xt);
-		var deltaY = Math.abs(Y - Yt);
-		var coordMid:Array = new Array(
-			X + dirX * (random(Math.round(deltaX * .4)) + deltaX * .1),
-			Y + dirY * random(Math.round(deltaY)) - 80 - random(100),
-			Xt - dirX * (random(Math.round(deltaX * .4)) + deltaX * .1),
-			Yt - dirY * random(Math.round(deltaY)) - 80 - random(100)
-		);
-		for (var i = 0; i < 3; ++i){
-			var last = ground.spawnEffect('effect_bolt', 0, 0, undefined, _root.layer_effects);
-			last.gotoAndStop(boltNames.charAt(i) + random(boltVariants[i]));
-			last.t = 3-i;
-			last.onEnterFrame = function(){
-				if (animating.each(this, 1 / enemies.boltFrames[this.t]) > 0){
-					this.nextFrame(); ++this.t;
+		var pre:Sound = sounds.playSound('effects/prelight'+((++soundNumber)%2));
+		pre.onSoundComplete = function(){
+			sounds.playSound('effects/light'+((soundNumber)%2));
+			var bolt:Array = new Array();
+			var boltNames:String = "bme";
+			var dirX:Number = (X < Xt)? 1 : -1;
+			var dirY:Number = (Y < Yt)? 1 : -1;
+			var deltaX = Math.abs(X - Xt);
+			var deltaY = Math.abs(Y - Yt);
+			var coordMid:Array = new Array(
+				X + dirX * (random(Math.round(deltaX * .4)) + deltaX * .1),
+				Y + dirY * random(Math.round(deltaY)) - 80 - random(100),
+				Xt - dirX * (random(Math.round(deltaX * .4)) + deltaX * .1),
+				Yt - dirY * random(Math.round(deltaY)) - 80 - random(100)
+			);
+			for (var i = 0; i < 3; ++i){
+				var last = ground.spawnEffect('effect_bolt', 0, 0, undefined, _root.layer_effects);
+				last.gotoAndStop(boltNames.charAt(i) + random(boltVariants[i]));
+				last.t = 3-i;
+				last.onEnterFrame = function(){
+					if (animating.each(this, 1 / enemies.boltFrameLength[this.t]) > 0){
+						this.nextFrame(); ++this.t;
+					}
 				}
+				bolt.push(last);
 			}
-			bolt.push(last);
+			bolt[0]._xscale *= random(2)*2-1;
+			bolt[1]._yscale *= random(2)*2-1;
+			bolt[2]._xscale *= random(2)*2-1;
+			
+			bolt[0]._x = X; bolt[0]._y = Y;
+			bolt[0]._height *= distanceKBetween(X, Y, coordMid[0], coordMid[1], 100);
+			bolt[0]._rotation = angleBetween(X, Y, coordMid[0], coordMid[1]) + 90;
+			
+			bolt[1]._x = coordMid[0]; bolt[1]._y = coordMid[1];
+			bolt[1]._width *= distanceKBetween(coordMid[0], coordMid[1],coordMid[2], coordMid[3], 150);
+			bolt[1]._rotation = angleBetween(coordMid[0], coordMid[1], coordMid[2], coordMid[3]);
+			
+			bolt[2]._x = coordMid[2]; bolt[2]._y = coordMid[3];
+			bolt[2]._height *= distanceKBetween(coordMid[2], coordMid[3], Xt, Yt, 150);
+			bolt[2]._rotation = angleBetween(coordMid[2], coordMid[3], Xt, Yt) - 90;
 		}
-		bolt[0]._xscale *= random(2)*2-1;
-		bolt[1]._yscale *= random(2)*2-1;
-		bolt[2]._xscale *= random(2)*2-1;
-		
-		bolt[0]._x = X; bolt[0]._y = Y;
-		bolt[0]._height *= distanceKBetween(X, Y, coordMid[0], coordMid[1], 100);
-		bolt[0]._rotation = angleBetween(X, Y, coordMid[0], coordMid[1]) + 90;
-		
-		bolt[1]._x = coordMid[0]; bolt[1]._y = coordMid[1];
-		bolt[1]._width *= distanceKBetween(coordMid[0], coordMid[1],coordMid[2], coordMid[3], 150);
-		bolt[1]._rotation = angleBetween(coordMid[0], coordMid[1], coordMid[2], coordMid[3]);
-		
-		bolt[2]._x = coordMid[2]; bolt[2]._y = coordMid[3];
-		bolt[2]._height *= distanceKBetween(coordMid[2], coordMid[3], Xt, Yt, 150);
-		bolt[2]._rotation = angleBetween(coordMid[2], coordMid[3], Xt, Yt) - 90;
 	}
 	static function angleBetween(x0,y0,x1,y1):Number{
 		return Math.atan2(y1-y0, x1-x0)/Math.PI * 180;

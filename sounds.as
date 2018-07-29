@@ -56,6 +56,10 @@
 		var sos:Array = new Array();
 		for (var i = 0; i <= 10; ++i)
 			sos.push('effects/crackle' + i);
+		for (var i = 0; i <= 1; ++i)
+			sos.push('effects/light' + i);
+		for (var i = 0; i <= 1; ++i)
+			sos.push('effects/prelight' + i);
 		return sos;
 	}
 	static function pushAllSounds(){
