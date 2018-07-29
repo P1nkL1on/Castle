@@ -2,7 +2,10 @@ class enemies{
 	static var boltVariants:Array = new Array(2,2,2);
 	static var boltFrameLength:Array = new Array(3,2,1,5,6,7,8,9,10,11,12,13,14,15,16);//(5,5,5,10,16,12,10,8,6,6,4,4,2,2,2,1);
 	static var soundNumber:Number = 0;
-	static function spawnBolt(X,Y,Xt,Yt){
+	static function spawnBolt(X,Y,Xt,Yt, who){
+		if (who != undefined){
+			
+		}
 		var pre:Sound = sounds.playSound('effects/prelight'+((++soundNumber)%2));
 		pre.onSoundComplete = function(){
 			sounds.playSound('effects/light'+((soundNumber)%2));
