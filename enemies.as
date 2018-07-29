@@ -1,6 +1,6 @@
 class enemies{
 	static var boltVariants:Array = new Array(2,2,2);
-	static var boltFrameLength:Array = new Array(3,3,4,6,7, 7, 8, 8, 7, 6, 5,4,3,2,1,1,1,1,1);
+	static var boltFrameLength:Array = new Array(2,2,2,20,10,6,4,4,3,2,1,1,1,1,1);
 	static var boltFrames:Array = new Array();
 	static function spawnBolt(X,Y,Xt,Yt){
 		if (boltFrames.length == 0){
@@ -24,7 +24,7 @@ class enemies{
 		for (var i = 0; i < 3; ++i){
 			var last = ground.spawnEffect('effect_bolt', 0, 0, undefined, _root.layer_effects);
 			last.gotoAndStop(boltNames.charAt(i) + random(boltVariants[i]));
-			last.t = 1;
+			last.t = 3-i;
 			last.onEnterFrame = function(){
 				if (animating.each(this, 1 / enemies.boltFrames[this.t]) > 0){
 					this.nextFrame(); ++this.t;
