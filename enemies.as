@@ -82,11 +82,11 @@ class enemies{
 		shad.model.cosA = 0;	// amplitudes
 		shad.model.flyHeight = 0;	// height of flying
 		// set random sparkle on body
-		shad.setElectricity = function(who:MovieClip){
+		shad.setElectricity = function(who:MovieClip, X, Y){
+			if (X == undefined) X = (random(61)-30) / 60 * who.model._width * .5;
+			if (Y == undefined) Y = -random(100)/100 * who.model._height * .6 - 20;
 			ground.spawnEffect(
-			'effect_electro_circle',
-			(random(61)-30) / 60 * who.model._width * .5,
-			-random(100)/100 * who.model._height * .6 - 20,
+			'effect_electro_circle', X, Y,
 			undefined, who.model);
 		}
 		// each step what
