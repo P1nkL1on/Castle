@@ -202,38 +202,69 @@ class levels{
 		GUIactions[isAdd] += " & " + S;	
 	}
 	
-	
+	static function keyPressedLong(X):Boolean{
+		return (X == 1 || (X >= 30 && X % 15 == 0) || (X > 75))
+	}
 	static function makeColorSelector (){
 		if (_root.layer_GUI == undefined)
 			spawning.createLayer('layer_GUI');
 		var counterNames:String = "RGB";
 		for (var i = 0; i < 3; ++i){
 			var newLine:MovieClip = _root.layer_GUI.attachMovie('GUI_counter', 'cntr'+(i), _root.layer_GUI.getNextHighestDepth());
-			newLine._x = 50;
-			newLine._y = 100 + 30 * i;
+			newLine._x = 100;
+			newLine._y = 210 + 30 * i;
+			newLine.gotoAndStop(1 + 1*(i==0));
 			newLine.description = counterNames.charAt(i);
 			newLine.min_value = 0; newLine.max_value = 255; newLine.current_value = utils.hero_armor_color[i];
 			newLine.i = i;
-			newLine.onValueChanged = function(who, val:Number){ utils.hero_armor_color[who.i] = val; }
+			newLine.onValueChanged = function(who, val:Number){ utils.hero_armor_color[who.i] = val; _root.hero.reColor();}
 		}
-		/*onClipEvent(load){
-			description = "R";
-			min_value = 0;
-			max_value = 255;
-			current_value = utils.hero_armor_color[0];
-		}
-		onClipEvent(mouseDown){
-			updateInfo();
-			onValueChanged = function(val:Number){
-				trace(val);
+		var thinker:MovieClip = _root.layer_GUI.attachMovie('GUI_thinker', 'thinker', _root.layer_GUI.getNextHighestDepth());
+		thinker.watchKeys = new Array(37,38,39,40,16);
+		thinker.pressKeys = new Array(0,0,0,0,0,0);
+		thinker.selectedLine = 0;
+		thinker.done = false;
+		thinker.toggleHeroLock = false;
+		_root.hero.locked = true;
+		thinker.onEnterFrame = function (){
+			if (!this.done){
+				this.done = true;
+				for (var i = 0; i < 3; ++i)
+					_root.layer_GUI["cntr"+i].updateInfo();
 			}
+			for (var i = 0; i < this.watchKeys.length; ++i)
+				if (Key.isDown(this.watchKeys[i]))
+					this.pressKeys[i]++;
+				else
+					this.pressKeys[i] = 0;
+			if (keyPressedLong(this.pressKeys[4])){
+				this.toggleHeroLock = !this.toggleHeroLock;
+				_root.hero.locked = !this.toggleHeroLock;
+				_root.hero.model.gotoAndStop(1);
+				_root.hero.reColor();
+				_root.hero.sp_x = _root.hero.sp_y = 0;
+				if (this.toggleHeroLock == true)
+					_root.layer_GUI["cntr"+this.selectedLine].onUnSelect();
+				else
+					_root.layer_GUI["cntr"+this.selectedLine].onSelect();
+			}
+			if (this.toggleHeroLock == true)
+				return;
+			if (keyPressedLong(this.pressKeys[3])){
+				_root.layer_GUI["cntr"+this.selectedLine].onUnSelect();
+				this.selectedLine = (this.selectedLine + 1)%3;
+				_root.layer_GUI["cntr"+this.selectedLine].onSelect();
+			}
+			if (keyPressedLong(this.pressKeys[1])){
+				_root.layer_GUI["cntr"+this.selectedLine].onUnSelect();
+				this.selectedLine = (this.selectedLine == 0)? 2 : (this.selectedLine-1);
+				_root.layer_GUI["cntr"+this.selectedLine].onSelect();
+			}
+			if (keyPressedLong(this.pressKeys[0]))
+				_root.layer_GUI["cntr"+this.selectedLine].minusValue(Math.round(this.pressKeys[0] / 60 + .6));
+			if (keyPressedLong(this.pressKeys[2]))
+				_root.layer_GUI["cntr"+this.selectedLine].plusValue(Math.round(this.pressKeys[2] / 60 + .6));
+			
 		}
-
-		on(keyPress "<Left>"){
-			minusValue(13);
-		}
-		on(keyPress "<Right>"){
-			plusValue(7);
-		} */
 	}
 }
