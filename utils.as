@@ -1,4 +1,18 @@
  class utils{
+ 
+	static var t_info = 0;
+	static var t_warning = 1;
+	static var t_error = 2;
+	static var t_saveinfo = 3;
+	
+	static var symbols:String = ">*#$";
+	
+	static function trace(S, traceType){
+		if (traceType == undefined)
+			traceType = 0;
+		trace(symbols.charAt(traceType)+ " : " + S);
+	}
+ 
 	static function setBasicConsts(){
 		sounds.pushAllSounds();
 		sounds.loadAllSounds();
