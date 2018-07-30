@@ -8,13 +8,32 @@
 	static var t_create = 5;
 	static var t_delete = 6;
 	static var t_game = 7;
-	
+	static var able_messages =  "-+++++++";
 	static var symbols:String = ">*#$%+~@";
-	
+	static var ignored_messages = new Array();
+	static var ignore_message_count = 0;
+	static function clearIgnoredMessages(){
+		ignored_messages = new Array();
+		ignore_message_count = 0;
+		for (var i = 0; i < able_messages.length; ++i)
+			ignored_messages.push(0);
+	}
+	static function checkIgnoredMessages(){
+		var missed:String = "You missed : ";
+		for (var i = 0; i < ignored_messages.length; ++i)
+			missed += symbols.charAt(i) + ' '+ignored_messages[i]+';  ';
+		trace(missed);
+		clearIgnoredMessages();
+	}
 	static function trace(S, traceType){
 		if (traceType == undefined)
 			traceType = 0;
+		if (able_messages.charAt(traceType) == '-')
+			{	if(ignored_messages.length == 0)clearIgnoredMessages(); ignored_messages[traceType]++; ignore_message_count++; return;}
+		
 		trace(symbols.charAt(traceType)+ " : " + S);
+		if (ignore_message_count > 50)
+			checkIgnoredMessages();
 	}
  
 	static function setBasicConsts(){

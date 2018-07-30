@@ -203,7 +203,7 @@ class levels{
 	}
 	
 	static function keyPressedLong(X):Boolean{
-		return (X == 1 || (X >= 30 && X % 15 == 0) || (X > 75))
+		return (X == 1 || (X >= 30 && X % 15 == 0) || (X > 75 && X % 3 == 0))
 	}
 	static function makeColorSelector (){
 		if (_root.layer_GUI == undefined)
@@ -243,6 +243,7 @@ class levels{
 				_root.hero.model.gotoAndStop(1);
 				_root.hero.reColor();
 				_root.hero.sp_x = _root.hero.sp_y = 0;
+				sounds.playSound(sounds.voiceName('GUI/move', 3));
 				if (this.toggleHeroLock == true)
 					_root.layer_GUI["cntr"+this.selectedLine].onUnSelect();
 				else
@@ -251,19 +252,25 @@ class levels{
 			if (this.toggleHeroLock == true)
 				return;
 			if (keyPressedLong(this.pressKeys[3])){
+				sounds.playSound(sounds.voiceName('GUI/move', 2));
 				_root.layer_GUI["cntr"+this.selectedLine].onUnSelect();
 				this.selectedLine = (this.selectedLine + 1)%3;
 				_root.layer_GUI["cntr"+this.selectedLine].onSelect();
 			}
 			if (keyPressedLong(this.pressKeys[1])){
+				sounds.playSound(sounds.voiceName('GUI/move', 2));
 				_root.layer_GUI["cntr"+this.selectedLine].onUnSelect();
 				this.selectedLine = (this.selectedLine == 0)? 2 : (this.selectedLine-1);
 				_root.layer_GUI["cntr"+this.selectedLine].onSelect();
 			}
-			if (keyPressedLong(this.pressKeys[0]))
+			if (keyPressedLong(this.pressKeys[0])){
+				sounds.playSound(sounds.voiceName('GUI/move', 1));
 				_root.layer_GUI["cntr"+this.selectedLine].minusValue(Math.round(this.pressKeys[0] / 60 + .6));
-			if (keyPressedLong(this.pressKeys[2]))
+			}
+			if (keyPressedLong(this.pressKeys[2])){
+				sounds.playSound(sounds.voiceName('GUI/move', 1));
 				_root.layer_GUI["cntr"+this.selectedLine].plusValue(Math.round(this.pressKeys[2] / 60 + .6));
+			}
 			
 		}
 	}
