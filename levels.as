@@ -2,10 +2,11 @@ class levels{
 	static var testLevels:Array = new Array(2,3);
 	
 	static function selectNextLevel():Number{
-		return 3;
+		return 4;
 	}
 	static function completeLevel(number:Number){
 		trace('Level :: ' + number + " :: COMPLETED!");
+		_root.gotoAndStop('level_selection');
 	}
 	
 	static function makeLevelExit(door:MovieClip, xOffset, yOffset):MovieClip{
@@ -21,7 +22,6 @@ class levels{
 					if (spawning.units[i].isControllable && who.hitTest(spawning.units[i]._x, spawning.units[i]._y, true)){
 						// finish levels
 						completeLevel(_root._currentframe);
-						_root.gotoAndStop(1);
 					}
 		});
 		return door;
@@ -200,4 +200,5 @@ class levels{
 		}	
 		GUIactions[isAdd] += " & " + S;	
 	}
+	
 }

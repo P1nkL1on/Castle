@@ -1,16 +1,17 @@
 ﻿class animating{
 	static var worldTimeSpeed:Number = 1;
 	static var worldYKoeff:Number = .5;
-	static function changeStat(who, stat){
-		if ((who+"").indexOf('lever')>=0)
-			trace(stat);
+	static function changeStat(who, stat):Number{
 		if (stat != who.stat){
 			who.gotoAndStop(stat);
 			who.stat = stat;
+			return 1;
 		}
+		return 0;
 	}
+	static var lastFrame:Number = -1;
 	static function animate(who, stat, speed):Number{
-		changeStat(who, stat);
+		changeStat(who, stat);			
 		return animateOnly(who, speed);
 	}
 	static function animateOnly (who, speed):Number{

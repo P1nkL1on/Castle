@@ -21,9 +21,9 @@ class hazards{
 		shad.openFunction;
 		if (shad.lockX == undefined){			
 			// . . . place for locked
-			shad.locksX = -30;
-			shad.locksY = 9;
-			shad.locksW = 40;
+			shad.locksX = -25;
+			shad.locksY = -20;
+			shad.locksW = 50;
 			// . . .
 		}
 		// add a lockers
@@ -100,9 +100,9 @@ class hazards{
 		newLever.uncheckFunction;
 		newLever.isLever = true;
 		// . . . place for locked
-		newLever.locksX = -15;
-		newLever.locksY = -15;
-		newLever.locksW = 30;
+		newLever.locksX = -30;
+		newLever.locksY = 9;
+		newLever.locksW = 40;
 		// . . .
 		newLever.slotsForExecute.push(function(who:MovieClip){
 			if (who.keyLeft != undefined && who.keyLeft > 0)

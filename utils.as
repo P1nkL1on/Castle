@@ -19,6 +19,8 @@
 		fps.spawnCounter();
 	}
 	
+	// . . . color selectio
+	static var hero_armor_color:Array = new Array(40, 40, 255);
 	static function makeHero(X, Y){
 		_root.hero = 
 			heroAbilities.giveSword(
@@ -28,8 +30,10 @@
 			spawning.makeHeroAnimation(
 			spawning.makeShadowControllable(
 			spawning.spawnUnit("hero", X, Y)))))));
-			
+		_root.hero.reColor();
 		levels.hero = _root.hero;
 		levels.makeGUI();
 	}
+
+	
  }
