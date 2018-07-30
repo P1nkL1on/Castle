@@ -35,6 +35,7 @@ class levels{
 	static var GUIactions:Array = new Array();
 	static var GUIkeys:Array = new Array();
 	static var btnCount:Number = 0;
+	static var guiCount:Number = 0;
 	static function spawnKey(X,Y, KEY){
 		var newButton:MovieClip = _root.layer_GUI.attachMovie('GUI_button', 'bttn'+(++btnCount), _root.layer_GUI.getNextHighestDepth());
 		newButton.numX = X;
@@ -201,4 +202,38 @@ class levels{
 		GUIactions[isAdd] += " & " + S;	
 	}
 	
+	
+	static function makeColorSelector (){
+		if (_root.layer_GUI == undefined)
+			spawning.createLayer('layer_GUI');
+		var counterNames:String = "RGB";
+		for (var i = 0; i < 3; ++i){
+			var newLine:MovieClip = _root.layer_GUI.attachMovie('GUI_counter', 'cntr'+(i), _root.layer_GUI.getNextHighestDepth());
+			newLine._x = 50;
+			newLine._y = 100 + 30 * i;
+			newLine.description = counterNames.charAt(i);
+			newLine.min_value = 0; newLine.max_value = 255; newLine.current_value = utils.hero_armor_color[i];
+			newLine.i = i;
+			newLine.onValueChanged = function(who, val:Number){ utils.hero_armor_color[who.i] = val; }
+		}
+		/*onClipEvent(load){
+			description = "R";
+			min_value = 0;
+			max_value = 255;
+			current_value = utils.hero_armor_color[0];
+		}
+		onClipEvent(mouseDown){
+			updateInfo();
+			onValueChanged = function(val:Number){
+				trace(val);
+			}
+		}
+
+		on(keyPress "<Left>"){
+			minusValue(13);
+		}
+		on(keyPress "<Right>"){
+			plusValue(7);
+		} */
+	}
 }
