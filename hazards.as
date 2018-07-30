@@ -2,7 +2,7 @@ class hazards{
 	static function manFree(who, from){
 		if (from.man == null)
 			return;
-		trace('Free from '+from.model._name+' :: ' + who);
+		utils.trace('Free from '+from.model._name+' :: ' + who);
 		who.stat = 'idle_side';
 		who.locked = false;
 		from.CD = 40;
@@ -67,7 +67,7 @@ class hazards{
 						levels.checkGUI();
 						//
 						sounds.playSound("background/key_open");
-						trace('Keys need to interact '+who.keyLeft+'->'+(who.keyLeft-1)+' :: ' + who);
+						utils.trace('Keys need to interact '+who.keyLeft+'->'+(who.keyLeft-1)+' :: ' + who);
 						who.keyLeft--;
 						who.model["locked" + who.keyLeft].locked = false;
 						who.triggerFunction(who, who.keyLeft);
@@ -80,7 +80,7 @@ class hazards{
 	static function spawnLever (X, Y, checked):MovieClip{
 		var newLever:MovieClip = spawning.spawnUnit("lever", X, Y);
 		if (!(newLever._x > Number.MIN_VALUE))
-			{trace('Can not spawn a lever;'); return null;}
+			{utils.trace('Can not spawn a lever;', utils.t_error); return null;}
 		if (checked == undefined)
 			newLever.checked = false;	
 		else
@@ -92,7 +92,7 @@ class hazards{
 				newLever.canBeActivatedBy.push(spawning.units[i]);
 				spawning.units[i].anyKeyPressTo = null;
 			}
-		trace('Lever can be activated by ('+newLever.canBeActivatedBy.length+'): ' + newLever.canBeActivatedBy);
+		utils.trace('Lever can be activated by ('+newLever.canBeActivatedBy.length+'): ' + newLever.canBeActivatedBy);
 		newLever.man = null;
 		newLever.hX = 0;
 		newLever.CD = 0;
@@ -121,7 +121,7 @@ class hazards{
 							levels.checkGUI();
 						}
 						if (heroAbilities.anyKeyPressed() == true){
-							trace('Lock on lever '+who.model._name+' :: ' + who.h);
+							utils.trace('Lock on lever '+who.model._name+' :: ' + who.h);
 							//heroAbilities.dropLeftItem(who.man);
 							//heroAbilities.dropRightItem(who.man);
 							who.man = who.h;

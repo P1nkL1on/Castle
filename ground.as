@@ -6,8 +6,8 @@
 		for (var i = sounds.footStepsTypes.length - 1; i >= 0; i--)
 			if (typ.indexOf(sounds.footStepsTypes[i]) >= 0)
 			{ who.groundSoundVariant = sounds.footStepsCount[i]; who.groundType = sounds.footStepsTypes[i];
-			  trace("Decided, that ground type " + typ + " will use a sound " + sounds.footStepsTypes[i] + ";");return;}
-		trace("Type of ground '" + typ + "' is strange; No matchs with existed: " + sounds.footStepsTypes);
+			  utils.trace("Decided, that ground type " + typ + " will use a sound " + sounds.footStepsTypes[i] + ";");return;}
+		utils.trace("Type of ground '" + typ + "' is strange; No matchs with existed: " + sounds.footStepsTypes, 1);
 	}
 	static function spawnEffect(effectName:String, X, Y, notUniqName, layer):MovieClip{
 		//trace(effectName + ' / ' + X +' / ' + Y);
@@ -47,7 +47,7 @@
 				this.righthand.gotoAndStop(this.shad.model.righthand._currentframe);
 			}
 		}
-		trace('Created reflection for ' + shad + ' :: ' + newReflection);
+		utils.trace('Created reflection for ' + shad + ' :: ' + newReflection, utils.t_create);
 		return newReflection;
 	}	
 	static var waterCollisionK = .45;
@@ -68,7 +68,6 @@
 			}
 		newWater = spawning.spawnGround("water");
 		var newReflection:MovieClip = spawning.spawnReflect("effect_water_drop");
-		trace(newWater + '/' + newReflection);
 		newWater._x = X; newWater._y = Y; newWater.V = littrs;
 		newWater.maxFrame = 69;
 		newWater.isWater = true;
@@ -100,7 +99,7 @@
 		newWater.slotsForExecute.push(function(who:MovieClip){
 			if (who.V < .1){
 				who.reflection.removeMovieClip();
-				trace('Removed water :: ' + who);
+				utils.trace('Removed water :: ' + who, utils.t_delete);
 				who.waterLeft = 0;
 				for (var i = 0; i < spawning.grounds.length; i++)
 					if (spawning.grounds[i].isWater == true)
@@ -108,7 +107,7 @@
 				if (who.waterLeft == 1)
 					for (var i = 0; i < spawning.units.length; i++)
 						if (spawning.units[i].hasReflection == true){
-							trace('Removed a reflection :: ' + spawning.units[i].lastCreatedReflection);
+							utils.trace('Removed a reflection :: ' + spawning.units[i].lastCreatedReflection, utils.t_delete);
 							spawning.units[i].lastCreatedReflection.removeMovieClip();
 							spawning.units[i].hasReflection = false;
 						}
@@ -162,7 +161,7 @@
 	
 	static var walls:Array = new Array();
 	static function makeWall(newGround:MovieClip){
-		trace('Make a ground :: ' + newGround);
+		utils.trace('Make a ground :: ' + newGround, utils.t_create);
 		walls.push(newGround);
 		newGround._visible = false;
 	}

@@ -71,7 +71,7 @@
 	}
 	static function loadAllSounds(){
 		if (isLoaded) return;
-		trace("Awaits loading of " + soundNames.length + " sounds;");
+		utils.trace("Awaits loading of " + soundNames.length + " sounds;");
 		for (var i = 0; i < soundNames.length; i++){
 			soundFiles.push(new Sound());
 										// ставим каждый на загрузку соответствующего адреса
@@ -87,14 +87,15 @@
 	static public function playSound(nam:String):Sound{
 		for (var i=0; i<soundFiles.length; i++)
 			if (soundFiles[i].name == nam){ soundFiles[i].start(0,1);return soundFiles[i]; }															//воспроизвести звук совпадающий по имени
-		trace("No sound '"+nam+"' in library!"); 																			//если звука нет, бупнем и сообщим об ошибкe
+		utils.trace("No sound '"+nam+"' in library!", utils.t_error); 																			//если звука нет, бупнем и сообщим об ошибкe
 		return null;
 	}
 	//
 	static public function playHeroFootStepSound(who:MovieClip){
 		if (who.standingOn == undefined) who.standingOn = null;
 		if (who.standingOn == null){
-			trace("This is no step sound for " + who + ". Because he do not standing on anything;");
+			if (who.standingOnError == undefined){ who.standingOnError = true;
+				utils.trace("This is no step sound for " + who + ". Because he do not standing on anything;", 1);}
 			return;
 		}
 		playSound(footStepName(who.standingOn.groundType) + ""+(random(who.standingOn.groundSoundVariant)+1));

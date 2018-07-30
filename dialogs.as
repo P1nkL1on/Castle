@@ -1,6 +1,6 @@
 class dialogs{
 	static function makeModelTalking(model:MovieClip, frames:Array, voicePath:String){
-		trace("Made a teller :: "+model);
+		utils.trace("Made a teller :: "+model, utils.t_dialoginfo);
 		model.talkingFrames = frames;
 		model.voicePath = voicePath;
 		model.currentTalk = -1;
@@ -54,7 +54,7 @@ class dialogs{
 				if (who.model.saidOut != true && (
 					Math.abs(who.talkingTo._x - who._x) > 100
 					|| Math.abs(who.talkingTo._y - who._y) > 50)){
-					trace('Stop talking');
+					utils.trace('Stop talking', utils.t_dialoginfo);
 					who.model.lastSound.stop();
 					who.model.saidOut = true;
 					who.model.swapCD = -30;
@@ -69,7 +69,7 @@ class dialogs{
 			if (who.model.isTalking == false && who.model.wantTalk == true) {
 				who.model.isTalking = true;
 				who.model.wantTalk = false;
- 				trace('Starts talking :: ' + who.model);
+ 				utils.trace('Starts talking :: ' + who.model, utils.t_dialoginfo);
 				who.model.swapCD = -1;
 				who.model.lastFrameBeforeTalking = who.model._currentframe;
 			}
@@ -79,7 +79,7 @@ class dialogs{
 					who.model.swapCD ++;
 				if (who.model.swapCD == -1 && (who.model.talkingFrames.length - 1 <= who.model.currentTalk
 					|| (who.model.saidOut == true && who.model.finishAfterOut == true))){
-					trace('Talking stop :: ' + who.model.lastFrameBeforeTalking);
+					utils.trace('Talking stop :: ' + who.model.lastFrameBeforeTalking, utils.t_dialoginfo);
 					who.model.isTalking = false;
 					who.model.currentTalk = -1;
 					who.model.lastSound = null;
@@ -113,7 +113,7 @@ class dialogs{
 					who.model.subtitleCurrentLetter = -1;
 					who.model.subtitleNeedLetter = 0;
 					who.model.lastSubtitle = who.model.descr.text; who.model.descr.text = "";
-					trace("Talking :: " +who.model.currentTalk);
+					utils.trace("Talking :: " +who.model.currentTalk, utils.t_dialoginfo);
 				}
 				
 				if (who.model.swapCD >= 0){

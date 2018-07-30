@@ -5,7 +5,7 @@ class levels{
 		return 4;
 	}
 	static function completeLevel(number:Number){
-		trace('Level :: ' + number + " :: COMPLETED!");
+		utils.trace('Level :: ' + number + " :: COMPLETED!", utils.t_game);
 		_root.gotoAndStop('level_selection');
 	}
 	
@@ -97,7 +97,7 @@ class levels{
 				for (var j = 0; j < GUIkeys[i].length; j++)
 					spawnKey(j,i, GUIkeys[i][j]);
 		}
-		trace('GUI updated;');
+		utils.trace('GUI updated;');
 	}
 	static var hero:MovieClip = null;
 	static function A0(X):Array{

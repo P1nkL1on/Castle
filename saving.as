@@ -4,18 +4,18 @@ class saving{
 		savefile = SharedObject.getLocal("Castle_game_save");
 		if (savefile.data.saved == undefined){
 			// create clear save file
-			trace('There was no correcr save file; Created new game save;');
+			utils.trace('There was no correcr save file; Created new game save;', utils.t_saveinfo);
 		}else{
 			// load info
-			trace('Found a load file! Loading...');
+			utils.trace('Found a load file! Loading...', utils.t_saveinfo);
 		}
 	}
 	static function saveGame(){
-		trace('Saving game...');
+		utils.trace('Saving game...', utils.t_saveinfo);
 		savefile.data.info = 1337;
 		savefile.data.saved = true;
 		savefile.flush(); 
-		trace('Game saved.');
+		utils.trace('Game saved.',utils.t_saveinfo);
 	}
 }
 // var savefile = SharedObject.getLocal("TTsave");

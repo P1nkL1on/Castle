@@ -58,7 +58,7 @@
 			return;
 		if (shad.leftItem.canBeDropped != true && instant == undefined)
 			return;
-		trace('Dropped item (left) :: ' + shad.leftItem);
+		utils.trace('Dropped item (left) :: ' + shad.leftItem);
 		shad.leftItem.canBeDropped = false;
 		shad.leftItem._x = shad._x + 30;
 		shad.leftItem._y = shad._y;
@@ -81,7 +81,7 @@
 			return;
 		if (shad.rightItem.canBeDropped != true && instant == undefined)
 			return;
-		trace('Dropped item (right) :: ' + shad.rightItem);
+		utils.trace('Dropped item (right) :: ' + shad.rightItem);
 		shad.rightItem.canBeDropped = false;
 		shad.rightItem._x = shad._x - 30;
 		shad.rightItem._y = shad._y;
@@ -127,7 +127,7 @@
 							who.model.lefthand.gotoAndStop('item');
 							who.wantItem.model._visible = false;
 							who.abilityLockedLeft = true;
-							trace('Geted item (left) :: ' + shad.leftItem);
+							utils.trace('Geted item (left) :: ' + shad.leftItem);
 							levels.checkGUI();
 							break;
 						}
@@ -136,7 +136,7 @@
 							who.model.righthand.gotoAndStop('item');
 							who.wantItem.model._visible = false;
 							who.abilityLockedRight = true;
-							trace('Geted item (right) :: ' + shad.rightItem);
+							utils.trace('Geted item (right) :: ' + shad.rightItem);
 							levels.checkGUI();
 							break;
 						}
@@ -184,7 +184,7 @@
 			}
 			if (who.bottleUse > 20 && listenKey(0, bottleKey) == 0){
 				animating.changeStat(who.model.lefthand.bottle_use, 'stop');
-				trace('stop');
+				utils.trace('stop');
 			}
 			if (/* who.model.lefthand._currentframe != bottleFrame &&  */
 				who.model.lefthand.bottle_use.stat != 'start'
@@ -192,7 +192,7 @@
 				who.model.lefthand.gotoAndStop('bottle_use');
 				animating.changeStat(who.model.lefthand.bottle_use, 'start');
 				bottleFrame = who.model.lefthand._currentframe;
-				trace('flush');
+				utils.trace('flush');
 			}
 			nowFrame = who.model.lefthand.bottle_use._currentframe;
 			if (nowFrame == 5 || nowFrame == 6){
@@ -299,13 +299,13 @@
 				animating.changeStat(who.model.lefthand.shield_use, 'start');
 				shieldFrame = who.model.lefthand._currentframe;
 				who.isBlocking = true;
-				trace('block');
+				utils.trace('block');
 			}
 			if (who.shieldUse > 20 && listenKey(0, shieldKey) == 0){
 				animating.changeStat(who.model.lefthand.shield_use, 'stop');
 				who.slowing = 0;
 				who.isBlocking = false;
-				trace('stop');
+				utils.trace('stop');
 			}
 			// . . . action
 			if (who.model.lefthand.shield_use._currentframe == 4)

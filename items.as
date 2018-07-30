@@ -1,7 +1,7 @@
 class items{
 	static var allItems:Array = new Array();
 	static function removeItem(item:MovieClip){
-		trace('Deleteing item :: '+item);
+		utils.trace('Deleteing item :: '+item, utils.t_delete);
 		for (var i = 0; i < allItems.length; ++i)
 			if (allItems[i] == item){
 				var tmp:MovieClip = allItems[i];
@@ -11,10 +11,10 @@ class items{
 				//item._x = item._y = item.model._x = item.model._y = -1000;
 				item.model.removeMovieClip();
 				if (item.model != undefined)
-					{trace('Error in deleting model'); item.model._visible = false;	}
+					{utils.trace('Error in deleting model', utils.t_error); item.model._visible = false;	}
 				item.removeMovieClip();
 				if (item.model != undefined)
-					trace('Error in deleting shadow');
+					utils.trace('Error in deleting shadow', utils.t_error);
 				return;
 			}
 	}
@@ -35,7 +35,6 @@ class items{
 						who._z = who.minZ + 1;
 						who.sp_z *= -.3;
 					}else{
-						trace(who.sp_z);
 						who._z = who.minZ;
 						who.sp_z = 0;
 					}

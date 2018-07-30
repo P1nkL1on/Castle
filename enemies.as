@@ -170,7 +170,6 @@ class enemies{
 		shad.head_frames = new Array();
 		for (var i = 0; i < 6; ++i)
 			shad.head_frames.push(i*2,i*2+1,i*2,i*2+1);
-		trace(shad.head_frames);
 		shad.max_spd_squareds = new Array();
 		for (var i = 0; i < shad.max_spds.length; ++i)
 			shad.max_spd_squareds.push(shad.max_spds[i] * shad.max_spds[i]);

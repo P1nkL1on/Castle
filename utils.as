@@ -4,8 +4,12 @@
 	static var t_warning = 1;
 	static var t_error = 2;
 	static var t_saveinfo = 3;
+	static var t_dialoginfo = 4;
+	static var t_create = 5;
+	static var t_delete = 6;
+	static var t_game = 7;
 	
-	static var symbols:String = ">*#$";
+	static var symbols:String = ">*#$%+~@";
 	
 	static function trace(S, traceType){
 		if (traceType == undefined)

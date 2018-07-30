@@ -23,16 +23,16 @@
 	static function clearLayers(){
 		var layerCount:Number = layers.length;
 		for (var i = 0; i < layers.length; ++i){
-			trace('Deleting layer :: ' + layers[i]);
+			utils.trace('Deleting layer :: ' + layers[i], utils.t_delete);
 			layers[i].removeMovieClip();
 		}
 		layers = new Array();
-		trace(layerCount + " layers cleared;");
+		utils.trace(layerCount + " layers cleared;", utils.t_delete);
 	}
 	static function createLayer (layerName){
 		newLayer  = _root.attachMovie("layer", layerName, _root.getNextHighestDepth());
 		newLayer.layerName = layerName;
-		trace('Created layer :: ' + newLayer);
+		utils.trace('Created layer :: ' + newLayer, utils.t_create);
 		layers.push(newLayer);
 		return;
 	}
@@ -54,7 +54,7 @@
 			{createLayer("layer_background");}		// make a background if need
 		var newGround = _root.layer_background.attachMovie("ground_" + groundName, "ground_"+groundName+"_"+grounds.length, _root.layer_background.getNextHighestDepth());
 		if (newGround == null)
-			{trace("Can not create ground " + groundName); return;}
+			{utils.trace("Can not create ground " + groundName, utils.t_error); return;}
 		ground.makeGround(newGround, groundName);
 		newGround.slotsForExecute = new Array();
 		newGround.onEnterFrame = function (){
@@ -66,20 +66,20 @@
 		return grounds[grounds.length - 1];
 	}
 	static function spawnUnit(unitName, X, Y){
-		if (X == undefined){X = 0; trace("Spawning a " + unitName + " do not declare its X coordinate;");}
-		if (Y == undefined){Y = 0; trace("Spawning a " + unitName + " do not declare its Y coordinate;");}
+		if (X == undefined){X = 0; utils.trace("Spawning a " + unitName + " do not declare its X coordinate;",1);}
+		if (Y == undefined){Y = 0; utils.trace("Spawning a " + unitName + " do not declare its Y coordinate;",1);}
 		++unitCountScene;
 		var newShadow = _root[shadowLayer+""].attachMovie("model_shadow", "shadow_"+unitCountScene, _root[shadowLayer+""].getNextHighestDepth());
 		if (newShadow == null)
-			{ trace("Error in spawning shadow of " + unitName); return null; }
+			{ utils.trace("Error in spawning shadow of " + unitName, utils.t_error); return null; }
 		else
-			trace("Created a shadow for " + unitName + " :: " + newShadow);
+			utils.trace("Created a shadow for " + unitName + " :: " + newShadow, utils.t_create);
 		newShadow._x = X; newShadow._y = Y;
 		var newModel = _root[unitLayer+""].attachMovie("model_" + unitName, "model_"+unitName+"_"+unitCountScene, _root[unitLayer+""].getNextHighestDepth());
 		if (newModel == null)
-			{trace("Error in spawning model of " + unitName); newShadow.removeMovieClip(); return null;}
+			{utils.trace("Error in spawning model of " + unitName, utils.t_delete); newShadow.removeMovieClip(); return null;}
 		else
-			trace("Created a model for " + unitName + " :: " + newModel);
+			utils.trace("Created a model for " + unitName + " :: " + newModel, utils.t_create);
 		newModel._x = X; newModel._y = Y; 
 		newShadow._z = 0;
 		newShadow.sp_z = 0; newShadow.G = .2;
