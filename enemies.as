@@ -17,6 +17,10 @@ class enemies{
 		var pre:Sound = sounds.playSound('effects/prelight'+((++soundNumber)%2));
 		pre.onSoundComplete = function(){
 			sounds.playSound('effects/light'+((soundNumber)%2));
+			if (who!=undefined && X == undefined && Y == undefined){
+				X = who.model._x + (who.model._xscale) / 100 * who.model.bolt_start._x;
+				Y = who.model._y + who.model.bolt_start._y;
+			}
 			var bolt:Array = new Array();
 			var boltNames:String = "bme";
 			var dirX:Number = (X < Xt)? 1 : -1;
@@ -214,6 +218,17 @@ class enemies{
 			shad.targetX = 100+random(600);
 			shad.targetY = 100+random(270);
 		}
+		shad.slotsForExecute.push(function(who){
+			if (Key.isDown(Key.SPACE)) who.sp++; else who.sp = 0;
+			if (who.sp % 30 == 1)
+				enemies.spawnBolt(
+				undefined,//electromage.model._x + (electromage.model._xscale) / 100 * electromage.model.bolt_start._x,
+				undefined,//electromage.model._y + electromage.model.bolt_start._y,
+				_root.hero._x,
+				_root.hero._y
+				,who
+				);
+		});
 		return shad;
 	}
 

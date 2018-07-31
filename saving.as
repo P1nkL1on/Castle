@@ -8,13 +8,16 @@ class saving{
 		}else{
 			// load info
 			utils.trace('Found a load file! Loading...', utils.t_saveinfo);
-			utils.trace('Loaded RGB of hero armor : ' + savefile.data.heroRGB, utils.t_saveinfo);
 			utils.hero_armor_color = savefile.data.heroRGB;
+			utils.trace('Loaded RGB of hero armor : ' + savefile.data.heroRGB, utils.t_saveinfo);
+			utils.hero_has_items = savefile.data.artifacts;
+			utils.trace('Loaded artifacts : ' + savefile.data.artifacts, utils.t_saveinfo);
 		}
 	}
 	static function saveGame(){
 		utils.trace('Saving game...', utils.t_saveinfo);
 		savefile.data.heroRGB = utils.hero_armor_color;
+		savefile.data.artifacts = utils.hero_has_items;
 		savefile.data.saved = true;
 		savefile.flush(); 
 		utils.trace('Game saved.',utils.t_saveinfo);

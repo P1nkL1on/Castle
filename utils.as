@@ -59,16 +59,22 @@
 	
 	// . . . color selectio
 	static var hero_armor_color:Array = new Array(255, 40, 40);
+	static var hero_has_items:Array = new Array(true, false, false, false);
+	// sword , book , shield, bottle
 	
 	static function makeHero(X, Y){
 		_root.hero = 
-			heroAbilities.giveSword(
-			heroAbilities.giveShield(
-			heroAbilities.giveBottle(
 			heroAbilities.canHandleItems(
 			spawning.makeHeroAnimation(
 			spawning.makeShadowControllable(
-			spawning.spawnUnit("hero", X, Y)))))));
+			spawning.spawnUnit("hero", X, Y))));
+		
+		if (hero_has_items[0] == true)
+			_root.hero = heroAbilities.giveSword(_root.hero);
+		if (hero_has_items[2] == true)
+			_root.hero = heroAbilities.giveShield(_root.hero);
+		if (hero_has_items[3] == true)
+			_root.hero = heroAbilities.giveBottle(_root.hero);		
 		levels.hero = _root.hero;
 		levels.makeGUI();
 	}
