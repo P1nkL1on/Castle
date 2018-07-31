@@ -49,7 +49,7 @@
 		var newReflect = _root.layer_reflection.attachMovie(reflectionName, reflectionName + dep, dep);
 		return newReflect;	
 	}
-	static function spawnGround(groundName){
+	static function spawnGround(groundName):MovieClip{
 		if (_root.layer_background == undefined)
 			{createLayer("layer_background");}		// make a background if need
 		var newGround = _root.layer_background.attachMovie("ground_" + groundName, "ground_"+groundName+"_"+grounds.length, _root.layer_background.getNextHighestDepth());

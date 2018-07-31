@@ -8,7 +8,7 @@
 	static var t_create = 5;
 	static var t_delete = 6;
 	static var t_game = 7;
-	static var able_messages =  "-+++++++";
+	static var able_messages =  "--++---+";
 	static var symbols:String = ">*#$%+~@";
 	static var ignored_messages = new Array();
 	static var ignore_message_count = 0;
@@ -42,10 +42,10 @@
 		animating.worldTimeSpeed = 1;
 	}
  
-	static function makeBasicLayers(basicGroundName){
+	static function makeBasicLayers(basicGroundName):MovieClip{
 		if (basicGroundName == undefined)
 			basicGroundName = "ground_test_met";
-		spawning.spawnGround(basicGroundName);
+		var basicGroundSpawned:MovieClip = spawning.spawnGround(basicGroundName);
 		spawning.createLayer("layer_reflection");
 		spawning.createLayer("layer_unit_reflection");
 		_root.layer_unit_reflection.setMask(_root.layer_reflection);
@@ -54,6 +54,7 @@
 		spawning.createLayer("layer_effects");
 		spawning.createLayer("layer_filters");
 		fps.spawnCounter();
+		return basicGroundSpawned;
 	}
 	
 	// . . . color selectio

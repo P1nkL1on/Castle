@@ -1,8 +1,8 @@
 class levels{
-	static var testLevels:Array = new Array(2,3);
+	static var testLevels:Array = new Array(3,4,6);
 	
 	static function selectNextLevel():Number{
-		return 4;
+		return testLevels.pop()+0;
 	}
 	static function completeLevel(number:Number){
 		utils.trace('Level :: ' + number + " :: COMPLETED!", utils.t_game);
@@ -15,7 +15,7 @@ class levels{
 		var trigger:MovieClip = spawning.spawnGround('trigger');
 		trigger._x = door._x + xOffset;
 		trigger._y = door._y + yOffset;
-		trigger._visible = false;
+		//trigger._visible = false;
 		trigger.slotsForExecute.push(function(who:MovieClip){
 			if (animating.each(who, 1 / 15) > 0)
 				for (var i = 0; i < spawning.units.length; ++i)
@@ -211,6 +211,7 @@ class levels{
 		var counterNames:String = "RGB";
 		for (var i = 0; i < 3; ++i){
 			var newLine:MovieClip = _root.layer_GUI.attachMovie('GUI_counter', 'cntr'+(i), _root.layer_GUI.getNextHighestDepth());
+			newLine._x = 100;
 			newLine._x = 100;
 			newLine._y = 210 + 30 * i;
 			newLine.gotoAndStop(1 + 1*(i==0));
