@@ -24,6 +24,7 @@
 		effect.hb = hb;
 		hb.effect = effect;
 		hb._visible = false;
+		hb.ignore = false;
 		return effect;
 	}
 	static function makeReflection (shad:MovieClip):MovieClip{

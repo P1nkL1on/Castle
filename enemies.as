@@ -70,7 +70,7 @@ class enemies{
 	}
 	//static function 
 	static function spawnElectroMage (X, Y):MovieClip{
-		var shad:MovieClip = spawning.makeShadowMovable(spawning.spawnUnit('electro_mage', X, Y));
+		var shad:MovieClip = heroAbilities.makeHitable(spawning.makeShadowMovable(spawning.spawnUnit('electro_mage', X, Y)));
 		// . . . model problems
 		// . . . lastDirection == face side back
 		// cause unit is watching in other then usuall side
@@ -86,6 +86,39 @@ class enemies{
 		shad.model.cosPhase = 0; // phase of all coses
 		shad.model.cosA = 0;	// amplitudes
 		shad.model.flyHeight = 0;	// height of flying
+		
+		// . . . health control and AI
+		// direction detection
+		shad.injures = 0;
+		shad.injures_max = 8;
+		shad.resetTimers = new Array(50 * 60, 45 * 60, 25 * 60, 20*60, 15*60, 10*60);
+		shad.currentTimer = shad.resetTimers[1] * 60;
+		shad.slotsForExecute.push(function(who:MovieClip){
+			if (who.destroyed == true)
+				return;
+			if (who.currentTimer > 0){
+				who.currentTimer -= animating.worldTimeSpeed;
+				if (who.currentTimer % 120 == 0)
+					utils.trace('	State :: ' + who.stad + ';  Time lasts till next low :: ' + Math.round(who.currentTimer/60) + ' s.', utils.t_combat);
+			}
+			else
+				who.changeStad(who, -1);
+				
+			if (who.wasHited == true){
+				who.wasHited = false;
+				if (who.stad >= 4){
+					who.injures++;
+					if ((who.stad == 4 && who.injures >= .25 * who.injures_max)
+						|| (who.injures >= who.injures_max))
+						who.changeStad(who, 1);	
+				}else
+					who.changeStad(who, 1);
+				utils.trace('Electromage :: '+who+' :: ', utils.t_combat);
+				utils.trace('    Injures :: ' + who.injures+'/'+who.injures_max+';  State :: ' + who.stad + ';  Time lasts till next low :: ' + Math.round(who.currentTimer/60) + ' s.', utils.t_combat);
+			}
+		});
+		
+		
 		// set random sparkle on body
 		shad.setElectricity = function(who:MovieClip, X, Y){
 			if (X == undefined) X = (random(61)-30) / 60 * who.model._width * .5;
@@ -180,7 +213,7 @@ class enemies{
 			shad.max_spd_squareds.push(shad.max_spds[i] * shad.max_spds[i]);
 		// . . .
 		shad.targetX = shad._x;
-		shad.targetY = shad._y + 30;
+		shad.targetY = shad._y + 50;
 		shad.slotsForExecute.push(function(who:MovieClip){
 			/* who.targetX = _root._xmouse;
 			who.targetY = _root._ymouse; */
@@ -204,7 +237,10 @@ class enemies{
 			shad.model.cosA = 30;
 			shad.onStepFunction(shad);
 			shad.required_height = shad.required_heights[shad.stad];
+			shad.currentTimer = shad.resetTimers[shad.stad];
 		}
+		shad.changeStad(shad, 1);
+		shad.model.gotoAndStop(5);
 		shad.destroyed = false;
 		shad.dead = function(where:String){
 			shad.model.gotoAndStop(where);

@@ -272,6 +272,21 @@
 		});
 		return shad;
 	}
+	static function makeHitable(shad:MovieClip):MovieClip{
+		shad.wasHited = false;
+		shad.slotsForExecute.push(function(who:MovieClip){
+			who.hs = _root.layer_background.effect_sword_slash_hitbox;
+			if (who.hs.ignore == true || who.hs == undefined || who.hs == null)
+				return;
+			if (who.hs.hitTest(who._x, who._y)){
+				who.hs._alpha /= 2;
+				who.hs.ignore = true;
+				who.wasHited = true;
+				utils.trace(who._name + " :: hited!", utils.t_combat)
+			}
+		});
+		return shad;
+	}
 	static function giveShield(shad:MovieClip):MovieClip{
 		shad.shieldUse = 0;
 		shad.isBlocking = false;
