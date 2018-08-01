@@ -1,5 +1,5 @@
 class levels{
-	static var testLevels:Array = new Array(3,4,6,6,6);
+	static var testLevels:Array = new Array(3,4,6);
 	
 	static function selectNextLevel():Number{
 		return testLevels.pop()+0;
@@ -11,13 +11,41 @@ class levels{
 	
 	
 	static var camera:MovieClip= null;
-	static function spawnCamera():MovieClip{
+	//	* cameraSlow == undefined | 1 -> follow usuall
+	//	* cameraSlow == 2+			  -> follow very slow
+	//	* cameraSlow <  0			  -> stepps
+	//	* 
+	static function spawnCamera(X, Y, 
+								cameraScale,
+								xlocked,
+								ylocked, 
+								cameraSlow):MovieClip{
 		camera = _root.attachMovie('camera', 'camera', _root.getNextHighestDepth());
 		camera._height = 400; camera._width = 600;
+		camera.xlocked = (xlocked == undefined)? false : xlocked;
+		camera.ylocked = (ylocked == undefined)? false : ylocked;
+		if (cameraScale != undefined){	
+			camera._xscale = camera._yscale = 100 * cameraScale;
+			_root.layer_GUI._xscale = _root.layer_GUI._yscale = 100 * cameraScale;
+		}
+		camera.cameraSlow = (cameraSlow == undefined)? 1 : cameraSlow;
+		
 		camera.follow = _root.hero;
 		camera.followPlayer = function(){
-			this._x = this.follow._x;
-			this._y = this.follow._y;
+			if (this.cameraSlow > 0){
+				if (this.xlocked == false)
+					this._x += (this.follow._x - this._x)/this.cameraSlow;
+				if (this.ylocked == false)
+					this._y += (this.follow._y - this._y)/this.cameraSlow;
+			}else{
+				this.toX = 0; this.toY = 0;
+				if (this.follow._x < this._x - this._width / 2)this.toX = -1;
+				if (this.follow._x > this._x + this._width / 2)this.toX = 1;
+				if (this.follow._y < this._y - this._height / 2)this.toY = -1;
+				if (this.follow._y > this._y + this._height / 2)this.toY = 1;
+				this._x += this.toX * this._width;
+				this._y += this.toY * this._height;
+			}
 		}
 		utils.trace('Created camera :: ' + camera, utils.t_create);
 		return camera;
