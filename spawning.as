@@ -50,12 +50,15 @@
 		var newReflect = _root.layer_reflection.attachMovie(reflectionName, reflectionName + dep, dep);
 		return newReflect;	
 	}
+	static var lastGroundSpawnedName:String = "none";
 	static function spawnGround(groundName):MovieClip{
 		if (_root.layer_background == undefined)
 			{createLayer("layer_background");}		// make a background if need
 		var newGround = _root.layer_background.attachMovie("ground_" + groundName, "ground_"+groundName+"_"+grounds.length, _root.layer_background.getNextHighestDepth());
 		if (newGround == null)
 			{utils.trace("Can not create ground " + groundName, utils.t_error); return;}
+		if (groundName != "trigger")
+			lastGroundSpawnedName = "ground_" + groundName;
 		ground.makeGround(newGround, groundName);
 		newGround.slotsForExecute = new Array();
 		newGround.onEnterFrame = function (){
