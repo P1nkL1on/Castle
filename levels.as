@@ -1,5 +1,5 @@
 class levels{
-	static var testLevels:Array = new Array(3,4,6,5);
+	static var testLevels:Array = new Array(3,4,6,5,4);
 	
 	static function selectNextLevel():Number{
 		return testLevels.pop()+0;
@@ -22,6 +22,7 @@ class levels{
 								cameraSlow):MovieClip{
 		camera = _root.attachMovie('camera', 'camera', _root.getNextHighestDepth());
 		camera._height = 400; camera._width = 600;
+		camera._x = X; camera._y = Y;
 		camera.xlocked = (xlocked == undefined)? false : xlocked;
 		camera.ylocked = (ylocked == undefined)? false : ylocked;
 		if (cameraScale != undefined){	
