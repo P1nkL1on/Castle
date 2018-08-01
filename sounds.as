@@ -43,7 +43,7 @@
 	
 	static function voiceSounds():Array{
 		voicesNames = new Array("default/default", "test/test", "test_fast/test", "electro_mage/dead","GUI/move");
-		voicesCounts = new Array(1,				   3		   , 3				 ,6,					3);
+		voicesCounts = new Array(1,				   3		   , 3				 ,7,					3);
 		var sos:Array = new Array();
 		for (var i = 0; i < voicesNames.length; i++){
 			for (var j = 1; j <= voicesCounts[i]; j++)

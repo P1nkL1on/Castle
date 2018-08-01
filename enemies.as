@@ -21,6 +21,7 @@ class enemies{
 				X = who.model._x + (who.model._xscale) / 100 * who.model.bolt_start._x;
 				Y = who.model._y + who.model.bolt_start._y;
 			}
+			_root.floating_chain.amp = 3;
 			var bolt:Array = new Array();
 			var boltNames:String = "bme";
 			var dirX:Number = (X < Xt)? 1 : -1;
