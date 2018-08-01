@@ -125,10 +125,11 @@ class dialogs{
 					who.model.subtitleNeedLetter *= who.model.lastSubtitle.length;
 					if (who.model.swapCD % who.model.animatingSpeed == 0)
 						who.model.talkFast = false;
+					// IF
 					if (who.model.subtitleCurrentLetter < who.model.subtitleNeedLetter || who.model.lastSubtitle.charAt(who.model.subtitleCurrentLetter) != ' '){
 						who.model.descr.text += who.model.lastSubtitle.charAt(++who.model.subtitleCurrentLetter);
 						if (who.model.lastSound.position < who.model.lastSound.duration)
-							who.model.talkFast = true;
+							{ who.model.talkFast = true; }
 					}
 					who.model.gotoAndStop(who.model.lastFrame + 1 * who.model.talkFast);
 					

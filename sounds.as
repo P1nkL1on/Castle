@@ -42,8 +42,8 @@
 	static var voicesCounts:Array = new Array();
 	
 	static function voiceSounds():Array{
-		voicesNames = new Array("test/test", "test_fast/test", "electro_mage/dead","GUI/move");
-		voicesCounts = new Array(3		   , 3				 ,6,					3);
+		voicesNames = new Array("default/default", "test/test", "test_fast/test", "electro_mage/dead","GUI/move");
+		voicesCounts = new Array(1,				   3		   , 3				 ,6,					3);
 		var sos:Array = new Array();
 		for (var i = 0; i < voicesNames.length; i++){
 			for (var j = 1; j <= voicesCounts[i]; j++)
@@ -88,6 +88,8 @@
 		for (var i=0; i<soundFiles.length; i++)
 			if (soundFiles[i].name == nam){ soundFiles[i].start(0,1);return soundFiles[i]; }															//воспроизвести звук совпадающий по имени
 		utils.trace("No sound '"+nam+"' in library!", utils.t_error); 																			//если звука нет, бупнем и сообщим об ошибкe
+		if (nam.indexOf('voices/') == 0 && nam.indexOf('default1') < 0)
+			return playSound('voices/default/default1');
 		return null;
 	}
 	//
