@@ -26,6 +26,7 @@
 			utils.trace('Deleting layer :: ' + layers[i], utils.t_delete);
 			layers[i].removeMovieClip();
 		}
+		_root.camera.removeMovieClip();
 		layers = new Array();
 		utils.trace(layerCount + " layers cleared;", utils.t_delete);
 	}
@@ -225,9 +226,16 @@
 		shad.reColor = function (){
 			spawning.colorSomething(shad.model.tint, utils.hero_armor_color[0], utils.hero_armor_color[1], utils.hero_armor_color[2]);
 		}
+		shad.checkRecolor = function (shad:MovieClip){
+			if (shad.model._currentframe != shad.lastModelFrame){
+				shad.lastModelFrame = shad.model._currentframe;
+				shad.reColor();
+			}
+		}
 		shad.slotsForExecute.push(function(who:MovieClip){
 			if (who.locked){
 				animating.animateOnly(who.model, 1/6);
+				who.checkRecolor(who);
 				return;
 			}
 			statCalculated = "idle";
@@ -236,11 +244,8 @@
 			if (checkSpdSquare > .1){ statCalculated = "walk"; spdCalculated = 1/ 15;}
 			if (checkSpdSquare > who.max_spd_squared / 4){ statCalculated = "run"; spdCalculated = 1/ 7;}			
 			animating.animate(who.model, statCalculated + "_" + who.lastDirection, spdCalculated);
+			who.checkRecolor(who);
 			
-			if (shad.model._currentframe != shad.lastModelFrame){
-				shad.lastModelFrame = shad.model._currentframe;
-				shad.reColor();
-			}
 		});
 		return shad;
 	}

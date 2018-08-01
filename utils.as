@@ -8,7 +8,7 @@
 	static var t_create = 5;
 	static var t_delete = 6;
 	static var t_game = 7;
-	static var able_messages =  "--++---+";
+	static var able_messages =  "--++-+++";
 	static var symbols:String = ">*#$%+~@";
 	static var ignored_messages = new Array();
 	static var ignore_message_count = 0;

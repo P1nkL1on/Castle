@@ -1,5 +1,5 @@
 class levels{
-	static var testLevels:Array = new Array(3,4,6);
+	static var testLevels:Array = new Array(3,4,6,6,6);
 	
 	static function selectNextLevel():Number{
 		return testLevels.pop()+0;
@@ -7,6 +7,20 @@ class levels{
 	static function completeLevel(number:Number){
 		utils.trace('Level :: ' + number + " :: COMPLETED!", utils.t_game);
 		_root.gotoAndStop('level_selection');
+	}
+	
+	
+	static var camera:MovieClip= null;
+	static function spawnCamera():MovieClip{
+		camera = _root.attachMovie('camera', 'camera', _root.getNextHighestDepth());
+		camera._height = 400; camera._width = 600;
+		camera.follow = _root.hero;
+		camera.followPlayer = function(){
+			this._x = this.follow._x;
+			this._y = this.follow._y;
+		}
+		utils.trace('Created camera :: ' + camera, utils.t_create);
+		return camera;
 	}
 	
 	static function makeLevelExit(door:MovieClip, xOffset, yOffset):MovieClip{

@@ -14,12 +14,19 @@ class saving{
 			utils.trace('Loaded artifacts : ' + savefile.data.artifacts, utils.t_saveinfo);
 		}
 	}
-	static function saveGame(){
+	static function saveGame(restart){
+		if (restart == true){
+			savefile.data.saved = undefined;
+			savefile.flush(); 
+			utils.trace('** Game progress reset **',utils.t_saveinfo);
+			return;
+		}
 		utils.trace('Saving game...', utils.t_saveinfo);
 		savefile.data.heroRGB = utils.hero_armor_color;
 		savefile.data.artifacts = utils.hero_has_items;
 		savefile.data.saved = true;
 		savefile.flush(); 
 		utils.trace('Game saved.',utils.t_saveinfo);
+		
 	}
 }

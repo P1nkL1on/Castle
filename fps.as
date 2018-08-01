@@ -10,7 +10,9 @@
 		return frames_now;
 	}
 	static function spawnCounter():MovieClip{
-		_root.attachMovie('fpsCounter', 'fpsCounter', _root.getNextHighestDepth());
-		return _root.fpsCounter;
+		if (_root.layer_GUI == undefined)
+			spawning.createLayer('layer_GUI');
+		_root.layer_GUI.attachMovie('fpsCounter', 'fpsCounter', _root.layer_GUI.getNextHighestDepth());
+		return _root.layer_GUI.fpsCounter;
 	}
 }
