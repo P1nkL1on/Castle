@@ -1,4 +1,4 @@
-class enemies{
+class enemies_elm{
 	static var boltVariants:Array = new Array(2,2,2);
 	static var boltFrameLength:Array = new Array(3,2,1,5,6,7,8,9,10,11,12,13,14,15,16);//(5,5,5,10,16,12,10,8,6,6,4,4,2,2,2,1);
 	static var soundNumber:Number = 0;

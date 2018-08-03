@@ -150,6 +150,8 @@
 			if (who.dir_y == 1 && who.dir_x == 0) shad.lastDirection = "face";
 			if (who.dir_y == -1) shad.lastDirection = "back";
 			// . . . sounding
+			if (who.distanceForStep < 0)
+				return;
 			who.stepTimer += (Math.abs(who.sp_x) + Math.abs(who.sp_y)) * (1 - who.slowing);
 			var playStep:Boolean = (who.stepTimer > who.distanceForStep );
 			while (who.stepTimer > who.distanceForStep )who.stepTimer -= who.distanceForStep;
@@ -188,7 +190,7 @@
 			for (var i = 0; i < ground.walls.length; ++i)
 				if (ground.walls[i].hitTest(who._x, who._y + dY, true))
 					return;
-		who._y += dY;			
+		who._y += dY;		
 	}
 	static function makeShadowMovable(shad:MovieClip):MovieClip
 	{
