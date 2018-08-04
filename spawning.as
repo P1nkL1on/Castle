@@ -148,7 +148,7 @@
 			who.sp_y += who.dir_y * who.acs0 * deltaTimeSquared();
 			who.isMoving = (who.dir_x != 0 || who.dir_y != 0);
 			// . . . animation
-			if (who.dir_x != 0){ shad.lastDirection = "side"; shad.model._xscale = shad.model.xs * who.dir_x * (-1); }
+			if (who.dir_x != 0){ shad.lastDirection = "side"; if (shad.model.ignoreTurning != true)shad.model._xscale = shad.model.xs * who.dir_x * (-1); }
 			if (who.dir_y == 1 && who.dir_x == 0) shad.lastDirection = "face";
 			if (who.dir_y == -1) shad.lastDirection = "back";
 			// . . . sounding

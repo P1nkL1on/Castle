@@ -22,7 +22,10 @@ class enemies_inv
 		shad.unitTarget = _root.hero;
 		shad.breath = 0;
 		shad.freeRush = false;
+		shad.jumps = 0;
 		shad.sppx = 0; shad.sppy = 0;
+		shad.model.ignoreTurning = true;
+		shad.mouthOpened = false;
 		shad.nextState = function(num){
 			if (num == undefined)
 				shad.aiState++;
@@ -31,11 +34,40 @@ class enemies_inv
 			shad.aiTimer = 0;
 			trace('Lizard state :: ' 	+ shad.aiState);
 		}
+		shad.head_anim_spd = 30;
+		shad.openMouth = function(){
+			if (shad.mouthOpened)
+				return;
+			shad.mouthOpened = true;
+			shad.model.head.gotoAndStop('open');
+			shad.head_anim_spd = 8;
+		}
+		shad.closeMouth = function(){
+			if (!shad.mouthOpened)
+				return;
+			shad.mouthOpened = false;
+			shad.head_anim_spd = 40;
+			shad.model.head.gotoAndStop(1);
+		}
 		shad.slotsForExecute.push(function(who:MovieClip){
+			who.model._xscale = ((who._x > who.unitTarget._x)*2-1)*100;
+			who.nearMouth = who.model.head.hb.hitTest(who.unitTarget);
 			if (who.model._xscale > 0)
 				who.model.head._rotation = Math.atan2( who.unitTarget._y - who._y, who.unitTarget._x - who._x )/Math.PI*180+180;
 			if (who.model._xscale < 0)
 				who.model.head._rotation = Math.atan2( who._y - who.unitTarget._y, who.unitTarget._x - who._x )/Math.PI*180;
+			animating.animateOnly(who.model.head, 1 / who.head_anim_spd);
+			
+			if (who.wasNearMouth != who.nearMouth){
+				who.wasNearMouth = who.nearMouth;
+				if (who.aiState == 3 || who.aiState == 2 || (who.aiState == 0 && who.aiTimer > 150)){
+					if (who.nearMouth == true)
+						who.openMouth();
+					else
+						who.closeMouth();
+				}
+			}
+			
 			if (who.aiState != 1 && (who.breath < 0 || who.breathStop == true)){
 				if (who.breath < 600){
 					who.breathStop = true;
@@ -48,7 +80,8 @@ class enemies_inv
 			who.aiTimer += animating.worldTimeSpeed;
 			if (who.aiState == 0){	// walking by circles
 				who.targetPhase += .02 * animating.worldTimeSpeed;
-				who.targetRad = 250;
+				if (who.aiTimer % 100 == 1)
+					who.targetRad = 200+random(120);
 				who.targetX = who.unitTarget._x + Math.cos(who.targetPhase) * who.targetRad;
 				who.targetY = who.unitTarget._y + .5 * Math.sin(who.targetPhase) * who.targetRad;
 				if (who.aiTimer > 180 && who.max_spd > .05){
@@ -60,8 +93,10 @@ class enemies_inv
 						who.max_spd = 30; who.max_spd_squared = 900;
 						who.targetX = who.unitTarget._x;
 						who.targetY = who.unitTarget._y;
+						who.openMouth();
 					}
 				}
+				who.jumps = 0;
 			}
 			if (who.aiState == 1){
 				if (who.aiTimer < 15){
@@ -69,11 +104,13 @@ class enemies_inv
 					who.targetY += (who.targetY - who._y);
 				}
 				if (who.aiTimer > 75){
-					who.nextState(3);
+					who.nextState();
 					who.max_spd = 5; who.max_spd_squared = 25;
 					who.targetX = who._x;
 					who.targetY = who._y;
+					who.closeMouth();
 				}else{
+					slowFollow(who, who.unitTarget._x, who.unitTarget._y, 60);
 					who.max_spd /= 1.02;
 					who.max_spd_squared /= 1.02 * 1.02;
 				}
@@ -83,22 +120,24 @@ class enemies_inv
 					who.targetX = who.unitTarget._x + (random(150)+150)*(random(2)*2-1)
 					who.targetY = who.unitTarget._y + (random(75)+75)*(random(2)*2-1)
 				}	
-				if (Math.abs(who._x - who.targetX) < 80 &&
-					Math.abs(who._y - who.targetY) < 80)
+				if (Math.abs(who._x - who.targetX) < 40 &&
+					Math.abs(who._y - who.targetY) < 40)
 						who.freeRush = true;
 				if (who.freeRush == true && who.max_spd > .05){
 					who.max_spd -= .05 * animating.worldTimeSpeed;
 					who.max_spd_squared = who.max_spd * who.max_spd;
 				}else{
-					if (who.freeRush == true){
+					if (who.jumps < 2 && who.freeRush == true){
+						who.jumps ++;
 						who.nextState(1);
 						who.max_spd = 30; who.max_spd_squared = 900;
 						who.targetX = who.unitTarget._x;
 						who.targetY = who.unitTarget._y;
+						who.openMouth();
 					}
 				}
 				if (who.aiTimer > 155){
-					who.nextState(0);
+					who.nextState((random(2)==0)? 3 : 0);
 					who.max_spd = 8; who.max_spd_squared = 64;
 					who.targetX = who._x;
 					who.targetY = who._y;
@@ -113,9 +152,17 @@ class enemies_inv
 				who.sppy += .2 * ((who._y < who.unitTarget._y)*2-1);
 				who.targetX = who.unitTarget._x;
 				who.targetY = who.unitTarget._y;
+				if (who.aiTimer > 265){
+					who.nextState(0);
+					who.max_spd = 8; who.max_spd_squared = 64;
+					who.targetX = who._x;
+					who.targetY = who._y;
+					who.closeMouth();
+				}
 			}
 			who.breath -= who.spd_mult * animating.worldTimeSpeed;
 		});
+		shad.wasNearMouth = false;
 		// . . . simple chain system
 		shad.segmentCount = 7;
 		shad.segmentSpd = 5;
