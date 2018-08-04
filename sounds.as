@@ -93,6 +93,8 @@
 		return null;
 	}
 	//
+	static var stepSoundX:Number = 0;
+	static var stepSoundY:Number = 0;
 	static public function playHeroFootStepSound(who:MovieClip){
 		if (who.standingOn == undefined) who.standingOn = null;
 		if (who.standingOn == null){
@@ -101,6 +103,9 @@
 			return;
 		}
 		playSound(footStepName(who.standingOn.groundType) + ""+(random(who.standingOn.groundSoundVariant)+1));
-		ground.spawnEffect("effect_step_" + who.standingOn.groundType, who._x, who._y);
+		stepSoundX = who._x + ((who.stepOffsetX == undefined)? 0 : (random(Math.round(who.stepOffsetX))-who.stepOffsetX/2));
+		stepSoundY = who._y + ((who.stepOffsetY == undefined)? 0 : (random(Math.round(who.stepOffsetY))-who.stepOffsetY/2));
+		
+		ground.spawnEffect("effect_step_" + who.standingOn.groundType, stepSoundX, stepSoundY);
 	}
 }

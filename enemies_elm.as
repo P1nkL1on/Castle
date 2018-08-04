@@ -39,7 +39,7 @@ class enemies_elm{
 				last.gotoAndStop(boltNames.charAt(i) + random(boltVariants[i]));
 				last.t = 3-i;
 				last.onEnterFrame = function(){
-					if (animating.each(this, 1 / enemies.boltFrameLength[this.t]) > 0){
+					if (animating.each(this, 1 / enemies_elm.boltFrameLength[this.t]) > 0){
 						this.nextFrame(); ++this.t;
 					}
 				}
@@ -258,7 +258,7 @@ class enemies_elm{
 		shad.slotsForExecute.push(function(who){
 			if (Key.isDown(Key.SPACE)) who.sp++; else who.sp = 0;
 			if (who.sp % 30 == 1)
-				enemies.spawnBolt(
+				enemies_elm.spawnBolt(
 				undefined,//electromage.model._x + (electromage.model._xscale) / 100 * electromage.model.bolt_start._x,
 				undefined,//electromage.model._y + electromage.model.bolt_start._y,
 				_root.hero._x,
