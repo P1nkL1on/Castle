@@ -149,9 +149,13 @@ class enemies_inv
 					who.targetY = who.unitTarget._y + (random(75)+75)*(random(2)*2-1)
 				}	
 				if (Math.abs(who._x - who.targetX) < 40 &&
-					Math.abs(who._y - who.targetY) < 40)
-						who.freeRush = true;
+					Math.abs(who._y - who.targetY) < 40 && 
+					who.freeRush == false){
+						who.freeRush = true; who.battlecryed = false;}
 				if (who.freeRush == true && who.max_spd > .05){
+					if (who.battlecryed == false)
+						{who.battlecryed = true ;
+						sounds.playSound('voices/lizard/openmouth5');}
 					who.max_spd -= .05 * animating.worldTimeSpeed;
 					who.max_spd_squared = who.max_spd * who.max_spd;
 				}else{
@@ -162,6 +166,7 @@ class enemies_inv
 						who.targetX = who.unitTarget._x;
 						who.targetY = who.unitTarget._y;
 						who.openMouth();
+						who.freeRush = false;
 					}
 				}
 				if (who.aiTimer > 155){
