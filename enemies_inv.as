@@ -105,6 +105,8 @@ class enemies_inv
 				who.jumps = 0;
 			}
 			if (who.aiState == 1){
+				if (who.aiTimer == 1)
+					who.lightTimer = who.lightEach - 1;
 				if (who.aiTimer < 15){
 					who.targetX += (who.targetX - who._x);
 					who.targetY += (who.targetY - who._y);
@@ -171,7 +173,7 @@ class enemies_inv
 		});
 		shad.wasNearMouth = false;
 		// . . . simple chain system
-		shad.segmentCount = 7;
+		shad.segmentCount = 17;
 		shad.segmentSpd = 5;
 		shad.stepOffsetX = 30;
 		shad.stepOffsetY = 15;
@@ -207,7 +209,31 @@ class enemies_inv
 			shad.segments.push(segment);
 			//segment.model._visible = false;
 		}
-		//shad.model._visible = false;
+		//shad.model._alpha = 10;//_visible = false;
+		// . . . light system
+		shad.curSegment = 0;
+		shad.lightTimer = 0;
+		shad.lightEach = 220;
+		shad.timeForEachSegment = 4;
+		shad.slotsForExecute.push(function(who:MovieClip){
+			if (who.lightTimer >= 0)
+				who.lightTimer+= animating.worldTimeSpeed;
+			
+			if (who.lightTimer > who.lightEach){
+				var segmentNumber:Number = Math.round((who.lightTimer - who.lightEach) / who.timeForEachSegment) - 1;
+				var seg:MovieClip = who.segments[segmentNumber - 1];
+				if (segmentNumber <= 0)	seg = who;
+				if (segmentNumber == 3) who.model.activateX = - 30;
+				who.segments[segmentNumber - 3].model.activateX = -30;
+				seg.model.activateX += 60 / who.timeForEachSegment;
+			}
+			if (who.lightTimer > who.lightEach + who.timeForEachSegment * who.segmentCount){
+				for (var i = 0; i < who.segments.length; ++i)
+					who.segments[i].model.activateX = -30;
+				who.lightTimer = -60;
+			}
+					
+		});
 		// . . . simple movement system
 		shad.max_spd = 8;
 		shad.max_spd_squared = 64;

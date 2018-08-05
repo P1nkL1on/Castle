@@ -60,7 +60,7 @@
 	
 	// . . . color selectio
 	static var hero_armor_color:Array = new Array(255, 40, 40);
-	static var hero_has_items:Array = new Array(true, false, false, false);
+	static var hero_has_items:Array = new Array(true, false, false, true);
 	// sword , book , shield, bottle
 	
 	static function makeHero(X, Y){

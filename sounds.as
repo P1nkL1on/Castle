@@ -22,7 +22,7 @@
 	static function footstepSounds():Array{
 		var sos:Array = new Array();
 		footStepsTypes = new Array("ground", "met", "water");
-		footStepsCount = new Array(15,		4,	  4		 );
+		footStepsCount = new Array(15,		4,	    15		 );
 		for (var i = 0; i < footStepsCount.length; i++)
 			for (var j = 1; j <= footStepsCount[i]; j++)
 				sos.push(footStepName(footStepsTypes[i]+"") + "" + j);
