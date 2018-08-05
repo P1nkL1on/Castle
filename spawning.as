@@ -106,10 +106,10 @@
 		}
 		// adding
 		units.push(newShadow);
-		// .. clear for nonbuggy other
-		newModel = newShadow = null;
 		/// strange point
 		newShadow._visible = false;
+		// .. clear for nonbuggy other
+		newModel = newShadow = null;
 		return units[units.length - 1];
 	}
 	static var movementKeys:Array = new Array(37,38,39,40,18);

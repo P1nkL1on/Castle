@@ -2,12 +2,20 @@ class enemies_inv
 {
 
 	static function slowFollow(who:MovieClip, toX, toY, spd, dist){
-		if (dist == undefined) dist = 3;
-		if (Math.abs(who.host._x - who.host.targetX) < 20 && 
-			Math.abs(who.host._y - who.host.targetY) < 20)
-				spd += 10;
-		spawning.lsp_x = spawning.tryMoveX(who, (toX - who._x) / spd);
-		spawning.lsp_y = spawning.tryMoveY(who, (toY - who._y) / spd);
+		if (dist == undefined) dist = -1;
+		// if (Math.abs(who.host._x - who.host.targetX) < 20 && 
+			// Math.abs(who.host._y - who.host.targetY) < 20)
+				// spd += 10;
+		spawning.lsp_x = spawning.lsp_y = 0;
+		spawning.lsp_x += spawning.tryMoveX(who, (toX - who._x) / spd);
+		spawning.lsp_y += spawning.tryMoveY(who, (toY - who._y) / spd);
+		if (dist > 10)
+			while (Math.sqrt((who._x - toX)*(who._x - toX)+(who._y - toY)*(who._y - toY)) > dist){	
+				spawning.lsp_x += spawning.tryMoveX(who, (toX - who._x) / 8);
+				spawning.lsp_y += spawning.tryMoveY(who, (toY - who._y) / 8);
+			}
+		who.model.body._rotation = Math.atan2(spawning.lsp_y, spawning.lsp_x)/Math.PI*180+180;
+		who.last_sp_x = spawning.lsp_x;
 		if (who.distanceForStep > 0){
 			who.en_lsp = spawning.lsp();
 		}
@@ -44,6 +52,8 @@ class enemies_inv
 			shad.mouthOpened = true;
 			shad.model.head.gotoAndStop('open');
 			shad.head_anim_spd = 8;
+			sounds.playSound('voices/lizard/openmouth4');
+			shad.sound_khh = sounds.playSound('voices/lizard/openmouth1');
 		}
 		shad.closeMouth = function(){
 			if (!shad.mouthOpened)
@@ -51,6 +61,8 @@ class enemies_inv
 			shad.mouthOpened = false;
 			shad.head_anim_spd = 40;
 			shad.model.head.gotoAndStop(1);
+			shad.sound_khh.stop();
+			sounds.playSound('voices/lizard/openmouth3');
 		}
 		shad.onAttacked = function(byWho:MovieClip){
 			trace('Snake attacked by :: ' + byWho._name);
@@ -90,6 +102,8 @@ class enemies_inv
 					who.targetRad = 270+random(120);
 				who.targetX = who.unitTarget._x + Math.cos(who.targetPhase) * who.targetRad;
 				who.targetY = who.unitTarget._y + .5 * Math.sin(who.targetPhase) * who.targetRad;
+				if (who.aiTimer == 180)
+					sounds.playSound('voices/lizard/openmouth2');
 				if (who.aiTimer > 180 && who.max_spd > .05){
 					who.max_spd -= .05 * animating.worldTimeSpeed;
 					who.max_spd_squared = who.max_spd * who.max_spd;
@@ -105,11 +119,17 @@ class enemies_inv
 				who.jumps = 0;
 			}
 			if (who.aiState == 1){
-				if (who.aiTimer == 1)
+				if (who.aiTimer == 1 && who.lightTimer < 0){
 					who.lightTimer = who.lightEach - 1;
+					who.runS = sounds.playSound('voices/lizard/ship1');
+				}
 				if (who.aiTimer < 15){
 					who.targetX += (who.targetX - who._x);
 					who.targetY += (who.targetY - who._y);
+				}
+				if (who.aiTimer == 55){
+					who.runS.stop();
+					sounds.playSound('voices/lizard/ship2');
 				}
 				if (who.aiTimer > 75){
 					who.nextState();
@@ -173,7 +193,7 @@ class enemies_inv
 		});
 		shad.wasNearMouth = false;
 		// . . . simple chain system
-		shad.segmentCount = 17;
+		shad.segmentCount = 15;
 		shad.segmentSpd = 5;
 		shad.stepOffsetX = 30;
 		shad.stepOffsetY = 15;
@@ -203,8 +223,10 @@ class enemies_inv
 				});
 			}else 
 				segment.distanceForStep = -1;
+			segment.ww = 20;
+			trace(i+' ;; ' + segment.ww);
 			segment.slotsForExecute.push(function(who:MovieClip){
-				slowFollow(who, who.follow._x, who.follow._y, 1+(who.segSpd + Math.max(0, (8 - who.host.max_spd)) * 3)/animating.worldTimeSpeed, 20);	
+				slowFollow(who, who.follow._x, who.follow._y, 20, who.ww);	
 			});
 			shad.segments.push(segment);
 			//segment.model._visible = false;
@@ -230,7 +252,7 @@ class enemies_inv
 			if (who.lightTimer > who.lightEach + who.timeForEachSegment * who.segmentCount){
 				for (var i = 0; i < who.segments.length; ++i)
 					who.segments[i].model.activateX = -30;
-				who.lightTimer = -60;
+				who.lightTimer = (random(2)==0)? -60 : 10;
 			}
 					
 		});
