@@ -64,10 +64,48 @@ class enemies_inv
 			shad.sound_khh.stop();
 			sounds.playSound('voices/lizard/openmouth3');
 		}
-		shad.onAttacked = function(byWho:MovieClip){
+		shad.injures = 0;
+		shad.injures_min = -3;	// bravery
+		shad.injures_max = 3;
+		shad.regen_spd = 1 / (5 * 60);
+		
+		shad.onAttacked = function(byWho:MovieClip, hited){
+			if (who.destroyed == true)
+				return;	
 			trace('Snake attacked by :: ' + byWho._name);
+			shad.nextState(-1);
+			shad.aiTimer = 0;
+			
+			shad.max_spd = 30;
+			var ddx = (shad._x > shad.unitTarget._x) * 2 - 1;
+			var ddy = (shad._y > shad.unitTarget._y) * 2 - 1;
+			shad.targetX = shad._x + ddx * 180;
+			shad.targetY = shad._y + ddy * 90;
+			if (hited){
+				shad.injures++;
+				trace('Lizard injures = ' + shad.injures + '/' + shad.injures_max);
+			}
 		}
+		
+		// . . . health system
 		shad.slotsForExecute.push(function(who:MovieClip){
+			if (who.injures > who.injures_min)
+				who.injures -= who.regen_spd * animating.worldTimeSpeed;
+			if (who.injures > who.injures_max && !who.destroyed){
+				who.destroyed = true;
+				who.die();
+			}
+		});
+		shad.die = function(){
+			shad.sp_x = shad.sp_y = 0;
+			shad.max_spd = 0;
+			trace('Lizard destroyed!');
+		}
+		
+		
+		shad.slotsForExecute.push(function(who:MovieClip){	
+			if (who.destroyed == true)
+				return;	
 			who.model._xscale = ((who._x > who.unitTarget._x)*2-1)*100;
 			who.nearMouth = who.model.head.hb.hitTest(who.unitTarget);
 			if (who.model._xscale > 0)
@@ -85,7 +123,8 @@ class enemies_inv
 						who.closeMouth();
 				}
 			}
-			
+			if (who.aiState == -1 && who.aiTimer > 50)
+				who.nextState(random(4));
 			if (who.aiState != 1 && (who.breath < 0 || who.breathStop == true)){
 				if (who.breath < 600){
 					who.breathStop = true;
@@ -243,18 +282,22 @@ class enemies_inv
 		shad.lightEach = 220;
 		shad.timeForEachSegment = 4;
 		shad.slotsForExecute.push(function(who:MovieClip){
+			if (who.destroyed == true)
+				return;	
 			if (who.lightTimer >= 0)
 				who.lightTimer+= animating.worldTimeSpeed;
 			
 			if (who.lightTimer > who.lightEach){
-				var segmentNumber:Number = Math.round((who.lightTimer - who.lightEach) / who.timeForEachSegment) - 1;
-				var seg:MovieClip = who.segments[segmentNumber - 1];
-				if (segmentNumber <= 0)	seg = who;
+				var segmentNumber:Number = Math.round((who.lightTimer - who.lightEach) / who.timeForEachSegment) - 3;
+				var seg:MovieClip = who.segments[segmentNumber].model;
+				if (segmentNumber == -2)seg = who.model.liss;
+				if (segmentNumber == -1)seg = who.model;
+				if (segmentNumber == 2) who.model.liss.activateX = - 30;
 				if (segmentNumber == 3) who.model.activateX = - 30;
 				who.segments[segmentNumber - 3].model.activateX = -30;
-				seg.model.activateX += 60 / who.timeForEachSegment;
+				seg.activateX += 60 / who.timeForEachSegment;
 			}
-			if (who.lightTimer > who.lightEach + who.timeForEachSegment * who.segmentCount){
+			if (who.lightTimer > who.lightEach + who.timeForEachSegment * (who.segmentCount + 2)){
 				for (var i = 0; i < who.segments.length; ++i)
 					who.segments[i].model.activateX = -30;
 				who.lightTimer = (random(2)==0)? -60 : 10;
@@ -266,10 +309,14 @@ class enemies_inv
 		shad.max_spd_squared = 64;
 		shad.xs_last = shad.model._xscale;
 		shad.slotsForExecute.push(function(who:MovieClip){
+			if (who.destroyed == true)
+				return;	
 			if (who.xs_last != who.model._xscale){
 				who.model.head._x *= -1;
 				who.xs_last = who.model._xscale;
 			}
+			who.model.liss._x = who.model.head._x;
+			who.model.liss._rotation = who.model.head._rotation;
 			_root.pp._x = who.targetX;
 			_root.pp._y = who.targetY - 30;
 			if (who.destroyed == true || (Math.abs(who._x - who.targetX) < 20 && Math.abs(who._y - who.targetY) < 20))
