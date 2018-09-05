@@ -245,6 +245,7 @@ class enemies_elm{
 		shad.dead = function(where:String){
 			shad.model.gotoAndStop(where);
 			shad.destroyed = true;
+			heroAbilities.makeUnhitable(shad);
 		}
 		shad.onMouseUp = function(){
 			if (Key.isDown(Key.UP))

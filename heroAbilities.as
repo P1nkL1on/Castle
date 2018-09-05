@@ -274,7 +274,16 @@
 	}
 	static function makeHitable(shad:MovieClip):MovieClip{
 		shad.wasHited = false;
+		if (shad.hitable != undefined){
+			shad.hitable = true;
+			return shad;
+		}
+		shad.hitable = true;
+		if (shad.slotsForExecute == undefined)
+			shad.slotsForExecute = new Array();
 		shad.slotsForExecute.push(function(who:MovieClip){
+			if (who.hitable != true)
+				return;
 			who.hs = _root.layer_background.effect_sword_slash_hitbox;
 			if (who.hs.ignore == true || who.hs == undefined || who.hs == null)
 				return;
@@ -282,11 +291,25 @@
 				who.hs._alpha /= 2;
 				who.hs.ignore = true;
 				who.wasHited = true;
-				utils.trace(who._name + " :: hited!", utils.t_combat)
+				utils.trace(who._name + " :: hited!", utils.t_combat);
+				
+				ground.spawnEffect("effect_hit_blood",
+									who.hs._x * .5+ who._x * .5,
+									who._y - who._z - who.model._height * .2,
+									undefined, _root.layer_effects);
+									
 			}
 		});
+		shad.hittableFunction = shad.slotsForExecute[shad.slotsForExecute.length - 1];
 		return shad;
 	}
+	
+	static function makeUnhitable(shad:MovieClip):MovieClip{
+		if (shad.hittableFunction != undefined)
+			shad.hitable = false;
+		return shad;
+	}
+	
 	static function giveShield(shad:MovieClip):MovieClip{
 		shad.shieldUse = 0;
 		shad.isBlocking = false;
