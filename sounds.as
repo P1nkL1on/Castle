@@ -52,7 +52,7 @@
 			for (var j = 1; j <= voicesCounts[i]; j++)
 				sos.push(voiceName(voicesNames[i], j));
 				/// !!!
-			if (voicesNames[i] == "test/test" >= 0)
+			if (voicesNames[i] == "test/test")
 				sos.push(voiceName(voicesNames[i], '_out'));
 		}
 		return sos;
