@@ -70,7 +70,7 @@ class enemies_inv
 		shad.regen_spd = 1 / (5 * 60);
 		
 		shad.onAttacked = function(byWho:MovieClip, hited){
-			if (who.destroyed == true)
+			if (shad.destroyed == true)
 				return;	
 			trace('Snake attacked by :: ' + byWho._name);
 			shad.nextState(-1);
