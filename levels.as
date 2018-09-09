@@ -37,7 +37,7 @@ class levels{
 				if (this.xlocked == false)
 					this._x += (this.follow._x - this._x)/this.cameraSlow;
 				if (this.ylocked == false)
-					this._y += (this.follow._y - this._y)/this.cameraSlow;
+					this._y += (this.follow._y - 90 - this._y)/this.cameraSlow;
 			}else{
 				this.toX = 0; this.toY = 0;
 				if (this.follow._x < this._x - this._width / 2)this.toX = -1;
@@ -286,6 +286,7 @@ class levels{
 				_root.hero.locked = !this.toggleHeroLock;
 				_root.hero.model.gotoAndStop(1);
 				_root.hero.reColor();
+				_root.whiteSpace.circle.b.spd = (!this.toggleHeroLock)? .2 : 5;
 				_root.hero.sp_x = _root.hero.sp_y = 0;
 				sounds.playSound(sounds.voiceName('GUI/move', 3));
 				if (this.toggleHeroLock == true)
