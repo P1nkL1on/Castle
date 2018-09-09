@@ -128,6 +128,7 @@ class dialogs{
 					// IF
 					if (who.model.subtitleCurrentLetter < who.model.subtitleNeedLetter || who.model.lastSubtitle.charAt(who.model.subtitleCurrentLetter) != ' '){
 						who.model.descr.text += who.model.lastSubtitle.charAt(++who.model.subtitleCurrentLetter);
+						//sounds.playSound(sounds.voiceName('GUI/move', 1));
 						if (who.model.lastSound.position < who.model.lastSound.duration)
 							{ who.model.talkFast = true; }
 					}
