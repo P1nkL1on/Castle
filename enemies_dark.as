@@ -11,15 +11,16 @@
 		animating.animate(who, who.idleVariant, 1/20);
 		
 		who.t = _root.hero; who.xx = who._x; who.sc = side;
-		who.scr = false;
+		who.scr = false; who.rand_spd = 5; who.x_offset = 0;
 		
 		who.onEnterFrame = function (){
 			this.dx = this._x - this.t._x;
 			this.dy = (this._y - this.t._y);
 			this.dist = Math.max(0, Math.min(100, 
-			100- .5 * (.5 * Math.abs(this.dx) + Math.abs(this.dy))));
+				100- .5 * (.5 * Math.abs(this.dx) + Math.abs(this.dy))));
 			
-			this._x = this.xx + (100 - this.dist) * this.sc;
+			this._x += (this.xx + this.x_offset + 
+				(100 - this.dist) * this.sc - this._x) / this.rand_spd;
 			
 			if (this.dist > 7){
 				animating.animate(this, 'rush', 1/this.animSpd);
@@ -27,14 +28,48 @@
 			}
 			else{
 				if (this.scr){
-					this.gotoAndStop('scream');
+				animating.animate(this, 'scream', 1/this.animSpd);
 					return;
 				}
 				animating.animate(this, this.idleVariant, 1/this.animSpd);
 				this._rotation /= 1.1;
-				if (!this.scr && random(5) == 0 )
+				if (!this.scr && this._currentframe % 3 == 0 && random(55) == 0)
 					this.scr = true;
 			}
+			
+			if (animating.each(this, 1/(6 + .1 * Math.abs(this.dy)))){
+				this.x_offset = random(24) - 13;
+			}
+		}
+	}
+	
+	static function makeShadowCorridor(){
+		trace('Makeing corridor');
+		// spawn effect boys
+		for (var i = 0; i < 800; i += 30)
+		for (var d = -1; d <= 1; d += 2)
+		{
+			var cor_unit = _root.layer_effects.attachMovie('unit_shadow_monster', 'scd_'+i+'_'+d, 
+						   _root.layer_effects.getNextHighestDepth());
+			cor_unit._x = 300 + 60 * d;
+			cor_unit._y = -580 + i;
+			makeShadowCorridorUnit(cor_unit, d);
+		}
+		// a mister, who checking a speed and other
+		_root.layer_effects.scd_0_1._visible = false;
+		_root.layer_effects.scd_0_1.background_sound = null;
+		
+		_root.layer_effects.scd_0_1.onEnterFrame = function (){
+			if (_root.hero._y < 180){
+				this.hero_spd = -(300 - _root.hero._x);
+				_root.hero._x += Math.max(-3, Math.min(3, this.hero_spd * .05));
+			}
+			if (this.background_sound == null && _root.hero._y < 260){
+				this.background_sound = sounds.playSound('background/shadow_corridor', 10);
+				trace('a');
+			}
+			if (this.background_sound != null)
+				this.background_sound.setVolume(Math.max(150, 20 + Math.abs(_root.hero._x - 300)));
 		}
 	}
 }

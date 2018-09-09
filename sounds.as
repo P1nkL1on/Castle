@@ -34,7 +34,8 @@
 		"weapons/sword_hit_metall", "weapons/sword_hit_blood", "weapons/sword_parry", "weapons/stunned");
 	}
 	static function interactiveSounds():Array{
-		return new Array("background/lever","background/door_open","background/key_open");
+		return new Array("background/lever","background/door_open","background/key_open"
+						,"background/shadow_corridor","background/shadow_scream","background/shadow_touch");
 	}
 	static function voiceName(path, number){
 		return "voices/" + path + ""+ number;
@@ -89,9 +90,11 @@
 	}
 	
 	// Воспроизвести звук по имени. (Звук выбирается из массива sounds)
-	static public function playSound(nam:String):Sound{
+	static public function playSound(nam:String, times):Sound{
+		if (times == undefined)
+			times = 1;
 		for (var i=0; i<soundFiles.length; i++)
-			if (soundFiles[i].name == nam){ soundFiles[i].start(0,1);return soundFiles[i]; }															//воспроизвести звук совпадающий по имени
+			if (soundFiles[i].name == nam){ soundFiles[i].start(0, times);return soundFiles[i]; }															//воспроизвести звук совпадающий по имени
 		utils.trace("No sound '"+nam+"' in library!", utils.t_error); 																			//если звука нет, бупнем и сообщим об ошибкe
 		if (nam.indexOf('voices/') == 0 && nam.indexOf('default1') < 0)
 			return playSound('voices/default/default1');
