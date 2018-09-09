@@ -44,15 +44,14 @@
 	}
 	
 	static function makeShadowCorridor(){
-		trace('Makeing corridor');
 		// spawn effect boys
-		for (var i = 0; i < 800; i += 30)
+		for (var i = 0; i < 740; i += 30)
 		for (var d = -1; d <= 1; d += 2)
 		{
 			var cor_unit = _root.layer_effects.attachMovie('unit_shadow_monster', 'scd_'+i+'_'+d, 
 						   _root.layer_effects.getNextHighestDepth());
 			cor_unit._x = 300 + 60 * d;
-			cor_unit._y = -580 + i;
+			cor_unit._y = -520 + i;
 			makeShadowCorridorUnit(cor_unit, d);
 		}
 		// a mister, who checking a speed and other
@@ -60,16 +59,16 @@
 		_root.layer_effects.scd_0_1.background_sound = null;
 		
 		_root.layer_effects.scd_0_1.onEnterFrame = function (){
-			if (_root.hero._y < 180){
+			if (_root.hero._y < 180 && _root.hero._y > -500){
 				this.hero_spd = -(300 - _root.hero._x);
-				_root.hero._x += Math.max(-3, Math.min(3, this.hero_spd * .05));
+				spawning.tryMoveX(_root.hero, Math.max(-3, Math.min(3, this.hero_spd * .05)));
 			}
-			if (this.background_sound == null && _root.hero._y < 260){
+			if (this.background_sound == null && _root.hero._y < 360){
 				this.background_sound = sounds.playSound('background/shadow_corridor', 10);
-				trace('a');
+				this.background_sound.setVolume(5);
 			}
 			if (this.background_sound != null)
-				this.background_sound.setVolume(Math.max(150, 20 + Math.abs(_root.hero._x - 300)));
+				this.background_sound.setVolume(Math.min(120, 10 + 2 * Math.abs(_root.hero._x - 300)));
 		}
 	}
 }

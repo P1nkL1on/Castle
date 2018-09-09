@@ -164,6 +164,6 @@
 	static function makeWall(newGround:MovieClip){
 		utils.trace('Make a ground :: ' + newGround, utils.t_create);
 		walls.push(newGround);
-		newGround._visible = false;
+		newGround._alpha = 0;//._visible = false;
 	}
 }
