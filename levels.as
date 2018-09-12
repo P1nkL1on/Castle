@@ -321,10 +321,12 @@ class levels{
 	}
 	
 	static function makeMenuSelector(){
-		makeMenuStrings(300 - 77, 80, 15, new Array('Start new game','Continue game','Options','Credits'));
+		makeMenuStrings(300 - 77, 80, 15, new Array('Start new game','Continue game','Options','Credits'), new Array(
+			startGame, continueGame, gotoOptions, gotoCredits
+		));
 	}
 	
-	static function makeMenuStrings(x, y, yoffset, lineNames:Array){
+	static function makeMenuStrings(x, y, yoffset, lineNames:Array, functions:Array){
 		if (_root.layer_GUI == undefined)
 			spawning.createLayer('layer_GUI');
 		for (var i = 0; i < lineNames.length; ++i){
@@ -339,12 +341,13 @@ class levels{
 		}
 		
 		var thinker:MovieClip = _root.layer_GUI.attachMovie('GUI_thinker', 'thinker', _root.layer_GUI.getNextHighestDepth());
-		thinker.watchKeys = new Array(37,38,39,40,16);
+		thinker.watchKeys = new Array(37,38,39,40,65);
 		thinker.pressKeys = new Array(0,0,0,0,0,0);
 		thinker.selectedLine = 0;
 		thinker.toggleHeroLock = false;
 		thinker.X = x;
 		thinker.count = lineNames.length;
+		thinker.funcs = functions;
 		_root.hero.locked = true;
 		thinker.onEnterFrame = function (){
 		
@@ -357,18 +360,34 @@ class levels{
 			if (this.toggleHeroLock == true)
 				return;
 			if (keyPressedLong(this.pressKeys[3])){
-				sounds.playSound(sounds.voiceName('GUI/move', 2));
+				sounds.playSound(sounds.voiceName('GUI/move', 1));
 				_root.layer_GUI['line'+x+'_'+this.selectedLine].onUnSelect();
 				this.selectedLine = (this.selectedLine + 1)%this.count;
 				_root.layer_GUI['line'+x+'_'+this.selectedLine].onSelect();
 			}
 			if (keyPressedLong(this.pressKeys[1])){
-				sounds.playSound(sounds.voiceName('GUI/move', 2));
+				sounds.playSound(sounds.voiceName('GUI/move', 1));
 				_root.layer_GUI['line'+x+'_'+this.selectedLine].onUnSelect();
 				this.selectedLine = (this.selectedLine == 0)? (this.count - 1) : (this.selectedLine-1);
 				_root.layer_GUI['line'+x+'_'+this.selectedLine].onSelect();
 			}
-			
+			if (keyPressedLong(this.pressKeys[4])){
+				this.funcs[this.selectedLine]();
+			}
 		}
+	}
+	
+	static function startGame(){
+		_root.gotoAndStop('custom_charater');
+	}
+	static function continueGame(){
+		_root.gotoAndStop('level_selection');
+	}
+	static function gotoOptions(){
+	
+	}
+	static function gotoCredits(){
+	
+	
 	}
 }
