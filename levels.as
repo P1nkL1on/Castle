@@ -319,4 +319,56 @@ class levels{
 			
 		}
 	}
+	
+	static function makeMenuSelector(){
+		makeMenuStrings(300 - 77, 80, 15, new Array('Start new game','Continue game','Options','Credits'));
+	}
+	
+	static function makeMenuStrings(x, y, yoffset, lineNames:Array){
+		if (_root.layer_GUI == undefined)
+			spawning.createLayer('layer_GUI');
+		for (var i = 0; i < lineNames.length; ++i){
+			var newLine:MovieClip = _root.layer_GUI.attachMovie('GUI_line_button', 
+					'line'+x+'_'+(i), _root.layer_GUI.getNextHighestDepth());
+			newLine._x = x;
+			newLine._y = y + yoffset * i;
+			newLine.gotoAndStop(1 + 1*(i==0));
+			newLine.t.text = lineNames[i];
+			newLine.i = i;
+			newLine.line_name = lineNames[i];
+		}
+		
+		var thinker:MovieClip = _root.layer_GUI.attachMovie('GUI_thinker', 'thinker', _root.layer_GUI.getNextHighestDepth());
+		thinker.watchKeys = new Array(37,38,39,40,16);
+		thinker.pressKeys = new Array(0,0,0,0,0,0);
+		thinker.selectedLine = 0;
+		thinker.toggleHeroLock = false;
+		thinker.X = x;
+		thinker.count = lineNames.length;
+		_root.hero.locked = true;
+		thinker.onEnterFrame = function (){
+		
+			for (var i = 0; i < this.watchKeys.length; ++i)
+				if (Key.isDown(this.watchKeys[i]))
+					this.pressKeys[i]++;
+				else
+					this.pressKeys[i] = 0;
+					
+			if (this.toggleHeroLock == true)
+				return;
+			if (keyPressedLong(this.pressKeys[3])){
+				sounds.playSound(sounds.voiceName('GUI/move', 2));
+				_root.layer_GUI['line'+x+'_'+this.selectedLine].onUnSelect();
+				this.selectedLine = (this.selectedLine + 1)%this.count;
+				_root.layer_GUI['line'+x+'_'+this.selectedLine].onSelect();
+			}
+			if (keyPressedLong(this.pressKeys[1])){
+				sounds.playSound(sounds.voiceName('GUI/move', 2));
+				_root.layer_GUI['line'+x+'_'+this.selectedLine].onUnSelect();
+				this.selectedLine = (this.selectedLine == 0)? (this.count - 1) : (this.selectedLine-1);
+				_root.layer_GUI['line'+x+'_'+this.selectedLine].onSelect();
+			}
+			
+		}
+	}
 }
