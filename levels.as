@@ -1,5 +1,5 @@
 class levels{
-	static var testLevels:Array = new Array(3,4,5,6,7);
+	static var testLevels:Array = new Array(5,6,7,8,9);
 	
 	static function selectNextLevel():Number{
 		return testLevels.pop()+0;
