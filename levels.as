@@ -321,7 +321,7 @@ class levels{
 	}
 	
 	static function makeMenuSelector(){
-		makeMenuStrings(300 - 77, 80, 15, new Array('Start new game','Continue game','Options','Credits'), new Array(
+		makeMenuStrings(300 - 77, 320, 15, new Array('Start new game','Continue game','Options','Credits'), new Array(
 			startGame, continueGame, gotoOptions, gotoCredits
 		));
 	}
@@ -341,16 +341,29 @@ class levels{
 		}
 		
 		var thinker:MovieClip = _root.layer_GUI.attachMovie('GUI_thinker', 'thinker', _root.layer_GUI.getNextHighestDepth());
-		thinker.watchKeys = new Array(37,38,39,40,65);
-		thinker.pressKeys = new Array(0,0,0,0,0,0);
+		thinker.watchKeys = new Array(37,38,39,40,65,81,83,87);
+		thinker.pressKeys = new Array(0,0,0,0,0,0,0,0,0);
 		thinker.selectedLine = 0;
 		thinker.toggleHeroLock = false;
 		thinker.X = x;
 		thinker.count = lineNames.length;
 		thinker.funcs = functions;
+		thinker.transitionTimer = 0;
 		_root.hero.locked = true;
 		thinker.onEnterFrame = function (){
-		
+			if (this.transitionTimer > 0){
+				this.transitionTimer ++;
+				if (this.transitionTimer <= 20)
+					for (var i = 0; i < this.count; ++i)
+						_root.layer_GUI['line'+x+'_'+i].d._alpha += 4.95;
+				
+				if (this.transitionTimer == 21){
+					for (var i = 0; i < this.count; ++i)
+						_root.layer_GUI['line'+x+'_'+i].removeMovieClip();
+					this.funcs[this.selectedLine]();
+				}
+				return;
+			}
 			for (var i = 0; i < this.watchKeys.length; ++i)
 				if (Key.isDown(this.watchKeys[i]))
 					this.pressKeys[i]++;
@@ -371,9 +384,11 @@ class levels{
 				this.selectedLine = (this.selectedLine == 0)? (this.count - 1) : (this.selectedLine-1);
 				_root.layer_GUI['line'+x+'_'+this.selectedLine].onSelect();
 			}
-			if (keyPressedLong(this.pressKeys[4])){
-				this.funcs[this.selectedLine]();
-			}
+			for (var pi = 0; pi < 4; pi++)
+				if (keyPressedLong(this.pressKeys[4 + pi])){
+					sounds.playSound(sounds.voiceName('GUI/move', 3));
+					this.transitionTimer++;
+				}
 		}
 	}
 	
@@ -384,7 +399,9 @@ class levels{
 		_root.gotoAndStop('level_selection');
 	}
 	static function gotoOptions(){
-	
+		makeMenuStrings(300 - 77, 320, 15, new Array('..','Game options','Gaphic options', 'Sound options', 'Fuck you options'), new Array(
+				makeMenuSelector, gotoCredits, gotoCredits, gotoCredits, gotoCredits
+			));
 	}
 	static function gotoCredits(){
 	
