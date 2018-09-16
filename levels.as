@@ -329,20 +329,19 @@ class levels{
 		));
 	}
 	static function setLevel(lll){
-		_root.layer_GUI.thinker.level = _root.layer_GUI.thinker.level.substr(0, 2 + lll * 2);
-		trace(_root.layer_GUI.thinker.level);
+		oldesetThinker.level = oldesetThinker.level.substr(0, 2 + lll * 2);
 	}
 	static function pushChoice(lll){
-		trace('-> pushed' + lll);
 		if (!lll){
-			var needLevel:Number = _root.layer_GUI.thinker.level.length / 2 - 2;
-			trace('goto level ' + needLevel);
+			var needLevel:Number = oldesetThinker.level.length / 2 - 2;
 			setLevel(needLevel);
 			return;
 		}
-		_root.layer_GUI.thinker.level += '_'+lll;
-		trace(_root.layer_GUI.thinker.level);
+		oldesetThinker.level += '_'+lll;
+		trace('->' + oldesetThinker.level);
 	}
+	static var oldesetThinker:MovieClip = null;
+	static var thinker:MovieClip;
 	static function makeMenuStrings(x, y, yoffset, lineNames:Array, functions:Array){
 		if (_root.layer_GUI == undefined)
 			spawning.createLayer('layer_GUI');
@@ -351,23 +350,30 @@ class levels{
 					'line'+x+'_'+(i), _root.layer_GUI.getNextHighestDepth());
 			newLine._x = x;
 			newLine._y = y + yoffset * i;
-			newLine.gotoAndStop(1 + 1*(i==0));
+			newLine.gotoAndStop(1);
 			newLine.t.text = lineNames[i];
 			newLine.i = i;
 			newLine.line_name = lineNames[i];
 		}
 		
-		var thinker:MovieClip = _root.layer_GUI.attachMovie('GUI_thinker', 'thinker', _root.layer_GUI.getNextHighestDepth());
+		thinker = _root.layer_GUI.attachMovie('GUI_thinker', 'thinker', _root.layer_GUI.getNextHighestDepth());
 		thinker.watchKeys = new Array(37,38,39,40,65,81,83,87);
 		thinker.pressKeys = new Array(0,0,0,0,0,0,0,0,0);
-		thinker.selectedLine = 0;
+		thinker.selectedLine = (lineNames.length == 1)? 0 : 1;
 		thinker.toggleHeroLock = false;
 		thinker.X = x;
 		thinker.count = lineNames.length;
 		thinker.funcs = functions;
 		thinker.transitionTimer = 0;
 		thinker.level = 'FR';
-		//_root.layer_GUI.thinker;
+		thinker.levelNow = 'FR';
+		
+		if (oldesetThinker == null)
+			oldesetThinker = thinker;
+		
+		_root.layer_GUI['line'+thinker.X+'_'+thinker.selectedLine].gotoAndStop(2);
+		_root.layer_GUI['line'+thinker.X+'_'+thinker.selectedLine].t.text = lineNames[thinker.selectedLine];
+		
 		thinker.onEnterFrame = function (){
 			if (this.transitionTimer > 0){
 				this.transitionTimer ++;
