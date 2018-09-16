@@ -1,13 +1,22 @@
 class levels{
 	static var testLevels:Array = new Array(5,6,7,8,9);
 	
+	static var lastLevel = -1;
+	
 	static function selectNextLevel():Number{
-		return testLevels.pop()+0;
+		lastLevel = testLevels.pop()+0;
+		return lastLevel;
+	}
+	static function tryAgainLevel():Number{
+		return lastLevel;
 	}
 	static function completeLevel(number:Number){
 		utils.trace('Level :: ' + number + " :: COMPLETED!", utils.t_game);
 		_root.gotoAndStop('level_selection');
 	}
+	
+	
+	
 	
 	
 	static var camera:MovieClip= null;
@@ -323,9 +332,24 @@ class levels{
 	static var yDef = 320;
 	static var yOffDef = 15;
 	
+	static function spawnDraws(){
+		if (_root.layer_GUI == undefined)
+			spawning.createLayer('layer_GUI');
+		var drs:MovieClip = _root.layer_GUI.attachMovie('menu_draw', 'drs', _root.layer_GUI.getNextHighestDepth());
+		drs.stop();
+		drs.fr2 = '';
+		drs._x = 122; drs._y = yDef - 122;
+		drs.onEnterFrame = function(){	
+			this.fr = levels.oldesetThinker.level+'_'+levels.thinker.selectedLine;
+			if (this.fr != this.fr2)
+				this.fr2 = this.fr;
+			this.gotoAndStop(this.fr);
+		}
+	}
+	
 	static function makeMenuSelector(){
-		makeMenuStrings(xDef, yDef, yOffDef, new Array('Start new game','Continue game','Options','Credits'), new Array(
-			startGame, continueGame, gotoOptions, gotoCredits
+		makeMenuStrings(xDef, yDef, yOffDef, new Array('Start new game','Continue game','Settings'), new Array(
+			startGame, continueGame, gotoOptions
 		));
 	}
 	static function setLevel(lll){
@@ -338,13 +362,15 @@ class levels{
 			return;
 		}
 		oldesetThinker.level += '_'+lll;
-		trace('->' + oldesetThinker.level);
 	}
 	static var oldesetThinker:MovieClip = null;
 	static var thinker:MovieClip;
-	static function makeMenuStrings(x, y, yoffset, lineNames:Array, functions:Array){
+	static function makeMenuStrings(x, y, yoffset, lineNames:Array, functions:Array, allNotOneAreFake){
 		if (_root.layer_GUI == undefined)
 			spawning.createLayer('layer_GUI');
+		if (allNotOneAreFake == undefined)
+			allNotOneAreFake = false;
+			
 		for (var i = 0; i < lineNames.length; ++i){
 			var newLine:MovieClip = _root.layer_GUI.attachMovie('GUI_line_button', 
 					'line'+x+'_'+(i), _root.layer_GUI.getNextHighestDepth());
@@ -354,6 +380,8 @@ class levels{
 			newLine.t.text = lineNames[i];
 			newLine.i = i;
 			newLine.line_name = lineNames[i];
+			if (allNotOneAreFake == true && i > 0)
+				newLine.noShadow = true;
 		}
 		
 		thinker = _root.layer_GUI.attachMovie('GUI_thinker', 'thinker', _root.layer_GUI.getNextHighestDepth());
@@ -377,6 +405,17 @@ class levels{
 		thinker.onEnterFrame = function (){
 			if (this.transitionTimer > 0){
 				this.transitionTimer ++;
+				//this.sButton = _root.layer_GUI['line'+x+'_'+i];
+				
+				// case of non new menu option
+				if (_root.layer_GUI['line'+x+'_'+this.selectedLine].noShadow == true){
+					if (this.transitionTimer == 5){
+						this.funcs[this.selectedLine](this.selectedLine - 1);
+						this.transitionTimer = 0;
+					}
+					return;
+				}
+				
 				if (this.transitionTimer <= 20)
 					for (var i = 0; i < this.count; ++i)
 						_root.layer_GUI['line'+x+'_'+i].d._alpha += 4.95;
@@ -418,13 +457,16 @@ class levels{
 	}
 	
 	static function startGame(){
+		saving.saveGame(true);
 		_root.gotoAndStop('custom_charater');
 	}
 	static function continueGame(){
+		spawning.clearLayers();
+		saving.loadGame();
 		_root.gotoAndStop('level_selection');
 	}
 	static function gotoOptions(){
-		makeMenuStrings(xDef, yDef, yOffDef, new Array('..','Game options','Gaphic options', 'Sound options'), new Array(
+		makeMenuStrings(xDef, yDef, yOffDef, new Array('..','Game options','Graphic options', 'Sound options'), new Array(
 				makeMenuSelector, gotoGameOptions, gotoGraphicOptions, gotoSoundOptions));
 	}
 			static function gotoGameOptions(){
@@ -433,20 +475,22 @@ class levels{
 			}
 					static function gotoDifficultyOptions(){
 						makeMenuStrings(xDef, yDef, yOffDef, new Array('..','Waffle','Novice', 'Experienced', 'Master'), new Array(
-								gotoGameOptions, doNothing, doNothing, doNothing, doNothing));
+								gotoGameOptions, doNothing, doNothing, doNothing, doNothing), true);
 					}
 					static function gotoTimerOptions(){
 						makeMenuStrings(xDef, yDef, yOffDef, new Array('Leave with no changes','No timer','120 minutes', '60 minutes', '30 minutes'), new Array(
-								gotoGameOptions, doNothing, doNothing, doNothing, doNothing));
+								gotoGameOptions, doNothing, doNothing, doNothing, doNothing), true);
 					}
 					static function gotoStoryOptions(){
 						makeMenuStrings(xDef, yDef, yOffDef, new Array('Leave with no changes','Saving princess', 'Saving prince'), new Array(
-								gotoGameOptions, doNothing, doNothing));
+								gotoGameOptions, doNothing, doNothing), true);
 					}
 			static function gotoGraphicOptions(){
 				makeMenuStrings(xDef, yDef, yOffDef, new Array('..','High quality','Medium quality', 'Low quality'), new Array(
-						gotoOptions, doNothing, doNothing, doNothing));	
+						gotoOptions, setQualityFunction, setQualityFunction, setQualityFunction), true);	
 			}
+			static function setQualityFunction (qual){ trace(qual);if (qual == 0) _quality = 'high'; if (qual == 1) _quality = 'medium'; if (qual == 2) _quality = 'low';}
+			
 			static function gotoSoundOptions(){
 				makeMenuStrings(xDef, yDef, yOffDef, new Array('..'), new Array(
 						gotoOptions));	

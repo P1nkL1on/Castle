@@ -1,7 +1,9 @@
 class saving{
 	static var savefile;
+	static var saveFileName = "Castle_game_save";
+	
 	static function loadGame(){
-		savefile = SharedObject.getLocal("Castle_game_save");
+		savefile = SharedObject.getLocal(saveFileName);
 		if (savefile.data.saved == undefined){
 			// create clear save file
 			utils.trace('There was no correcr save file; Created new game save;', utils.t_saveinfo);
@@ -16,6 +18,7 @@ class saving{
 	}
 	static function saveGame(restart){
 		if (restart == true){
+			savefile = SharedObject.getLocal(saveFileName);
 			savefile.data.saved = undefined;
 			savefile.flush(); 
 			utils.trace('** Game progress reset **',utils.t_saveinfo);

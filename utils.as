@@ -59,7 +59,7 @@
 	}
 	
 	// . . . color selectio
-	static var hero_armor_color:Array = new Array(255, 40, 40);
+	static var hero_armor_color:Array = new Array(235, 70, 70);
 	static var hero_has_items:Array = new Array(true, false, false, true);
 	// sword , book , shield, bottle
 	
