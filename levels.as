@@ -319,13 +319,30 @@ class levels{
 			
 		}
 	}
+	static var xDef = 300-77;
+	static var yDef = 320;
+	static var yOffDef = 15;
 	
 	static function makeMenuSelector(){
-		makeMenuStrings(300 - 77, 320, 15, new Array('Start new game','Continue game','Options','Credits'), new Array(
+		makeMenuStrings(xDef, yDef, yOffDef, new Array('Start new game','Continue game','Options','Credits'), new Array(
 			startGame, continueGame, gotoOptions, gotoCredits
 		));
 	}
-	
+	static function setLevel(lll){
+		_root.layer_GUI.thinker.level = _root.layer_GUI.thinker.level.substr(0, 2 + lll * 2);
+		trace(_root.layer_GUI.thinker.level);
+	}
+	static function pushChoice(lll){
+		trace('-> pushed' + lll);
+		if (!lll){
+			var needLevel:Number = _root.layer_GUI.thinker.level.length / 2 - 2;
+			trace('goto level ' + needLevel);
+			setLevel(needLevel);
+			return;
+		}
+		_root.layer_GUI.thinker.level += '_'+lll;
+		trace(_root.layer_GUI.thinker.level);
+	}
 	static function makeMenuStrings(x, y, yoffset, lineNames:Array, functions:Array){
 		if (_root.layer_GUI == undefined)
 			spawning.createLayer('layer_GUI');
@@ -349,7 +366,8 @@ class levels{
 		thinker.count = lineNames.length;
 		thinker.funcs = functions;
 		thinker.transitionTimer = 0;
-		_root.hero.locked = true;
+		thinker.level = 'FR';
+		//_root.layer_GUI.thinker;
 		thinker.onEnterFrame = function (){
 			if (this.transitionTimer > 0){
 				this.transitionTimer ++;
@@ -360,7 +378,8 @@ class levels{
 				if (this.transitionTimer == 21){
 					for (var i = 0; i < this.count; ++i)
 						_root.layer_GUI['line'+x+'_'+i].removeMovieClip();
-					this.funcs[this.selectedLine]();
+					this.funcs[this.selectedLine](this.selectedLine - 1);
+					pushChoice(this.selectedLine);
 				}
 				return;
 			}
@@ -399,12 +418,38 @@ class levels{
 		_root.gotoAndStop('level_selection');
 	}
 	static function gotoOptions(){
-		makeMenuStrings(300 - 77, 320, 15, new Array('..','Game options','Gaphic options', 'Sound options', 'Fuck you options'), new Array(
-				makeMenuSelector, gotoCredits, gotoCredits, gotoCredits, gotoCredits
-			));
+		makeMenuStrings(xDef, yDef, yOffDef, new Array('..','Game options','Gaphic options', 'Sound options'), new Array(
+				makeMenuSelector, gotoGameOptions, gotoGraphicOptions, gotoSoundOptions));
 	}
+			static function gotoGameOptions(){
+				makeMenuStrings(xDef, yDef, yOffDef, new Array('..','Difficulty','Timer', 'Story settings'), new Array(
+						gotoOptions, gotoDifficultyOptions, gotoTimerOptions, gotoStoryOptions));	
+			}
+					static function gotoDifficultyOptions(){
+						makeMenuStrings(xDef, yDef, yOffDef, new Array('..','Waffle','Novice', 'Experienced', 'Master'), new Array(
+								gotoGameOptions, doNothing, doNothing, doNothing, doNothing));
+					}
+					static function gotoTimerOptions(){
+						makeMenuStrings(xDef, yDef, yOffDef, new Array('Leave with no changes','No timer','120 minutes', '60 minutes', '30 minutes'), new Array(
+								gotoGameOptions, doNothing, doNothing, doNothing, doNothing));
+					}
+					static function gotoStoryOptions(){
+						makeMenuStrings(xDef, yDef, yOffDef, new Array('Leave with no changes','Saving princess', 'Saving prince'), new Array(
+								gotoGameOptions, doNothing, doNothing));
+					}
+			static function gotoGraphicOptions(){
+				makeMenuStrings(xDef, yDef, yOffDef, new Array('..','High quality','Medium quality', 'Low quality'), new Array(
+						gotoOptions, doNothing, doNothing, doNothing));	
+			}
+			static function gotoSoundOptions(){
+				makeMenuStrings(xDef, yDef, yOffDef, new Array('..'), new Array(
+						gotoOptions));	
+			}
+	
 	static function gotoCredits(){
 	
+	}
+	static function doNothing(){
 	
 	}
 }
