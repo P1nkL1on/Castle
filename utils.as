@@ -9,7 +9,7 @@
 	static var t_delete = 6;
 	static var t_game = 7;
 	static var t_combat = 8;
-	static var able_messages =  "-++++++++";
+	static var able_messages =  "---+-----";
 	static var symbols:String = ">*#$%+~@!";
 	static var ignored_messages = new Array();
 	static var ignore_message_count = 0;
@@ -62,6 +62,18 @@
 	static var hero_armor_color:Array = new Array(235, 70, 70);
 	static var hero_has_items:Array = new Array(true, false, false, true);
 	// sword , book , shield, bottle
+	
+	
+	
+	// more things
+	static var game_difficulty:Number = 1;	// 0 - waffle, 1 - novice, .. 3 - master
+	static var game_timer_max:Number = -1;	// -1 == none, 120 = 120 mins
+	static var game_timer_lasts:Number = -1;
+	static var game_save_princess:Boolean = true;	// false - save prince
+	
+	static var graphics_quality:String = 'high';
+	static var level_sequence:Array = new Array();
+	
 	
 	static function makeHero(X, Y){
 		_root.hero = 

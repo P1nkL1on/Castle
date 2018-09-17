@@ -1,15 +1,15 @@
 class levels{
 	static var testLevels:Array = new Array(5,6,7,8,9);
 	
-	static var lastLevel = -1;
+	static var levelIndex = 0;
 	
 	static function selectNextLevel():Number{
-		lastLevel = testLevels.pop()+0;
-		return lastLevel;
+		return testLevels[levelIndex++];
 	}
 	static function tryAgainLevel():Number{
-		return lastLevel;
+		return testLevels[levelIndex];
 	}
+	
 	static function completeLevel(number:Number){
 		utils.trace('Level :: ' + number + " :: COMPLETED!", utils.t_game);
 		_root.gotoAndStop('level_selection');
