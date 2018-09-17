@@ -1,5 +1,5 @@
 class levels{
-	static var testLevels:Array = new Array(5,6,7,8,9);
+	static var testLevels:Array = new Array(8,5,6,7,9);
 	
 	static var levelIndex = 0;
 	
@@ -9,7 +9,12 @@ class levels{
 	static function tryAgainLevel():Number{
 		return testLevels[levelIndex];
 	}
-	
+	static function resetGame(){
+		utils.hero_armor_color = new Array(235, 70, 70);
+		utils.hero_has_items = new Array(false, false, false, false);
+		levelIndex = 0;
+		// generate new level sequence
+	}
 	static function completeLevel(number:Number){
 		utils.trace('Level :: ' + number + " :: COMPLETED!", utils.t_game);
 		_root.gotoAndStop('level_selection');
@@ -462,7 +467,7 @@ class levels{
 	}
 	static function continueGame(){
 		spawning.clearLayers();
-		saving.loadGame();
+		saving.saveGame();
 		_root.gotoAndStop('level_selection');
 	}
 	static function gotoOptions(){
@@ -479,22 +484,42 @@ class levels{
 					}
 					static function gotoTimerOptions(){
 						makeMenuStrings(xDef, yDef, yOffDef, new Array('Leave with no changes','No timer','120 minutes', '60 minutes', '30 minutes'), new Array(
-								gotoGameOptions, doNothing, doNothing, doNothing, doNothing), true);
+								gotoGameOptions, setTimerMax, setTimerMax, setTimerMax, setTimerMax), true);
 					}
 					static function gotoStoryOptions(){
 						makeMenuStrings(xDef, yDef, yOffDef, new Array('Leave with no changes','Saving princess', 'Saving prince'), new Array(
-								gotoGameOptions, doNothing, doNothing), true);
+								gotoGameOptions, setPrincessGender, setPrincessGender), true);
 					}
+					
 			static function gotoGraphicOptions(){
 				makeMenuStrings(xDef, yDef, yOffDef, new Array('..','High quality','Medium quality', 'Low quality'), new Array(
 						gotoOptions, setQualityFunction, setQualityFunction, setQualityFunction), true);	
 			}
-			static function setQualityFunction (qual){ trace(qual);if (qual == 0) _quality = 'high'; if (qual == 1) _quality = 'medium'; if (qual == 2) _quality = 'low';}
 			
 			static function gotoSoundOptions(){
 				makeMenuStrings(xDef, yDef, yOffDef, new Array('..'), new Array(
 						gotoOptions));	
 			}
+	
+	static function setPrincessGender(gend){ 
+		if (gend == 0)utils.game_save_princess = true; 
+		if (gend == 1)utils.game_save_princess = false; 
+	}
+	static function setQualityFunction (qual){ 
+		if (qual == 0) _quality = 'high'; 
+		if (qual == 1) _quality = 'medium'; 
+		if (qual == 2) _quality = 'low';
+		utils.graphics_quality = _quality+"";
+	}
+	static function setTimerMax(tim){ 
+		if (tim == 0)utils.game_timer_max = utils.game_timer_lasts = -1; 
+		if (tim == 1)utils.game_timer_max = utils.game_timer_lasts = 60*(120); 
+		if (tim == 2)utils.game_timer_max = utils.game_timer_lasts = 60*(60); 
+		if (tim == 3)utils.game_timer_max = utils.game_timer_lasts = 60*(30); 
+	}
+	static function setDifficulty(dif){
+		utils.game_difficulty = dif;
+	}
 	
 	static function gotoCredits(){
 	
