@@ -1,5 +1,5 @@
 class levels{
-	static var testLevels:Array = new Array(8,5,6,7,9);
+	static var testLevels:Array;
 	
 	static var levelIndex = 0;
 	
@@ -12,6 +12,7 @@ class levels{
 	static function resetGame(){
 		utils.hero_armor_color = new Array(235, 70, 70);
 		utils.hero_has_items = new Array(false, false, false, false);
+		testLevels = new Array(8,9,8,5,6,7);
 		levelIndex = 0;
 		// generate new level sequence
 	}
