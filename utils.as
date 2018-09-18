@@ -55,6 +55,7 @@
 		spawning.createLayer("layer_effects");
 		spawning.createLayer("layer_filters");
 		fps.spawnCounter();
+		utils.setAllQuality('high');
 		return basicGroundSpawned;
 	}
 	
@@ -74,6 +75,38 @@
 	static var graphics_quality:String = 'high';
 	static var level_sequence:Array = new Array();
 	
+	static var lives_max = -1;
+	static var lives = lives_max;
+	static var lives_per_level_finish = 0;
+	
+	static function setLivesByDifficulty(diff){
+		if (diff == 0){ lives = lives_max = -1; lives_per_level_finish = 0; }
+		if (diff == 1){ lives = lives_max = 30; lives_per_level_finish = 5; }
+		if (diff == 2){ lives = lives_max = 10; lives_per_level_finish = 1; }
+		if (diff == 3){ lives = lives_max = 2; lives_per_level_finish = 2; }
+	}
+	
+	static function diff_name():String{
+		var diff:String = "---";
+		if (game_difficulty == 0) diff = 'waffle';
+		if (game_difficulty == 1) diff = 'novice';
+		if (game_difficulty == 2) diff = 'experienced';
+		if (game_difficulty == 3) diff = 'master';
+		return diff;
+	}
+	
+	static function setAllQuality (qual){
+		if (graphics_quality == 'high'){
+			_quality = qual;
+			return;
+		}
+		if (graphics_quality == 'medium'){
+			if (qual == 'high') _quality = 'medium';
+			else	_quality = 'low';
+			return;
+		}
+		_quality = 'low';
+	}
 	
 	static function makeHero(X, Y){
 		_root.hero = 

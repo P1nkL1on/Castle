@@ -4,6 +4,8 @@ class levels{
 	static var levelIndex = 0;
 	
 	static function selectNextLevel():Number{
+		utils.lives = Math.min(utils.lives_max, utils.lives + utils.lives_per_level_finish);
+		utils.trace('Life count : ' + utils.lives, utils.t_game);
 		return testLevels[levelIndex++];
 	}
 	static function tryAgainLevel():Number{
@@ -14,6 +16,7 @@ class levels{
 		utils.hero_has_items = new Array(false, false, false, false);
 		testLevels = new Array(8,9,8,5,6,7);
 		levelIndex = 0;
+		utils.setLivesByDifficulty(utils.game_difficulty);
 		// generate new level sequence
 	}
 	static function completeLevel(number:Number){
@@ -354,17 +357,6 @@ class levels{
 		}
 	}
 	
-	static function makeMenuSelector(){
-		if (saving.newGameOnly == true){			
-			makeMenuStrings(xDef, yDef, yOffDef, new Array('Start new game', 'No saves found',' Settings'), new Array(
-				startGame, doNothing, gotoOptions
-			));
-			return;
-		}
-		makeMenuStrings(xDef, yDef, yOffDef, new Array('Start new game','Continue game','Settings'), new Array(
-			startGame, continueGame, gotoOptions
-		));
-	}
 	static function setLevel(lll){
 		oldesetThinker.level = oldesetThinker.level.substr(0, 2 + lll * 2);
 	}
@@ -469,6 +461,27 @@ class levels{
 		}
 	}
 	
+	static function startNewGame():String{return 'New game ( ' + utils.diff_name()+ ' )';}
+	static function makeMenuSelector(){
+		if (saving.newGameOnly == true){			
+			makeMenuStrings(xDef, yDef, yOffDef, new Array(startNewGame(), 'No saves found',' Settings'), new Array(
+				startGame, doNothing, gotoOptions
+			));
+			return;
+		}
+		makeMenuStrings(xDef, yDef, yOffDef, new Array(startNewGame(),'Continue game','Settings'), new Array(
+			startGame, continueGame, gotoOptions
+		));
+	}
+	// .. . game over
+	static function makeDeadScreenSelector(){
+		makeMenuStrings(xDef, yDef, yOffDef, new Array('Try again', 'Give up'), new Array(
+				continueGame, toMainMenu));
+	}
+	static function toMainMenu(){gotoAndStop(1);}
+	
+	// . . . game over
+	
 	static function startGame(){
 		saving.saveGame(true);
 		_root.gotoAndStop('custom_charater');
@@ -530,6 +543,7 @@ class levels{
 	}
 	static function setDifficulty(dif){
 		utils.game_difficulty = dif;
+		utils.setLivesByDifficulty(dif);
 		utils.trace('Difficulty set to ' + utils.game_difficulty, utils.t_game);
 	}
 	
