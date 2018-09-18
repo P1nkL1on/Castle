@@ -128,7 +128,7 @@ class levels{
 			var newLine:MovieClip = _root.layer_GUI.attachMovie('GUI_line', 'gui'+i, _root.layer_GUI.getNextHighestDepth());
 			newLine.numX = 1;
 			newLine.numY = i;
-			newLine.needUpdate = false;
+			newLine.needUpdate = true;
 			newLine.onEnterFrame = function(){
 				if (!this.needUpdate)
 					return;
@@ -481,14 +481,14 @@ class levels{
 			}
 					static function gotoDifficultyOptions(){
 						makeMenuStrings(xDef, yDef, yOffDef, new Array('..','Waffle','Novice', 'Experienced', 'Master'), new Array(
-								gotoGameOptions, doNothing, doNothing, doNothing, doNothing), true);
+								gotoGameOptions, setDifficulty, setDifficulty, setDifficulty, setDifficulty), true);
 					}
 					static function gotoTimerOptions(){
-						makeMenuStrings(xDef, yDef, yOffDef, new Array('Leave with no changes','No timer','120 minutes', '60 minutes', '30 minutes'), new Array(
+						makeMenuStrings(xDef, yDef, yOffDef, new Array('..','No timer','120 minutes', '60 minutes', '30 minutes'), new Array(
 								gotoGameOptions, setTimerMax, setTimerMax, setTimerMax, setTimerMax), true);
 					}
 					static function gotoStoryOptions(){
-						makeMenuStrings(xDef, yDef, yOffDef, new Array('Leave with no changes','Saving princess', 'Saving prince'), new Array(
+						makeMenuStrings(xDef, yDef, yOffDef, new Array('..','Saving princess', 'Saving prince'), new Array(
 								gotoGameOptions, setPrincessGender, setPrincessGender), true);
 					}
 					
@@ -505,21 +505,25 @@ class levels{
 	static function setPrincessGender(gend){ 
 		if (gend == 0)utils.game_save_princess = true; 
 		if (gend == 1)utils.game_save_princess = false; 
+		utils.trace('Princess is girl? ' + utils.game_save_princess, utils.t_game);
 	}
 	static function setQualityFunction (qual){ 
 		if (qual == 0) _quality = 'high'; 
 		if (qual == 1) _quality = 'medium'; 
 		if (qual == 2) _quality = 'low';
 		utils.graphics_quality = _quality+"";
+		utils.trace('Quality set to ' + utils.graphics_quality, utils.t_game);
 	}
 	static function setTimerMax(tim){ 
 		if (tim == 0)utils.game_timer_max = utils.game_timer_lasts = -1; 
 		if (tim == 1)utils.game_timer_max = utils.game_timer_lasts = 60*(120); 
 		if (tim == 2)utils.game_timer_max = utils.game_timer_lasts = 60*(60); 
 		if (tim == 3)utils.game_timer_max = utils.game_timer_lasts = 60*(30); 
+		utils.trace('Timer set to ' + utils.game_timer_max + ' sec.', utils.t_game);
 	}
 	static function setDifficulty(dif){
 		utils.game_difficulty = dif;
+		utils.trace('Difficulty set to ' + utils.game_difficulty, utils.t_game);
 	}
 	
 	static function gotoCredits(){
