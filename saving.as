@@ -29,6 +29,17 @@ class saving{
 		}
 	}
 	
+	static var saveEffectCount = 0;
+	static function spawnEffect(isLoad){
+		saveEffectCount++;
+		var lastEffect:MovieClip = null;
+		if (isLoad == undefined)
+			lastEffect = _root.attachMovie('GUI_save_effect', 'save_effect_'+saveEffectCount, _root.getNextHighestDepth());
+			
+		lastEffect._x = 600 - lastEffect._width - 15;
+		lastEffect._y = 400 - lastEffect._height - 15;
+	}
+	
 	static function traceFile(savefile0){
 		utils.trace('	Hero RGB			: ' + savefile0.data.heroRGB, utils.t_saveinfo);
 		utils.trace('	Hero artifacts		: ' + savefile0.data.artifacts, utils.t_saveinfo);
@@ -68,6 +79,6 @@ class saving{
 		utils.trace('Game saved.',utils.t_saveinfo);
 		traceFile(savefile);
 		
-		utils.trace();
+		spawnEffect();
 	}
 }
