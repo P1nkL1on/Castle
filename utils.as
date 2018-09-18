@@ -101,5 +101,11 @@
 			spawning.spawnUnit("hero", X, Y)));
 	}
 
-	
+	static function spawnTutorialKeys (cas){
+		var nam:String = (cas == 0)? 'GUI_tutorial_menu' : 'GUI_character_select_menu';
+		var tutKey:MovieClip = _root.layer_GUI.attachMovie(nam, 
+					'keyTutorial', _root.layer_GUI.getNextHighestDepth());
+		tutKey._x = 320 - tutKey._width / 2;
+		tutKey._y = 390;
+	}
  }

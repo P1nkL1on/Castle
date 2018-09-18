@@ -1,12 +1,14 @@
 class saving{
 	static var savefile;
 	static var saveFileName = "Castle_game_save";
+	static var newGameOnly = false;
 	
 	static function loadGame(){
 		savefile = SharedObject.getLocal(saveFileName);
 		if (savefile.data.saved == undefined){
 			// create clear save file
-			utils.trace('There was no correcr save file; Created new game save;', utils.t_saveinfo);
+			utils.trace('There was no correct save file; Created new game save;', utils.t_saveinfo);
+			newGameOnly = true;
 		}else{
 			// load info
 			utils.trace('Found a load file! Loading...', utils.t_saveinfo);

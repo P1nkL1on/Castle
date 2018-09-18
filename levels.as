@@ -129,6 +129,7 @@ class levels{
 			newLine.numX = 1;
 			newLine.numY = i;
 			newLine.needUpdate = true;
+			GUIplace(newLine, newLine.numX, newLine.numY);
 			newLine.onEnterFrame = function(){
 				if (!this.needUpdate)
 					return;
@@ -354,6 +355,12 @@ class levels{
 	}
 	
 	static function makeMenuSelector(){
+		if (saving.newGameOnly == true){			
+			makeMenuStrings(xDef, yDef, yOffDef, new Array('Start new game', 'No saves found',' Settings'), new Array(
+				startGame, doNothing, gotoOptions
+			));
+			return;
+		}
 		makeMenuStrings(xDef, yDef, yOffDef, new Array('Start new game','Continue game','Settings'), new Array(
 			startGame, continueGame, gotoOptions
 		));
@@ -393,7 +400,7 @@ class levels{
 		thinker = _root.layer_GUI.attachMovie('GUI_thinker', 'thinker', _root.layer_GUI.getNextHighestDepth());
 		thinker.watchKeys = new Array(37,38,39,40,65,81,83,87);
 		thinker.pressKeys = new Array(0,0,0,0,0,0,0,0,0);
-		thinker.selectedLine = (lineNames.length == 1)? 0 : 1;
+		thinker.selectedLine = (lineNames.length == 1 || saving.newGameOnly == true)? 0 : 1;
 		thinker.toggleHeroLock = false;
 		thinker.X = x;
 		thinker.count = lineNames.length;
@@ -414,7 +421,7 @@ class levels{
 				//this.sButton = _root.layer_GUI['line'+x+'_'+i];
 				
 				// case of non new menu option
-				if (_root.layer_GUI['line'+x+'_'+this.selectedLine].noShadow == true){
+				if (_root.layer_GUI['line'+x+'_'+this.selectedLine].noShadow == true  || this.funcs[this.selectedLine] == doNothing ){
 					if (this.transitionTimer == 5){
 						this.funcs[this.selectedLine](this.selectedLine - 1);
 						this.transitionTimer = 0;
