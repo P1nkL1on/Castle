@@ -27,17 +27,17 @@ class saving{
 			utils.trace('Loaded artifacts file loaded!', utils.t_saveinfo);
 			traceFile(savefile);
 		}
+		spawnEffect(true);
 	}
 	
 	static var saveEffectCount = 0;
 	static function spawnEffect(isLoad){
 		saveEffectCount++;
 		var lastEffect:MovieClip = null;
-		if (isLoad == undefined)
-			lastEffect = _root.attachMovie('GUI_save_effect', 'save_effect_'+saveEffectCount, _root.getNextHighestDepth());
+		lastEffect = _root.attachMovie('GUI_save_effect', 'save_effect_'+saveEffectCount, _root.getNextHighestDepth());
 			
-		lastEffect._x = 600 - lastEffect._width - 15;
-		lastEffect._y = 400 - lastEffect._height - 15;
+		if (isLoad != undefined)
+			lastEffect.gotoAndStop(2);
 	}
 	
 	static function traceFile(savefile0){
