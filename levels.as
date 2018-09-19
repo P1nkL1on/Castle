@@ -461,7 +461,7 @@ class levels{
 		}
 	}
 	
-	static function startNewGame():String{return 'New game ( ' + utils.diff_name()+ ' )';}
+	static function startNewGame():String{return 'New game';}
 	static function makeMenuSelector(){
 		if (saving.newGameOnly == true){			
 			makeMenuStrings(xDef, yDef, yOffDef, new Array(startNewGame(), 'No saves found',' Settings'), new Array(
@@ -492,11 +492,11 @@ class levels{
 		_root.gotoAndStop('level_selection');
 	}
 	static function gotoOptions(){
-		makeMenuStrings(xDef, yDef, yOffDef, new Array('..','Game options','Graphic options', 'Sound options'), new Array(
+		makeMenuStrings(xDef, yDef, yOffDef, new Array('..','Game options','Graphic options - ' + _quality, 'Sound options'), new Array(
 				makeMenuSelector, gotoGameOptions, gotoGraphicOptions, gotoSoundOptions));
 	}
 			static function gotoGameOptions(){
-				makeMenuStrings(xDef, yDef, yOffDef, new Array('..','Difficulty','Timer', 'Story settings'), new Array(
+				makeMenuStrings(xDef, yDef, yOffDef, new Array('..','Difficulty - ' + utils.diff_name(),'Timer - ' + ((utils.game_timer_lasts >= 0)? 'enabled' : 'disabled'), 'Story settings'), new Array(
 						gotoOptions, gotoDifficultyOptions, gotoTimerOptions, gotoStoryOptions));	
 			}
 					static function gotoDifficultyOptions(){
@@ -504,8 +504,8 @@ class levels{
 								gotoGameOptions, setDifficulty, setDifficulty, setDifficulty, setDifficulty), true);
 					}
 					static function gotoTimerOptions(){
-						makeMenuStrings(xDef, yDef, yOffDef, new Array('..','No timer','120 minutes', '60 minutes', '30 minutes'), new Array(
-								gotoGameOptions, setTimerMax, setTimerMax, setTimerMax, setTimerMax), true);
+						makeMenuStrings(xDef, yDef, yOffDef, new Array('..','Disable timer','Enable timer'), new Array(
+								gotoGameOptions, setTimerMax, setTimerMax), true);
 					}
 					static function gotoStoryOptions(){
 						makeMenuStrings(xDef, yDef, yOffDef, new Array('..','Saving princess', 'Saving prince'), new Array(
@@ -535,11 +535,14 @@ class levels{
 		utils.trace('Quality set to ' + utils.graphics_quality, utils.t_game);
 	}
 	static function setTimerMax(tim){ 
-		if (tim == 0)utils.game_timer_max = utils.game_timer_lasts = -1; 
-		if (tim == 1)utils.game_timer_max = utils.game_timer_lasts = 60*(120); 
-		if (tim == 2)utils.game_timer_max = utils.game_timer_lasts = 60*(60); 
-		if (tim == 3)utils.game_timer_max = utils.game_timer_lasts = 60*(30); 
-		utils.trace('Timer set to ' + utils.game_timer_max + ' sec.', utils.t_game);
+		if (tim == 0)utils.game_timer_lasts = -1; 
+		if (tim == 1)utils.game_timer_lasts = 0; 
+		utils.trace('Timer set to ' + ((tim == 0)? 'disable' : 'enable'), utils.t_game);
+	}
+	static function toNormalTime(timeLeft :Number):String{
+		var secLeft = timeLeft % 60; secLeft = secLeft+''; if (secLeft.length == 1) secLeft = "0"+secLeft;
+		var minuteLeft = Math.floor(timeLeft / 60) + ":";
+		return minuteLeft + secLeft;
 	}
 	static function setDifficulty(dif){
 		utils.game_difficulty = dif;

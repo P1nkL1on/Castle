@@ -16,7 +16,7 @@ class saving{
 			utils.hero_has_items = savefile.data.artifacts;
 			
 			utils.game_difficulty = savefile.data.diff;
-			utils.game_timer_max = savefile.data.timer_max;
+			//utils.game_timer_max = savefile.data.timer_max;
 			utils.game_timer_lasts = savefile.data.timer_now ;
 			utils.game_save_princess = savefile.data.saving_princess;
 			
@@ -73,7 +73,7 @@ class saving{
 		savefile.data.artifacts = utils.hero_has_items;
 		
 		savefile.data.diff = utils.game_difficulty;
-		savefile.data.timer_max = utils.game_timer_max;
+		//savefile.data.timer_max = utils.game_timer_max;
 		savefile.data.timer_now = utils.game_timer_lasts;
 		savefile.data.saving_princess = utils.game_save_princess;
 		

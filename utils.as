@@ -68,7 +68,7 @@
 	
 	// more things
 	static var game_difficulty:Number = 1;	// 0 - waffle, 1 - novice, .. 3 - master
-	static var game_timer_max:Number = -1;	// -1 == none, 120 = 120 mins
+	//static var game_timer_max:Number = -1;	// -1 == none, 120 = 120 mins
 	static var game_timer_lasts:Number = -1;
 	static var game_save_princess:Boolean = true;	// false - save prince
 	
