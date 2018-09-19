@@ -2,14 +2,21 @@ class levels{
 	static var testLevels:Array;
 	
 	static var levelIndex = 0;
+	static var levelDone:Boolean = undefined;
 	
 	static function selectNextLevel():Number{
+		if (levelDone == false){
+			levelDone = undefined;
+			return tryAgainLevel();
+		}
+	
 		utils.lives = Math.min(utils.lives_max, utils.lives + utils.lives_per_level_finish);
 		utils.trace('Life count : ' + utils.lives, utils.t_game);
+		levelDone = undefined;
 		return testLevels[levelIndex++];
 	}
 	static function tryAgainLevel():Number{
-		return testLevels[levelIndex];
+		return testLevels[levelIndex - 1];
 	}
 	static function resetGame(){
 		utils.hero_armor_color = new Array(235, 70, 70);
@@ -21,9 +28,15 @@ class levels{
 	}
 	static function completeLevel(number:Number){
 		utils.trace('Level :: ' + number + " :: COMPLETED!", utils.t_game);
+		levelDone = true;
 		_root.gotoAndStop('level_selection');
 	}
-	
+	static function dieOnLevel(number:Number){
+		utils.lives--;
+		utils.trace('Level :: ' + number + " :: FAILED!", utils.t_game);
+		levelDone = false;
+		_root.gotoAndStop('game_over');
+	}
 	
 	
 	
@@ -475,8 +488,9 @@ class levels{
 	}
 	// .. . game over
 	static function makeDeadScreenSelector(){
+		spawning.colorSomething(camera, 100, -100, -100);
 		makeMenuStrings(xDef, yDef, yOffDef, new Array('Try again', 'Give up'), new Array(
-				continueGame, toMainMenu));
+				continueGame, /* toMainMenu */ doNothing));
 	}
 	static function toMainMenu(){gotoAndStop(1);}
 	
@@ -488,7 +502,6 @@ class levels{
 	}
 	static function continueGame(){
 		spawning.clearLayers();
-		saving.saveGame();
 		_root.gotoAndStop('level_selection');
 	}
 	static function gotoOptions(){
