@@ -9,14 +9,17 @@ class levels{
 			levelDone = undefined;
 			return tryAgainLevel();
 		}
-	
+		if (levelDone == undefined){
+			return testLevels[levelIndex];
+		}
+		
 		utils.lives = Math.min(utils.lives_max, utils.lives + utils.lives_per_level_finish);
 		utils.trace('Life count : ' + utils.lives, utils.t_game);
 		levelDone = undefined;
-		return testLevels[levelIndex++];
+		return testLevels[levelIndex];
 	}
 	static function tryAgainLevel():Number{
-		return testLevels[levelIndex - 1];
+		return testLevels[levelIndex];
 	}
 	static function resetGame(){
 		utils.hero_armor_color = new Array(235, 70, 70);
@@ -24,11 +27,14 @@ class levels{
 		testLevels = new Array(8,9,8,5,6,7);
 		levelIndex = 0;
 		utils.setLivesByDifficulty(utils.game_difficulty);
+		if (utils.game_timer_lasts >= 0)
+			utils.game_timer_lasts = 0;
 		// generate new level sequence
 	}
 	static function completeLevel(number:Number){
 		utils.trace('Level :: ' + number + " :: COMPLETED!", utils.t_game);
 		levelDone = true;
+		levelIndex++;
 		_root.gotoAndStop('level_selection');
 	}
 	static function dieOnLevel(number:Number){
