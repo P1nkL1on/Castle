@@ -292,6 +292,7 @@ class levels{
 	static var deadTimer = 0;
 	static function prepareDieScreen (){
 		if (!isDeading){
+			utils.trace("You died. Seriously.", utils.t_game);
 			isDeading = true;
 			deadTimer = 0;
 			
@@ -302,8 +303,12 @@ class levels{
 				if (deadTimer == 60)
 					_root.stopAllSounds();
 				
-				if (deadTimer == 120)
+				if (deadTimer == 120){
 					dieOnLevel(_root._currentframe);
+					this.removeMovieClip();
+					isDeading = false;
+					deadTimer = 0;
+				}
 			}
 		}
 	}
@@ -527,7 +532,7 @@ class levels{
 	static function makeDeadScreenSelector(){
 		spawning.colorSomething(camera, 100, -100, -100);
 		makeMenuStrings(xDef, yDef, yOffDef, new Array('Try again', 'Give up'), new Array(
-				continueGame, /* toMainMenu */ doNothing));
+				continueGame, toMainMenu /* doNothing */));
 	}
 	static function toMainMenu(){gotoAndStop(1);}
 	
