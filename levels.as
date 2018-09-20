@@ -283,6 +283,37 @@ class levels{
 		GUIactions[isAdd] += " & " + S;	
 	}
 	
+	
+	
+	
+	
+	
+	static var isDeading = false;
+	static var deadTimer = 0;
+	static function prepareDieScreen (){
+		if (!isDeading){
+			isDeading = true;
+			deadTimer = 0;
+			
+			var dp:MovieClip = _root.layer_GUI.attachMovie('GUI_thinker', 'deading_process', _root.layer_GUI.getNextHighestDepth());
+			dp.onEnterFrame = function (){
+				// dead proccss activating
+				deadTimer += animating.worldTimeSpeed;
+				if (deadTimer == 60)
+					_root.stopAllSounds();
+				
+				if (deadTimer == 120)
+					dieOnLevel(_root._currentframe);
+			}
+		}
+	}
+	
+	
+	
+	// . . . FORMS
+	
+	
+	
 	static function keyPressedLong(X):Boolean{
 		return (X == 1 || (X >= 30 && X % 15 == 0) || (X > 75 && X % 3 == 0))
 	}

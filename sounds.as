@@ -97,7 +97,7 @@
 			if (soundFiles[i].name == nam){ soundFiles[i].start(0, times);return soundFiles[i]; }															//воспроизвести звук совпадающий по имени
 		utils.trace("No sound '"+nam+"' in library!", utils.t_error); 																			//если звука нет, бупнем и сообщим об ошибкe
 		if (nam.indexOf('voices/') == 0 && nam.indexOf('default1') < 0)
-			return playSound('voices/default/default1');
+			return playSound('voices/default/default1', times);
 		return null;
 	}
 	//
