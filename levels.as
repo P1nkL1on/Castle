@@ -530,11 +530,16 @@ class levels{
 	}
 	// .. . game over
 	static function makeDeadScreenSelector(){
-		spawning.colorSomething(camera, 100, -100, -100);
-		makeMenuStrings(xDef, yDef, yOffDef, new Array('Try again', 'Give up'), new Array(
-				continueGame, toMainMenu /* doNothing */));
+		if (utils.lives == 0){
+			makeMenuStrings(xDef, yDef, yOffDef, new Array('Restart game'), new Array(
+					gameOver));
+			return;
+		}
+		makeMenuStrings(xDef, yDef, yOffDef, new Array('Try again' + ((utils.lives > 0)?(' (' + utils.lives + ')') : ''), 'Give up'), new Array(
+				continueGame, toMainMenu));
 	}
 	static function toMainMenu(){gotoAndStop(1);}
+	static function gameOver(){ saving.saveGame(true); utils.lives = 0; toMainMenu();}
 	
 	// . . . game over
 	
