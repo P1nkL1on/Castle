@@ -66,6 +66,8 @@
 			sos.push('effects/light' + i);
 		for (var i = 0; i <= 1; ++i)
 			sos.push('effects/prelight' + i);
+		for (var i = 0; i < 2; ++i)
+			sos.push('effects/deadhero' + (i));
 		return sos;
 	}
 	static function pushAllSounds(){
