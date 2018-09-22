@@ -531,12 +531,12 @@ class levels{
 	// .. . game over
 	static function makeDeadScreenSelector(){
 		if (utils.lives == 0){
-			makeMenuStrings(xDef, yDef, yOffDef, new Array('Restart game'), new Array(
+			makeMenuStrings(xDef, yDef + 20, yOffDef, new Array('Restart game'), new Array(
 					gameOver));
 			return;
 		}
-		makeMenuStrings(xDef, yDef, yOffDef, new Array('Try again' + ((utils.lives > 0)?(' (' + utils.lives + ')') : ''), 'Give up'), new Array(
-				continueGame, toMainMenu));
+		makeMenuStrings(xDef, yDef + 20, yOffDef, new Array('Try again' + ((utils.lives > 0)?(' (' + utils.lives + ')') : ''), 'Give up'), new Array(
+				/* continueGame */reviveUnitAndContinueGame, toMainMenu));
 	}
 	static function toMainMenu(){gotoAndStop(1);}
 	static function gameOver(){ saving.saveGame(true); utils.lives = 0; toMainMenu();}
@@ -551,6 +551,10 @@ class levels{
 		spawning.clearLayers();
 		_root.gotoAndStop('level_selection');
 	}
+	static function reviveUnitAndContinueGame(){
+		_root.revive = true;
+	}
+	
 	static function gotoOptions(){
 		makeMenuStrings(xDef, yDef, yOffDef, new Array('..','Game options','Graphic options - ' + _quality, 'Sound options'), new Array(
 				makeMenuSelector, gotoGameOptions, gotoGraphicOptions, gotoSoundOptions));
