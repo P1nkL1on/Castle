@@ -26,12 +26,16 @@
 				who.model.parts = new Array(who.model.head.b, who.model.hand_right.b, 
 										who.model.hand_left.b, who.model.body);
 			
-			animating.animateOnly(who.model, 1/(15 + 2 * who.idle * (5 + who.idle_spd)));
+			animating.animateOnly(who.model, 1/(20 + 2 * who.idle * (5 + who.idle_spd)));
 			if (!who.idle)
 				animating.animateOnly(who.model.body , 1 / 20);
 				
 			if (who.model.body._currentframe == 8)
 				who.model.body.gotoAndStop('g1');
+			if (who.model._currentframe == 6 || (who.model._currentframe == 3 && who.idle == true))
+				who.model.gotoAndStop(1);
+			if (who.model._currentframe == 3 && who.idle == false)
+				who.model.nextFrame();
 			// after all movements set frames
 			who.model.hand_left.b.gotoAndStop(who.hand2_model);
 			who.model.hand_right.b.gotoAndStop(who.weapon_model);
@@ -68,7 +72,7 @@
 					(who.dir < 0 && who._x < who.travelFrom)){
 					who.wantLeft = who.wantRight = false;
 					if (true) { who.dir *= -1; if (who.dir > 0)who.k = -40 + random(81);
-										who._x += who.dir * 2; trace('a');}
+										who._x += who.dir * 2;}
 				}
 			}
 		});
@@ -89,9 +93,9 @@
 			w.move = true; w.spd = 1.2; w.xx = w._x;
 		}
 		if (w.xx != w._x){
-			w.b._x = -(w.xx - w._x) * 1;
-			w.b._y = -(w.yy - w._y) * 1;
-			w.b._rotation = -(w.rr - w._rotation) * 1;
+			w.b._x = (w.xx - w._x) * 1;
+			w.b._y = (w.yy - w._y) * 1;
+			w.b._rotation = (w.rr - w._rotation) * 1;
 			w.xx = w._x;
 			w.yy = w._y;
 			w.rr = w._rotation
