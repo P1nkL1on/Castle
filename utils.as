@@ -61,6 +61,7 @@
 	
 	// . . . color selectio
 	static var hero_armor_color:Array = new Array(235, 70, 70);
+	static var princess_color:Array = new Array(72, 175, 242,   189, 153, 117);
 	static var hero_has_items:Array = new Array(false, false, false, false);
 	// sword , book , shield, bottle
 	
