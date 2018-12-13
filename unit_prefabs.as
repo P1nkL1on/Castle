@@ -21,11 +21,12 @@
 		guard.idle = true; guard.idle_spd = 2+random(9)
 		guard.max_spd = 0; guard.max_spd_squared = 0;
 		
+		
 		guard.slotsForExecute.push(function(who:MovieClip){
 			if (who.model.parts == undefined)
 				who.model.parts = new Array(who.model.head.b, who.model.hand_right.b, 
 										who.model.hand_left.b, who.model.body);
-			
+				
 			animating.animateOnly(who.model, 1/(20 + 2 * who.idle * (5 + who.idle_spd)));
 			if (!who.idle)
 				animating.animateOnly(who.model.body , 1 / 20);
@@ -80,6 +81,14 @@
 		return guard;
 	}
 	
+	static function spawnInvisibleLizard(X, Y):MovieClip{
+		return enemies_inv.spawnInvisibleLizard(X, Y);
+	}	
+	
+	static function spawnElectroMage(X, Y):MovieClip{
+		return enemies_elm.spawnElectroMage (X, Y);
+	}
+	
 	static function princessColor(what:Array){
 		for (var i = 0; i < what.length; ++i){
 			spawning.colorSomething(what[i].tintBlue, utils.princess_color[0], utils.princess_color[1], utils.princess_color[2]);
@@ -104,4 +113,6 @@
 		 w.b._y /= w.spd;
 		 w.b._rotation /= w.spd;
 	}
+ 
+ 
  }

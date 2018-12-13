@@ -21,7 +21,11 @@ class enemies_inv
 		}
 	}
 	static function spawnInvisibleLizard (X, Y):MovieClip{
-		var shad:MovieClip = heroAbilities.makeHitable(spawning.makeShadowWantMove(spawning.makeShadowMovable(spawning.spawnUnit('lizard_body', X, Y))));
+		var shad:MovieClip = 
+			heroAbilities.makeHitable(
+			spawning.makeShadowWantMove(
+			spawning.makeShadowMovable(
+			spawning.spawnUnit('lizard_body', X, Y))));
 		shad.destroyed = false;
 		shad.targetX = X;
 		shad.targetY = Y+10;
@@ -44,6 +48,8 @@ class enemies_inv
 				shad.aiState = num;
 			shad.aiTimer = 0;
 			trace('Lizard state :: ' 	+ shad.aiState);
+			if (shad.aiState == 1) shad.openMouth();
+			if (shad.aiState <= 0) shad.closeMouth();
 		}
 		shad.head_anim_spd = 30;
 		shad.openMouth = function(){
@@ -107,22 +113,32 @@ class enemies_inv
 			if (who.destroyed == true)
 				return;	
 			who.model._xscale = ((who._x > who.unitTarget._x)*2-1)*100;
-			who.nearMouth = who.model.head.hb.hitTest(who.unitTarget);
 			if (who.model._xscale > 0)
 				who.model.head._rotation = Math.atan2( who.unitTarget._y - who._y, who.unitTarget._x - who._x )/Math.PI*180+180;
 			if (who.model._xscale < 0)
 				who.model.head._rotation = Math.atan2( who._y - who.unitTarget._y, who.unitTarget._x - who._x )/Math.PI*180;
 			animating.animateOnly(who.model.head, 1 / who.head_anim_spd);
 			
-			if (who.wasNearMouth != who.nearMouth){
-				who.wasNearMouth = who.nearMouth;
-				if (who.aiState == 3 || who.aiState == 2 || (who.aiState == 0 && who.aiTimer > 150)){
-					if (who.nearMouth == true)
-						who.openMouth();
-					else
-						who.closeMouth();
-				}
+			//if (who.wasNearMouth != who.nearMouth){
+				//who.wasNearMouth = who.nearMouth;
+				//if (who.aiState == 3 || who.aiState == 2 || (who.aiState == 0 && who.aiTimer > 150)){
+				
+				//if ((!who.nearMouth && who.aiState == 0) /* || !(who.aiTimer % 40) */) who.closeMouth();
+				//if (who.nearMouth) who.openMouth();
+			//}
+			// . . . MOUTH
+			if (who.aiState > 1){
+				// if opened
+				// bite when is too close while RUN!
+				who.inFieldOfView = who.model.head.hb.hitTest(who.unitTarget);
+				who.inMouth = who.model.head.hbm.hitTest(who.unitTarget);
+				
+				//if (who.aiState == 1 && who.inMouth) who.closeMouth();
+				if (who.inFieldOfView && !who.inMouth) who.openMouth();
+				if (who.inMouth) who.closeMouth();
+				if (!who.inFieldOfView && !who.inMouth) who.closeMouth();
 			}
+			
 			if (who.aiState == -1 && who.aiTimer > 50)
 				who.nextState(random(4));
 			if (who.aiState != 1 && (who.breath < 0 || who.breathStop == true)){
