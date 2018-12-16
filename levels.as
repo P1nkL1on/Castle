@@ -24,7 +24,7 @@ class levels{
 	static function resetGame(){
 		utils.hero_armor_color = new Array(235, 70, 70);
 		utils.hero_has_items = new Array(false, false, false, false);
-		testLevels = new Array(8,9,8,5,6,7);
+		testLevels = new Array(0, -1, 12, 11, 10);
 		levelIndex = 0;
 		utils.setLivesByDifficulty(utils.game_difficulty);
 		if (utils.game_timer_lasts >= 0)
@@ -447,7 +447,7 @@ class levels{
 		thinker = _root.layer_GUI.attachMovie('GUI_thinker', 'thinker', _root.layer_GUI.getNextHighestDepth());
 		thinker.watchKeys = new Array(37,38,39,40,65,81,83,87);
 		thinker.pressKeys = new Array(0,0,0,0,0,0,0,0,0);
-		thinker.selectedLine = (lineNames.length == 1 || saving.newGameOnly == true)? 0 : 1;
+		thinker.selectedLine = (lineNames.length == 1 || saving.newGameOnly == true || lineNames[0].indexOf("again") >= 0)? 0 : 1;
 		thinker.toggleHeroLock = false;
 		thinker.X = x;
 		thinker.count = lineNames.length;
