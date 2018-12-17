@@ -24,7 +24,7 @@ class levels{
 	static function resetGame(){
 		utils.hero_armor_color = new Array(235, 70, 70);
 		utils.hero_has_items = new Array(false, false, false, false);
-		testLevels = new Array(0, -1, 12, 11, 10);
+		testLevels = level_design.random_level_sequence();
 		levelIndex = 0;
 		utils.setLivesByDifficulty(utils.game_difficulty);
 		if (utils.game_timer_lasts >= 0)
@@ -57,7 +57,11 @@ class levels{
 								xlocked,
 								ylocked, 
 								cameraSlow):MovieClip{
+		if (_root.camera != undefined) trace(_root.camera.getDepth());
+		
 		camera = _root.attachMovie('camera', 'camera', _root.getNextHighestDepth());
+		utils.trace('Created camera :: ' + camera, utils.t_create);
+		
 		camera._height = 400; camera._width = 600;
 		camera._x = X; camera._y = Y;
 		camera.xlocked = (xlocked == undefined)? false : xlocked;
@@ -85,7 +89,6 @@ class levels{
 				this._y += this.toY * this._height;
 			}
 		}
-		utils.trace('Created camera :: ' + camera, utils.t_create);
 		return camera;
 	}
 	

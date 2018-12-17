@@ -51,7 +51,7 @@
 			var cor_unit = _root.layer_effects.attachMovie('unit_shadow_monster', 'scd_'+i+'_'+d, 
 						   _root.layer_effects.getNextHighestDepth());
 			cor_unit._x = 300 + (60 + Math.max(0, i - 740)) * d;
-			cor_unit._y = -520 + i;
+			cor_unit._y = + i;
 			makeShadowCorridorUnit(cor_unit, d);
 		}
 		// a mister, who checking a speed and other
@@ -60,14 +60,14 @@
 		_root.layer_effects.scd_0_1.ssup_sound = null;
 		
 		_root.layer_effects.scd_0_1.onEnterFrame = function (){
-			if (_root.hero._y < 180 && _root.hero._y > -500){
+			if (_root.hero._y < 700 && _root.hero._y > 20){
 				this.hero_spd = -(300 - _root.hero._x);
 				spawning.tryMoveX(_root.hero, Math.max(-3, Math.min(3, this.hero_spd * .05)));
 			}
-			if (this.background_sound == null && _root.hero._y < 360)
+			if (this.background_sound == null && _root.hero._y < 880)
 				this.background_sound = sounds.playSound('background/shadow_corridor', 10);
 				
-			if ((_root.hero._y < 180 && _root.hero._y > -500)){
+			if ((_root.hero._y < 700 && _root.hero._y > -20)){
 				if (this.ssup_sound == null)
 					this.ssup_sound = sounds.playSound('background/shadow_touch', 10);
 			}else{

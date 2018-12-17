@@ -21,12 +21,13 @@
 		clr.setTransform({rb:r, gb:g, bb:b});
 	}
 	static function clearLayers(){
+		_root.camera.removeMovieClip();
+		utils.trace('Camera deleted: ' + (_root.camera == undefined), utils.t_delete)
 		var layerCount:Number = layers.length;
 		for (var i = 0; i < layers.length; ++i){
 			utils.trace('Deleting layer :: ' + layers[i], utils.t_delete);
 			layers[i].removeMovieClip();
 		}
-		_root.camera.removeMovieClip();
 		layers = new Array();
 		utils.trace(layerCount + " layers cleared;", utils.t_delete);
 	}
@@ -96,8 +97,8 @@
 		newShadow.slotsForExecute.push(function(who:MovieClip){ who.model._x = who._x; who.model._y = who._y - who._z;});
 		//this.model.swapDepths(-16000+Math.round(this._y)*30+Math.round(_x/20));
 		newShadow.slotsForExecute.push(function(who:MovieClip){ 
-			who.model.swapDepths(-16000+Math.round(who._y)*30+Math.round(who._x/20));
-		});
+			who.model.swapDepths(-16000 + Math.round(who._y)*30 + Math.round(who._x/20));
+		});	// 32777
 		// set executing order
 		newShadow.onEnterFrame = function(){
 			for (var i = 0; i < this.slotsForExecute.length; ++i){
