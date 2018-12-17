@@ -32,7 +32,8 @@
 			(shad.model.modelName, shad.model._name + '_reflection', _root.layer_unit_reflection.getNextHighestDepth());
 		//shad.model.duplicateMovieClip(, shad.model.getDepth() * (-1) - 10);
 		newReflection._yscale *= -1;
-		newReflection._alpha = 50;
+		//newReflection._alpha = 50;
+		spawning.colorSomething(newReflection, 30, 50, 80);
 		newReflection.shad = shad;
 		shad.hasReflection = true;
 		shad.lastCreatedReflection = newReflection;
@@ -46,6 +47,7 @@
 			if (this.shad.isControllable == true){
 				this.lefthand.gotoAndStop(this.shad.model.lefthand._currentframe);
 				this.righthand.gotoAndStop(this.shad.model.righthand._currentframe);
+				spawning.colorSomething(this.tint, utils.hero_armor_color[0], utils.hero_armor_color[1], utils.hero_armor_color[2]);
 			}
 		}
 		utils.trace('Created reflection for ' + shad + ' :: ' + newReflection, utils.t_create);
