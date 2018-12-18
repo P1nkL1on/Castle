@@ -439,7 +439,7 @@ class levels{
 					'line'+x+'_'+(i), _root.layer_GUI.getNextHighestDepth());
 			newLine._x = x;
 			newLine._y = y + yoffset * i;
-			newLine.gotoAndStop(1);
+			newLine.gotoAndStop((functions[i] == doNothing)? 3 : 1); trace(lineNames[i] + '/' + newLine._currentframe);
 			newLine.t.text = lineNames[i];
 			newLine.i = i;
 			newLine.line_name = lineNames[i];
@@ -450,7 +450,7 @@ class levels{
 		thinker = _root.layer_GUI.attachMovie('GUI_thinker', 'thinker', _root.layer_GUI.getNextHighestDepth());
 		thinker.watchKeys = new Array(37,38,39,40,65,81,83,87);
 		thinker.pressKeys = new Array(0,0,0,0,0,0,0,0,0);
-		thinker.selectedLine = (lineNames.length == 1 || saving.newGameOnly == true || lineNames[0].indexOf("again") >= 0)? 0 : 1;
+		thinker.selectedLine = (lineNames.length == 1 || /* saving.newGameOnly == true ||  */lineNames[0].indexOf("again") >= 0)? 0 : 1;
 		thinker.toggleHeroLock = false;
 		thinker.X = x;
 		thinker.count = lineNames.length;
@@ -502,13 +502,17 @@ class levels{
 			if (keyPressedLong(this.pressKeys[3])){
 				sounds.playSound(sounds.voiceName('GUI/move', 1));
 				_root.layer_GUI['line'+x+'_'+this.selectedLine].onUnSelect();
-				this.selectedLine = (this.selectedLine + 1)%this.count;
+				do{
+					this.selectedLine = (this.selectedLine + 1)%this.count;
+				} while (this.funcs[this.selectedLine] == doNothing);
 				_root.layer_GUI['line'+x+'_'+this.selectedLine].onSelect();
 			}
 			if (keyPressedLong(this.pressKeys[1])){
 				sounds.playSound(sounds.voiceName('GUI/move', 1));
 				_root.layer_GUI['line'+x+'_'+this.selectedLine].onUnSelect();
-				this.selectedLine = (this.selectedLine == 0)? (this.count - 1) : (this.selectedLine-1);
+				do{
+					this.selectedLine = (this.selectedLine == 0)? (this.count - 1) : (this.selectedLine-1);
+				} while (this.funcs[this.selectedLine] == doNothing);
 				_root.layer_GUI['line'+x+'_'+this.selectedLine].onSelect();
 			}
 			for (var pi = 0; pi < 4; pi++)
@@ -522,13 +526,13 @@ class levels{
 	static function startNewGame():String{return 'New game';}
 	static function makeMenuSelector(){
 		if (saving.newGameOnly == true){			
-			makeMenuStrings(xDef, yDef, yOffDef, new Array(startNewGame(), 'No saves found',' Settings'), new Array(
-				startGame, doNothing, gotoOptions
+			makeMenuStrings(xDef, yDef, yOffDef, new Array('No saves found', startNewGame(),' Settings'), new Array(
+				doNothing, startGame,  gotoOptions
 			));
 			return;
 		}
 		makeMenuStrings(xDef, yDef, yOffDef, new Array(startNewGame(),'Continue game','Settings'), new Array(
-			startGame, continueGame, gotoOptions
+			ensureStartNewGame, continueGame, gotoOptions
 		));
 	}
 	// .. . game over
@@ -551,6 +555,11 @@ class levels{
 	static function startGame(){
 		saving.saveGame(true);
 		_root.gotoAndStop('custom_charater');
+	}
+	static function ensureStartNewGame(){
+		makeMenuStrings(xDef, yDef, yOffDef, new Array('All progress will be lost!','Cancel','Reset progress and start'), new Array(
+			doNothing, makeMenuSelector, startGame
+		));
 	}
 	static function continueGame(){
 		spawning.clearLayers();

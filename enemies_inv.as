@@ -78,6 +78,7 @@ class enemies_inv
 		shad.onAttacked = function(byWho:MovieClip, hited){
 			if (shad.destroyed == true)
 				return;	
+			if (shad.aiState < 0) return;
 			trace('Snake attacked by :: ' + byWho._name);
 			shad.nextState(-1);
 			shad.aiTimer = 0;
@@ -87,7 +88,8 @@ class enemies_inv
 			var ddy = (shad._y > shad.unitTarget._y) * 2 - 1;
 			shad.targetX = shad._x + ddx * 180;
 			shad.targetY = shad._y + ddy * 90;
-			if (hited){
+			
+			if (hited != false){
 				shad.injures++;
 				trace('Lizard injures = ' + shad.injures + '/' + shad.injures_max);
 			}
