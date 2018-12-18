@@ -418,9 +418,11 @@ class levels{
 	static function setLevel(lll){
 		oldesetThinker.level = oldesetThinker.level.substr(0, 2 + lll * 2);
 	}
-	static function pushChoice(lll){
-		if (!lll){
+	static function pushChoice(lll, isBack){
+		if (isBack){
+		// return back!
 			var needLevel:Number = oldesetThinker.level.length / 2 - 2;
+			//trace('-> ' + needLevel);
 			setLevel(needLevel);
 			return;
 		}
@@ -455,6 +457,7 @@ class levels{
 		thinker.X = x;
 		thinker.count = lineNames.length;
 		thinker.funcs = functions;
+		thinker.nammes = lineNames;
 		thinker.transitionTimer = 0;
 		thinker.level = 'FR';
 		thinker.levelNow = 'FR';
@@ -487,7 +490,9 @@ class levels{
 					for (var i = 0; i < this.count; ++i)
 						_root.layer_GUI['line'+x+'_'+i].removeMovieClip();
 					this.funcs[this.selectedLine](this.selectedLine - 1);
-					pushChoice(this.selectedLine);
+					var isDots = (this.nammes[this.selectedLine].indexOf('..') == 0);
+					var isCancel = (this.nammes[this.selectedLine].indexOf('Cancel') == 0);
+					pushChoice(this.selectedLine, isDots || isCancel);
 				}
 				return;
 			}
@@ -505,6 +510,7 @@ class levels{
 				do{
 					this.selectedLine = (this.selectedLine + 1)%this.count;
 				} while (this.funcs[this.selectedLine] == doNothing);
+				
 				_root.layer_GUI['line'+x+'_'+this.selectedLine].onSelect();
 			}
 			if (keyPressedLong(this.pressKeys[1])){
@@ -513,6 +519,7 @@ class levels{
 				do{
 					this.selectedLine = (this.selectedLine == 0)? (this.count - 1) : (this.selectedLine-1);
 				} while (this.funcs[this.selectedLine] == doNothing);
+				
 				_root.layer_GUI['line'+x+'_'+this.selectedLine].onSelect();
 			}
 			for (var pi = 0; pi < 4; pi++)
