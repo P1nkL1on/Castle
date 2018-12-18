@@ -70,7 +70,10 @@ class enemies_elm{
 	}
 	//static function 
 	static function spawnElectroMage (X, Y):MovieClip{
-		var shad:MovieClip = heroAbilities.makeHitable(spawning.makeShadowMovable(spawning.spawnUnit('electro_mage', X, Y)));
+		var shad:MovieClip = 
+			heroAbilities.makeHitable(
+			spawning.makeShadowMovable(
+			spawning.spawnUnit('electro_mage', X, Y)));
 		// . . . model problems
 		// . . . lastDirection == face side back
 		// cause unit is watching in other then usuall side

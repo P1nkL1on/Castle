@@ -137,6 +137,9 @@
 			_root.hero = heroAbilities.giveBottle(_root.hero);		
 		levels.hero = _root.hero;
 		levels.makeGUI();
+		_root.hero = 
+			spawning.makeDrawedHitbox(
+			spawning.makeHealthy(_root.hero, 3));
 	}
 	
 	static function makeHeroOnly(X, Y){

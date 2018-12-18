@@ -48,7 +48,7 @@ class enemies_inv
 			else
 				shad.aiState = num;
 			shad.aiTimer = 0;
-			trace('Lizard state :: ' 	+ shad.aiState);
+			utils.trace('Lizard state :: ' 	+ shad.aiState, utils.t_combat);
 			if (shad.aiState == 1) shad.openMouth();
 			if (shad.aiState <= 0) shad.closeMouth();
 		}
@@ -103,6 +103,8 @@ class enemies_inv
 		
 		// . . . health system
 		shad.slotsForExecute.push(function(who:MovieClip){
+			if (who.destroyed == true)
+				return;
 			if (who.injures > who.injures_min)
 				who.injures -= who.regen_spd * animating.worldTimeSpeed;
 			if (who.injures > who.injures_max && !who.destroyed){
@@ -113,7 +115,7 @@ class enemies_inv
 		shad.die = function(){
 			shad.sp_x = shad.sp_y = 0;
 			shad.max_spd = 0;
-			trace('Lizard destroyed!');
+			utils.trace('Lizard destroyed!', utils.t_combat);
 		}
 		
 		

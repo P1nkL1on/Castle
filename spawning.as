@@ -281,6 +281,7 @@
 			_root.layer_GUI.getNextHighestDepth());
 		newBox._x = 16;
 		newBox._y = 6 + 25 * (++healthBarCount);
+		newBox.target = shad;
 		return shad;
 	}
 }
