@@ -89,8 +89,7 @@ class enemies_elm{
 		
 		// . . . health control and AI
 		// direction detection
-		shad.injures = 0;
-		shad.injures_max = 8;
+		shad = spawning.makeHealthy(shad, 8);
 		shad.resetTimers = new Array(50 * 60, 45 * 60, 25 * 60, 20*60, 15*60, 10*60);
 		shad.currentTimer = shad.resetTimers[1] * 60;
 		shad.slotsForExecute.push(function(who:MovieClip){

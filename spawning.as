@@ -29,6 +29,7 @@
 			layers[i].removeMovieClip();
 		}
 		layers = new Array();
+		healthBarCount = 0;
 		utils.trace(layerCount + " layers cleared;", utils.t_delete);
 	}
 	static function createLayer (layerName){
@@ -265,6 +266,21 @@
 			who.checkRecolor(who);
 			
 		});
+		return shad;
+	}
+	static function makeHealthy(shad:MovieClip, maxHP, minHP):MovieClip{
+		shad.injures = 0;
+		shad.injures_min = (minHP == undefined)? 0 : minHP;
+		shad.injures_max = maxHP;
+		return shad;
+	}
+	static var healthBarCount = 0;
+	static function makeDrawedHitbox(shad:MovieClip):MovieClip{
+		var newBox:MovieClip = _root.layer_GUI.attachMovie(
+			'GUI_healthbar', 'healthbar_' + shad._name,
+			_root.layer_GUI.getNextHighestDepth());
+		newBox._x = 16;
+		newBox._y = 6 + 25 * (++healthBarCount);
 		return shad;
 	}
 }

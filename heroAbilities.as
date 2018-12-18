@@ -297,7 +297,6 @@
 									who.hs._x * .5+ who._x * .5,
 									who._y - who._z - who.model._height * .2,
 									undefined, _root.layer_effects);
-									
 			}
 		});
 		shad.hittableFunction = shad.slotsForExecute[shad.slotsForExecute.length - 1];

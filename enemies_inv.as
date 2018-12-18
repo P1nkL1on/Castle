@@ -22,10 +22,11 @@ class enemies_inv
 	}
 	static function spawnInvisibleLizard (X, Y):MovieClip{
 		var shad:MovieClip = 
+			spawning.makeDrawedHitbox(
 			heroAbilities.makeHitable(
 			spawning.makeShadowWantMove(
 			spawning.makeShadowMovable(
-			spawning.spawnUnit('lizard_body', X, Y))));
+			spawning.spawnUnit('lizard_body', X, Y)))));
 		shad.destroyed = false;
 		shad.targetX = X;
 		shad.targetY = Y+10;
@@ -70,16 +71,20 @@ class enemies_inv
 			shad.sound_khh.stop();
 			sounds.playSound('voices/lizard/openmouth3');
 		}
-		shad.injures = 0;
-		shad.injures_min = -3;	// bravery
-		shad.injures_max = 3;
+		
+		shad = spawning.makeHealthy(shad, 3, -3);
 		shad.regen_spd = 1 / (5 * 60);
 		
 		shad.onAttacked = function(byWho:MovieClip, hited){
-			if (shad.destroyed == true)
-				return;	
-			if (shad.aiState < 0) return;
-			trace('Snake attacked by :: ' + byWho._name);
+			if (shad.destroyed == true || shad.aiState < 0)
+				return;
+			if (shad.injures < 0){
+				shad.injures++;
+				utils.trace('Lizard damaged and ignored stun. Injures = ' 
+					+ Math.round(shad.injures * 10) * .1, utils.t_combat);	
+				return;
+			}
+			utils.trace('Lizard damaged and stunlocked', utils.t_combat);	
 			shad.nextState(-1);
 			shad.aiTimer = 0;
 			
@@ -91,7 +96,8 @@ class enemies_inv
 			
 			if (hited != false){
 				shad.injures++;
-				trace('Lizard injures = ' + shad.injures + '/' + shad.injures_max);
+				utils.trace('Lizard injures = ' 
+					+ Math.round(shad.injures * 10) * .1, utils.t_combat);
 			}
 		}
 		
