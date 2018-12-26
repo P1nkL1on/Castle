@@ -578,8 +578,8 @@ class levels{
 	}
 	
 	static function gotoOptions(){
-		makeMenuStrings(xDef, yDef, yOffDef, new Array('..','Game options','Graphic options - ' + _quality, 'Sound options'), new Array(
-				makeMenuSelector, gotoGameOptions, gotoGraphicOptions, gotoSoundOptions));
+		makeMenuStrings(xDef, yDef, yOffDef, new Array('..','Game options','Graphic options - ' + _quality, 'Sound options', 'External .svf'), new Array(
+				makeMenuSelector, gotoGameOptions, gotoGraphicOptions, gotoSoundOptions, gotoAlternateLevels));
 	}
 			static function gotoGameOptions(){
 				makeMenuStrings(xDef, yDef, yOffDef, new Array('..','Difficulty - ' + utils.diff_name(),'Timer - ' + ((utils.game_timer_lasts >= 0)? 'enabled' : 'disabled'), 'Story settings'), new Array(
@@ -607,6 +607,13 @@ class levels{
 				makeMenuStrings(xDef, yDef, yOffDef, new Array('..'), new Array(
 						gotoOptions));	
 			}
+			static function  gotoAlternateLevels(){
+				makeMenuStrings(xDef, yDef, yOffDef, new Array('..', 'Units demo', 'Background demo'), new Array(
+						gotoOptions, gotoUnitDemo, gotoBackgroundDemo));	
+			}
+					static function gotoUnitDemo(){ loadMovie("mainUnits.swf", _root); }
+					static function gotoBackgroundDemo(){ loadMovie("backgroundExport.swf", _root); }
+					static function gotoMainProject(){loadMovie("mainMisc.swf", _root);}
 	
 	static function setPrincessGender(gend){ 
 		if (gend == 0)utils.game_save_princess = true; 
