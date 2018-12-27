@@ -1,4 +1,4 @@
-class dialogs{
+﻿class dialogs{
 	static function makeModelTalking(model:MovieClip, frames:Array, voicePath:String){
 		utils.trace("Made a teller :: "+model, utils.t_dialoginfo);
 		model.talkingFrames = frames;
@@ -64,6 +64,7 @@ class dialogs{
 			}
 		});
 		// . . . ACTION
+		model.lastTextBoxes = new Array();
 		model.shadow.slotsForExecute.push(function(who:MovieClip){ 
 			// . . .
 			if (who.model.isTalking == false && who.model.wantTalk == true) {
@@ -90,6 +91,7 @@ class dialogs{
 					who.model.finishAfterOut = false;
 					who.model.saidOut = false;
 					who.onTalkFinish(who);
+					who.model.lastTextBoxes = new Array();
 					return;
 				}	
 					
@@ -113,27 +115,23 @@ class dialogs{
 					who.model.subtitleCurrentLetter = -1;
 					who.model.subtitleNeedLetter = 0;
 					who.model.lastSubtitle = who.model.descr.text; who.model.descr.text = "";
+					who.model.lastTextBoxes.push(fontengine.printIn(who.model.lastSubtitle, who.model.t_align, undefined, 0, 0, 200, true, 255,255,255));
+					for (var i = 0; i < who.model.lastTextBoxes.length - 1; ++i)who.model.lastTextBoxes[i]._y -= who.model.lastTextBoxes[who.model.lastTextBoxes.length - 1]._height;
 					utils.trace("Talking :: " +who.model.currentTalk, utils.t_dialoginfo);
 				}
 				
 				if (who.model.swapCD >= 0){
 					who.model.subtitleNeedLetter = (who.model.lastSound.position / who.model.lastSound.duration);
-					// if (who.model.subtitleNeedLetter >= .999 && who.model.swapCD > 30){
-						// who.model.lastSound.position = 0;
-						// who.model.swapCD = -30;
-					// }
-					// who.model.subtitleNeedLetter *= who.model.lastSubtitle.length;
-					// if (who.model.swapCD % who.model.animatingSpeed == 0)
-						// who.model.talkFast = false;
-					// // - - - IF
-					// if (who.model.subtitleCurrentLetter < who.model.subtitleNeedLetter || who.model.lastSubtitle.charAt(who.model.subtitleCurrentLetter) != ' '){
-						// who.model.descr.text += who.model.lastSubtitle.charAt(++who.model.subtitleCurrentLetter);
-						// // sounds.playSound(sounds.voiceName('GUI/move', 1));
-						// if (who.model.lastSound.position < who.model.lastSound.duration)
-							// { who.model.talkFast = true; }
-					// }
-					// who.model.gotoAndStop(who.model.lastFrame + 1 * who.model.talkFast);
-					
+					if (who.model.subtitleNeedLetter >= .999 && who.model.swapCD > 30){
+						who.model.lastSound.position = 0;
+						who.model.swapCD = -30;
+					}
+					who.model.subtitleNeedLetter *= who.model.lastSubtitle.length;
+					if (who.model.swapCD % who.model.animatingSpeed == 0)
+						who.model.talkFast = !who.model.talkFast;
+						
+					++who.model.subtitleCurrentLetter
+					who.model.gotoAndStop(who.model.lastFrame + 1 * who.model.talkFast);
 				}
 			}
 		});

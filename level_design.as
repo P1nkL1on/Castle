@@ -85,7 +85,7 @@
 				// !
 			
 		var dialog = spawning.spawnUnit('dialog_test', 130, 250);
-		dialogs.makeModelTalking(dialog.model, new Array(3,6,9), 'test/test');
+		dialogs.makeModelTalking(dialog.model, new Array(3,6,9,12,15, 18, 21), 'test/test_fast');
 		dialog.onTalkFinish = function(who:MovieClip){items.spawnItem('key', who._x + 50, who._y);};
 	}
 	
