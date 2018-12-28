@@ -154,7 +154,7 @@
 		if (bul.spd == undefined){ bul.spd = 10; move(bul, 20 / animating.worldTimeSpeed, bul.ang);}
 		bul._visible = true;
 		move(bul, bul.spd, bul.ang);
-		bul.spd /= 1 + (.2* animating.worldTimeSpeed);
+		bul.spd /= 1 + (.3* animating.worldTimeSpeed);
 		bul._alpha = bul.spd * 20;
 		bul.hb._x = bul._x;
 		bul.hb._y = bul._y;
