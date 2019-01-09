@@ -1,7 +1,7 @@
 ﻿class level_design {
 	
 	static function random_level_sequence (){
-		var res = new Array(0, -1, 12, 11); //new Array(0, -1, 12, 11, 10);
+		var res = new Array(12,11,0, -1, 12, 11); //new Array(0, -1, 12, 11, 10);
 		return res;
 			
 	}

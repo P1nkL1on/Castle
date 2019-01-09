@@ -21,7 +21,7 @@
 		clr.setTransform({rb:r, gb:g, bb:b});
 	}
 	static function clearLayers(){
-		_root.camera.removeMovieClip();
+		//_root.camera.removeMovieClip();
 		utils.trace('Camera deleted: ' + (_root.camera == undefined), utils.t_delete)
 		var layerCount:Number = layers.length;
 		for (var i = 0; i < layers.length; ++i){

@@ -58,8 +58,8 @@ class levels{
 								ylocked, 
 								cameraSlow):MovieClip{
 		//if (_root.camera != undefined) trace(_root.camera.getDepth());
-		
-		camera = _root.attachMovie('camera', 'camera', _root.getNextHighestDepth());
+		var cameraWasCreatedBefore = _root.camera != undefined;
+		camera = (_root.camera != undefined)? (_root.camera) : (_root.attachMovie('camera', 'camera', _root.getNextHighestDepth()));
 		utils.trace('Created camera :: ' + camera, utils.t_create);
 		
 		camera._height = 400; camera._width = 600;
@@ -69,26 +69,29 @@ class levels{
 		if (cameraScale != undefined){	
 			camera._xscale = camera._yscale = 100 * cameraScale;
 			_root.layer_GUI._xscale = _root.layer_GUI._yscale = 100 * cameraScale;
+			trace(cameraScale+'/'+camera._xscale +'/'+ camera._yscale );
+			trace(camera + '/' + _root.camera);
 		}
 		camera.cameraSlow = (cameraSlow == undefined)? 1 : cameraSlow;
 		
 		camera.follow = _root.hero;
-		camera.followPlayer = function(){
-			if (this.cameraSlow > 0){
-				if (this.xlocked == false)
-					this._x += (this.follow._x - this._x)/this.cameraSlow;
-				if (this.ylocked == false)
-					this._y += (this.follow._y - 90 - this._y)/this.cameraSlow;
-			}else{
-				this.toX = 0; this.toY = 0;
-				if (this.follow._x < this._x - this._width / 2)this.toX = -1;
-				if (this.follow._x > this._x + this._width / 2)this.toX = 1;
-				if (this.follow._y < this._y - this._height / 2)this.toY = -1;
-				if (this.follow._y > this._y + this._height / 2)this.toY = 1;
-				this._x += this.toX * this._width;
-				this._y += this.toY * this._height;
+		if (!cameraWasCreatedBefore)
+			camera.followPlayer = function(){
+				if (this.cameraSlow > 0){
+					if (this.xlocked == false)
+						this._x += (this.follow._x - this._x)/this.cameraSlow;
+					if (this.ylocked == false)
+						this._y += (this.follow._y - 90 - this._y)/this.cameraSlow;
+				}else{
+					this.toX = 0; this.toY = 0;
+					if (this.follow._x < this._x - this._width / 2)this.toX = -1;
+					if (this.follow._x > this._x + this._width / 2)this.toX = 1;
+					if (this.follow._y < this._y - this._height / 2)this.toY = -1;
+					if (this.follow._y > this._y + this._height / 2)this.toY = 1;
+					this._x += this.toX * this._width;
+					this._y += this.toY * this._height;
+				}
 			}
-		}
 		return camera;
 	}
 	
