@@ -120,8 +120,12 @@
 		units.push(newShadow);
 		/// strange point
 		newShadow._visible = false;
+		//if (newModel.cacheAsBackground != true)
+		newShadow.mustHaveReflection = unitName.indexOf("ground") < 0;
+		ground.maybeAddReflections();
 		// .. clear for nonbuggy other
 		newModel = newShadow = null;
+		
 		return units[units.length - 1];
 	}
 	static var movementKeys:Array = new Array(37,38,39,40,18);
@@ -188,7 +192,7 @@
 			who.wantLeft = Key.isDown(keyLeft());
 			who.wantRight = Key.isDown(keyRight());
 		});
-		shad.mustHaveReflection = true;
+		//shad.mustHaveReflection = true;
 		return makeShadowMovable(shad);
 	}
 	static function tryMoveX(who, dX):Number{

@@ -27,9 +27,10 @@
 		hb.ignore = false;
 		return effect;
 	}
+	static var trueDep = 0;
 	static function makeReflection (shad:MovieClip):MovieClip{
 		var newReflection:MovieClip = _root.layer_unit_reflection.attachMovie
-			(shad.model.modelName, shad.model._name + '_reflection', _root.layer_unit_reflection.getNextHighestDepth());
+			(shad.model.modelName, shad.model._name + '_reflection', /*_root.layer_unit_reflection.getNextHighestDepth()*/ -(++trueDep));
 		//shad.model.duplicateMovieClip(, shad.model.getDepth() * (-1) - 10);
 		newReflection._yscale *= -1;
 		//newReflection._alpha = 50;
@@ -43,6 +44,7 @@
 			this._visible = this.shad.model._visible;
 			this.gotoAndStop(this.shad.model._currentframe);
 			this._xscale = this.shad.model._xscale;
+			//this.swapDepths(this.shad.model.getDepth());
 			
 			if (this.shad.isControllable == true){
 				this.lefthand.gotoAndStop(this.shad.model.lefthand._currentframe);
@@ -70,7 +72,6 @@
 				return;
 			}
 		newWater = spawning.spawnGround("water");
-		var newReflection:MovieClip = spawning.spawnReflect("effect_water_drop");
 		newWater._x = X; newWater._y = Y; newWater.V = littrs;
 		newWater.maxFrame = 69;
 		newWater.isWater = true;
@@ -107,13 +108,15 @@
 				for (var i = 0; i < spawning.grounds.length; i++)
 					if (spawning.grounds[i].isWater == true)
 						who.waterLeft ++;
-				if (who.waterLeft == 1)
+				if (who.waterLeft == 1){
+					trueDep = 0;
 					for (var i = 0; i < spawning.units.length; i++)
 						if (spawning.units[i].hasReflection == true){
 							utils.trace('Removed a reflection :: ' + spawning.units[i].lastCreatedReflection, utils.t_delete);
 							spawning.units[i].lastCreatedReflection.removeMovieClip();
 							spawning.units[i].hasReflection = false;
 						}
+					}
 				who.removeMovieClip();
 			}
 		});
@@ -145,21 +148,30 @@
 				who.checkingForOther = (who.foundNeightboors > 0);
 			}
 		});
-		newReflection._x = X; newReflection._y = Y;
+		addWaterReflection(newWater);
+		waters.push(newWater);
+		maybeAddReflections();
+		
+		return newWater;
+	}
+	static function addWaterReflection(newWater:MovieClip){
+		utils.trace('Adding a water filter', utils.t_create);
+		var newReflection:MovieClip = spawning.spawnReflect("effect_water_drop");
+		utils.trace(newReflection+" " + newWater, utils.t_create);
+		newReflection._x = newWater._x; newReflection._y = newWater._y;
 		newReflection.water = newWater;
 		newWater.reflection = newReflection;
 		newReflection._yscale *= .5;
 		newReflection.onEnterFrame = function(){
 			this.gotoAndStop(this.water.drop._currentframe);
 		}
-		waters.push(newWater);
-		if (waters.length > 0){
+		//
+	}
+	static function maybeAddReflections (){
+		if (waters.length > 0 || _root.alwaysAddReflections == true)
 			for (var i = 0; i < spawning.units.length; i++)
 				if (not(spawning.units[i].hasReflection == true) && spawning.units[i].mustHaveReflection == true)
 					makeReflection(spawning.units[i]);
-				
-		}
-		return newWater;
 	}
 	
 	static var walls:Array = new Array();

@@ -72,16 +72,23 @@
 		utils.makeBasicLayers();
 		utils.makeHero(300,360);
 		spawning.spawnGround('ground_fragment');
-		var water = spawning.spawnGround('water');
-		water._x = 420; water._y = 185; water.drop.gotoAndStop(30);	
+		_root.alwaysAddReflections = true;
+		for (var i = 0; i < 2; ++i){
+			var water = spawning.spawnGround('water');
+			water._x = 420 - i * 130; water._y = 185 - i * 10; water.drop.gotoAndStop(30);	
+			ground.addWaterReflection(water);
+		}
 			
 		_root.exitDoor = 
 		levels.makeLevelExit(
-		spawning.spawnUnit('door', 300, 130), 0, -20);	
+		spawning.spawnUnit('door', 300, 130), 0, -50);	
 
 		var lever = hazards.makeKeyReciever(hazards.spawnLever(460, 300), 50, 1);
-		lever.checkFunction = function(who:MovieClip){_root.exitDoor.opened = true; 
-				utils.hero_has_items[0] = utils.hero_has_items[2] = utils.hero_has_items[3] = false;}
+		lever.checkFunction = function(who:MovieClip){
+				_root.exitDoor.opened = true; 
+				_root.alwaysAddReflections = undefined;
+				//utils.hero_has_items[0] = utils.hero_has_items[2] = utils.hero_has_items[3] = false;
+			}
 				// !
 			
 		var dialog = spawning.spawnUnit('dialog_test', 130, 250, true);
