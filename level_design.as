@@ -31,7 +31,6 @@
 	
 	static function skullKeyMachine (){
 	
-		
 		utils.makeBasicLayers('ground');
 		utils.makeHero(300,400);
 
@@ -71,6 +70,7 @@
 		utils.setBasicConsts();
 		utils.makeBasicLayers();
 		utils.makeHero(300,360);
+		
 		spawning.spawnGround('ground_fragment');
 		_root.alwaysAddReflections = true;
 		for (var i = 0; i < 2; ++i){

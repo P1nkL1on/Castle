@@ -60,7 +60,7 @@ class levels{
 		//if (_root.camera != undefined) trace(_root.camera.getDepth());
 		var cameraWasCreatedBefore = _root.camera != undefined;
 		camera = (_root.camera != undefined)? (_root.camera) : (_root.attachMovie('camera', 'camera', _root.getNextHighestDepth()));
-		utils.trace('Created camera :: ' + camera, utils.t_create);
+		utils.trace(((!cameraWasCreatedBefore)?'Created':'Reedited') +' camera :: ' + camera._name, utils.t_create);
 		
 		camera._height = 400; camera._width = 600;
 		camera._x = X; camera._y = Y;
@@ -69,8 +69,6 @@ class levels{
 		if (cameraScale != undefined){	
 			camera._xscale = camera._yscale = 100 * cameraScale;
 			_root.layer_GUI._xscale = _root.layer_GUI._yscale = 100 * cameraScale;
-			trace(cameraScale+'/'+camera._xscale +'/'+ camera._yscale );
-			trace(camera + '/' + _root.camera);
 		}
 		camera.cameraSlow = (cameraSlow == undefined)? 1 : cameraSlow;
 		
@@ -92,7 +90,12 @@ class levels{
 					this._y += this.toY * this._height;
 				}
 			}
+		utils.trace("Camera X,Y,scale: " + X + ', ' + Y + ', ' + cameraScale + '. Locks x: ' + xlocked + ', y: ' + ylocked, utils.t_create);
 		return camera;
+	}
+	
+	static function defaultCamera(){
+		spawnCamera(300, 200);
 	}
 	
 	static function makeLevelExit(door:MovieClip, xOffset, yOffset):MovieClip{

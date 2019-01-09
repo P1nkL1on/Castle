@@ -56,6 +56,7 @@
 		spawning.createLayer(spawning.unitLayer);
 		spawning.createLayer("layer_effects");
 		spawning.createLayer("layer_filters");
+		levels.defaultCamera();
 		fps.spawnCounter();
 		utils.setAllQuality('high');
 		return basicGroundSpawned;
