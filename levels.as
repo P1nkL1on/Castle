@@ -57,7 +57,7 @@ class levels{
 								xlocked,
 								ylocked, 
 								cameraSlow):MovieClip{
-		if (_root.camera != undefined) trace(_root.camera.getDepth());
+		//if (_root.camera != undefined) trace(_root.camera.getDepth());
 		
 		camera = _root.attachMovie('camera', 'camera', _root.getNextHighestDepth());
 		utils.trace('Created camera :: ' + camera, utils.t_create);
@@ -441,7 +441,8 @@ class levels{
 					'line'+x+'_'+(i), _root.layer_GUI.getNextHighestDepth());
 			newLine._x = x;
 			newLine._y = y + yoffset * i;
-			newLine.gotoAndStop((functions[i] == doNothing)? 3 : 1); trace(lineNames[i] + '/' + newLine._currentframe);
+			newLine.gotoAndStop((functions[i] == doNothing)? 3 : 1);
+//			trace(lineNames[i] + '/' + newLine._currentframe);
 			newLine.t.text = lineNames[i];
 			newLine.i = i;
 			newLine.line_name = lineNames[i];

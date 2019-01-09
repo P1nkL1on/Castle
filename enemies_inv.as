@@ -20,6 +20,21 @@ class enemies_inv
 			who.en_lsp = spawning.lsp();
 		}
 	}
+	// only once per scene
+	static function spawnInvisibleLizardWithApperance(X, Y):MovieClip{
+		var lizardlanding = ground.spawnEffect("lizard_animation", X, Y);
+		lizardlanding.onEnterFrame = function (){
+			animating.animateOnly(this, 1/8); // 1/8
+			this.tail.gotoAndStop(this._currentframe - 53);
+			if (this._currentframe < 11 && Key.isDown(1)) this.gotoAndStop('jump');
+			if (this._currentframe == 61) {enemies_inv.spawnInvisibleLizardFromApperance(this); this.removeMovieClip();}
+		}
+		return null;
+	}
+	static function spawnInvisibleLizardFromApperance(from){
+		spawnInvisibleLizard(from._x + 211, from._y + 383);
+	}
+	
 	static function spawnInvisibleLizard (X, Y):MovieClip{
 		var shad:MovieClip = 
 			spawning.makeDrawedHitbox(
@@ -72,70 +87,52 @@ class enemies_inv
 			sounds.playSound('voices/lizard/openmouth3');
 		}
 		
-		shad = spawning.makeHealthy(shad, 3, -3);
-		shad.regen_spd = 1 / (5 * 60);
+		shad = spawning.makeHealthy(shad, 8, 4, 90, 120, 80);
 		
-		shad.onAttacked = function(byWho:MovieClip, hited){
+		shad.onAttacked = function(byWho:MovieClip){
 			if (shad.destroyed == true || shad.aiState < 0)
 				return;
-			if (shad.injures < 0){
-				shad.injures++;
-				utils.trace('Lizard damaged and ignored stun. Injures = ' 
-					+ Math.round(shad.injures * 10) * .1, utils.t_combat);	
+			shad.sufferDamage(shad, 1);
+				
+			if (shad.hp >= shad.maxHP){
+				utils.trace('Lizard suffered damage and has no stunlock', utils.t_combat);
 				return;
 			}
-			utils.trace('Lizard damaged and stunlocked', utils.t_combat);	
+			utils.trace('Lizard sufered damage and confused', utils.t_combat);	
 			shad.nextState(-1);
 			shad.aiTimer = 0;
 			
 			shad.max_spd = 30;
 			var ddx = (shad._x > shad.unitTarget._x) * 2 - 1;
-			var ddy = (shad._y > shad.unitTarget._y) * 2 - 1;
+			var ddy = (shad._y > shad.unitTarget._y) - 1;
 			shad.targetX = shad._x + ddx * 180;
 			shad.targetY = shad._y + ddy * 90;
-			
-			if (hited != false){
-				shad.injures++;
-				utils.trace('Lizard injures = ' 
-					+ Math.round(shad.injures * 10) * .1, utils.t_combat);
-			}
 		}
-		
-		// . . . health system
-		shad.slotsForExecute.push(function(who:MovieClip){
-			if (who.destroyed == true)
-				return;
-			if (who.injures > who.injures_min)
-				who.injures -= who.regen_spd * animating.worldTimeSpeed;
-			if (who.injures > who.injures_max && !who.destroyed){
-				who.destroyed = true;
-				who.die();
-			}
-		});
 		shad.die = function(){
 			shad.sp_x = shad.sp_y = 0;
 			shad.max_spd = 0;
 			utils.trace('Lizard destroyed!', utils.t_combat);
 		}
 		
-		
+		shad.unitTarget_x = shad._x;
+		shad.unitTarget_y = shad._y;
+		shad.unitTarget_xSlow = shad._x;
+		shad.unitTarget_ySlow = shad._y;
 		shad.slotsForExecute.push(function(who:MovieClip){	
 			if (who.destroyed == true)
 				return;	
-			who.model._xscale = ((who._x > who.unitTarget._x)*2-1)*100;
+			who.model._xscale = ((who._x > who.unitTarget_x)*2-1)*100;
 			if (who.model._xscale > 0)
-				who.model.head._rotation = Math.atan2( who.unitTarget._y - who._y, who.unitTarget._x - who._x )/Math.PI*180+180;
+				who.model.head._rotation = Math.atan2( who.unitTarget_ySlow - who._y, who.unitTarget_xSlow - who._x )/Math.PI*180+180;
 			if (who.model._xscale < 0)
-				who.model.head._rotation = Math.atan2( who._y - who.unitTarget._y, who.unitTarget._x - who._x )/Math.PI*180;
+				who.model.head._rotation = Math.atan2( who._y - who.unitTarget_ySlow, who.unitTarget_xSlow - who._x )/Math.PI*180;
 			animating.animateOnly(who.model.head, 1 / who.head_anim_spd);
 			
-			//if (who.wasNearMouth != who.nearMouth){
-				//who.wasNearMouth = who.nearMouth;
-				//if (who.aiState == 3 || who.aiState == 2 || (who.aiState == 0 && who.aiTimer > 150)){
-				
-				//if ((!who.nearMouth && who.aiState == 0) /* || !(who.aiTimer % 40) */) who.closeMouth();
-				//if (who.nearMouth) who.openMouth();
-			//}
+			who.unitTarget_y += (who.unitTarget._y - who.unitTarget_y) / 5;
+			who.unitTarget_x += (who.unitTarget._x - who.unitTarget_x) / 5;
+		
+			who.unitTarget_ySlow += (who.unitTarget._y - who.unitTarget_ySlow) / 25;
+			who.unitTarget_xSlow += (who.unitTarget._x - who.unitTarget_xSlow) / 25;
 			// . . . MOUTH
 			if (who.aiState > 1){
 				// if opened
@@ -165,8 +162,8 @@ class enemies_inv
 				who.targetPhase += .02 * animating.worldTimeSpeed;
 				if (who.aiTimer % 100 == 1)
 					who.targetRad = 270+random(120);
-				who.targetX = who.unitTarget._x + Math.cos(who.targetPhase) * who.targetRad;
-				who.targetY = who.unitTarget._y + .5 * Math.sin(who.targetPhase) * who.targetRad;
+				who.targetX = who.unitTarget_x + Math.cos(who.targetPhase) * who.targetRad;
+				who.targetY = who.unitTarget_y + .5 * Math.sin(who.targetPhase) * who.targetRad;
 				if (who.aiTimer == 180)
 					sounds.playSound('voices/lizard/openmouth2');
 				if (who.aiTimer > 180 && who.max_spd > .05){
@@ -176,8 +173,8 @@ class enemies_inv
 					if (who.aiTimer > 180){
 						who.nextState();
 						who.max_spd = 30; who.max_spd_squared = 900;
-						who.targetX = who.unitTarget._x;
-						who.targetY = who.unitTarget._y;
+						who.targetX = who.unitTarget_x;
+						who.targetY = who.unitTarget_y;
 						who.openMouth();
 					}
 				}
@@ -203,15 +200,15 @@ class enemies_inv
 					who.targetY = who._y;
 					who.closeMouth();
 				}else{
-					slowFollow(who, who.unitTarget._x, who.unitTarget._y, 60);
+					slowFollow(who, who.unitTarget_x, who.unitTarget_y, 60);
 					who.max_spd /= 1.02;
 					who.max_spd_squared /= 1.02 * 1.02;
 				}
 			}
 			if (who.aiState == 2){
 				if (who.aiTimer % 60 == 0){
-					who.targetX = who.unitTarget._x + (random(150)+150)*(random(2)*2-1)
-					who.targetY = who.unitTarget._y + (random(75)+75)*(random(2)*2-1)
+					who.targetX = who.unitTarget_x + (random(150)+150)*(random(2)*2-1)
+					who.targetY = who.unitTarget_y + (random(75)+75)*(random(2)*2-1)
 				}	
 				if (Math.abs(who._x - who.targetX) < 40 &&
 					Math.abs(who._y - who.targetY) < 40 && 
@@ -228,8 +225,8 @@ class enemies_inv
 						who.jumps ++;
 						who.nextState(1);
 						who.max_spd = 30; who.max_spd_squared = 900;
-						who.targetX = who.unitTarget._x;
-						who.targetY = who.unitTarget._y;
+						who.targetX = who.unitTarget_x;
+						who.targetY = who.unitTarget_y;
 						who.openMouth();
 						who.freeRush = false;
 					}
@@ -247,10 +244,10 @@ class enemies_inv
 				spawning.lsp_x = spawning.tryMoveX(who, Math.min(8, Math.max(-8, who.sppx)));
 				spawning.lsp_y = spawning.tryMoveY(who, .5*Math.min(8, Math.max(-8, who.sppy)));
 				who.stepTimer += spawning.lsp();
-				who.sppx += .2 * ((who._x < who.unitTarget._x)*2-1);
-				who.sppy += .2 * ((who._y < who.unitTarget._y)*2-1);
-				who.targetX = who.unitTarget._x;
-				who.targetY = who.unitTarget._y;
+				who.sppx += .2 * ((who._x < who.unitTarget_x)*2-1);
+				who.sppy += .2 * ((who._y < who.unitTarget_y)*2-1);
+				who.targetX = who.unitTarget_x;
+				who.targetY = who.unitTarget_y;
 				if (who.aiTimer > 265){
 					who.nextState(0);
 					who.max_spd = 8; who.max_spd_squared = 64;
@@ -270,7 +267,7 @@ class enemies_inv
 		shad.segments = new Array();
 		var prevSegment:MovieClip = null;
 		for (var i = 0; i < shad.segmentCount; ++i){
-			var segment:MovieClip = spawning.spawnUnit('lizard_body', X - 20*i, Y-5*i);
+			var segment:MovieClip = spawning.spawnUnit('lizard_body', X  - 15*i, Y - 1.2*(i-5)*(i-5) + 25 * 1.2);
 			segment.model.gotoAndStop(2+i);
 			segment.follow = (prevSegment == null)? shad : prevSegment;
 			prevSegment = segment;
@@ -294,7 +291,7 @@ class enemies_inv
 			}else 
 				segment.distanceForStep = -1;
 			segment.ww = 20;
-			trace(i+' ;; ' + segment.ww);
+			//trace(i+' ;; ' + segment.ww);
 			segment.slotsForExecute.push(function(who:MovieClip){
 				slowFollow(who, who.follow._x, who.follow._y, 20, who.ww);	
 			});

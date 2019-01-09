@@ -71,9 +71,12 @@
 		newGround = null;
 		return grounds[grounds.length - 1];
 	}
-	static function spawnUnit(unitName, X, Y){
+	static function spawnUnit(unitName, X, Y, isColliding, collidingMass){
 		if (X == undefined){X = 0; utils.trace("Spawning a " + unitName + " do not declare its X coordinate;",1);}
 		if (Y == undefined){Y = 0; utils.trace("Spawning a " + unitName + " do not declare its Y coordinate;",1);}
+		if (isColliding == undefined) isColliding = false;
+		if (collidingMass == undefined && isColliding == true) collidingMass = 1;
+		
 		++unitCountScene;
 		var newShadow = _root[shadowLayer+""].attachMovie("model_shadow", "shadow_"+unitCountScene, _root[shadowLayer+""].getNextHighestDepth());
 		if (newShadow == null)
@@ -100,6 +103,13 @@
 		newShadow.slotsForExecute.push(function(who:MovieClip){ 
 			who.model.swapDepths(-16000 + Math.round(who._y)*30 + Math.round(who._x/20));
 		});	// 32777
+		// collide with other blocks
+		if (isColliding == true)
+			newShadow.slotsForExecute.push(function(who:MovieClip){ 
+				 who.cw = (who == _root.dialog)? _root.hero : _root.dialog;
+				
+				//trace(who.cw._name);
+			});
 		// set executing order
 		newShadow.onEnterFrame = function(){
 			for (var i = 0; i < this.slotsForExecute.length; ++i){
@@ -268,10 +278,55 @@
 		});
 		return shad;
 	}
-	static function makeHealthy(shad:MovieClip, maxHP, minHP):MovieClip{
-		shad.injures = 0;
-		shad.injures_min = (minHP == undefined)? 0 : minHP;
-		shad.injures_max = maxHP;
+	static function makeHealthy(
+			shad:MovieClip, 
+			maxHealth:Number, 
+			currentHealth:Number, 
+			staminaTimeSeconds:Number, 
+			framesToRegen1hp:Number,
+			framesToRegen1armor:Number
+		):MovieClip{
+		
+		if (currentHealth == undefined) currentHealth = maxHealth;
+		if (staminaTimeSeconds == undefined) staminaTimeSeconds = 0;
+		if (framesToRegen1hp == undefined) framesToRegen1hp = -1;
+		if (framesToRegen1armor == undefined) framesToRegen1armor = -1;
+		
+		shad.maxHP = currentHealth;
+		shad.hp = shad.maxHP;
+		shad.maxArmor = Math.max(0, maxHealth - currentHealth);
+		shad.regenFrameTimer = 0;
+		shad.regenAwait = 2 * 60;
+		shad.staminaTime = staminaTimeSeconds * 60;
+		shad.framesToRegen1hp = framesToRegen1hp;
+		shad.framesToRegen1armor = framesToRegen1armor;
+		
+		shad.destroyed = false;
+		shad.sufferDamage = function (who:MovieClip, X:Number){
+			who.regenFrameTimer = 0;
+			if (who.hp > who.maxHP)/*armored*/
+				who.hp = Math.max(who.maxHP, who.hp - X);
+			else
+				who.hp = Math.max(0, who.hp - X);
+				
+			if (who.hp <= .001 && who.destroyed == false) {
+				who.destroyed = true;
+				who.die();
+			}
+			who.traceHP();
+		}
+		shad.slotsForExecute.push(function(who:MovieClip){
+			who.regenFrameTimer++; who.staminaTime --;
+			if (who.staminaTime < 0 || who.regenFrameTimer < who.regenAwait) return;
+			
+			if ((who.hp < who.maxHP) && (who.regenFrameTimer > who.regenAwait + who.framesToRegen1hp))
+				{ who.hp ++; who.regenFrameTimer -=  who.framesToRegen1hp; utils.trace("Restore 1 hp, now: " + who.hp);}
+			if ((who.hp < who.maxHP + who.maxArmor) && (who.hp >= who.maxHP) && (who.regenFrameTimer > who.regenAwait + who.framesToRegen1armor))
+				{ who.hp ++; who.regenFrameTimer -=  who.framesToRegen1armor; utils.trace("Restore 1 def, now: " + (who.hp - who.maxHP));}
+		});
+		shad.traceHP = function (){
+			utils.trace("Health: " + Math.min(this.hp, this.maxHP) + " ( armor" + Math.max(0, this.hp - this.maxHP) + " )" , utils.t_combat);
+		}
 		return shad;
 	}
 	static var healthBarCount = 0;
@@ -280,7 +335,7 @@
 			'GUI_healthbar', 'healthbar_' + shad._name,
 			_root.layer_GUI.getNextHighestDepth());
 		newBox._x = 16;
-		newBox._y = 6 + 25 * (++healthBarCount);
+		newBox._y = 6 + 17 * (++healthBarCount);
 		newBox.target = shad;
 		return shad;
 	}

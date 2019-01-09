@@ -9,7 +9,7 @@
 	static var t_delete = 6;
 	static var t_game = 7;
 	static var t_combat = 8;
-	static var able_messages =  "-+++-+-++";
+	static var able_messages =  "+++++++++";
 	static var symbols:String = ">*#$%+~@!";
 	static var ignored_messages = new Array();
 	static var ignore_message_count = 0;
@@ -27,6 +27,8 @@
 		clearIgnoredMessages();
 	}
 	static function trace(S, traceType){
+		if (S == undefined)
+			S = "output error";
 		if (traceType == undefined)
 			traceType = 0;
 		if (able_messages.charAt(traceType) == '-')
@@ -127,7 +129,7 @@
 			heroAbilities.canHandleItems(
 			spawning.makeHeroAnimation(
 			spawning.makeShadowControllable(
-			spawning.spawnUnit("hero", X, Y))));
+			spawning.spawnUnit("hero", X, Y, true))));
 		
 		if (hero_has_items[0] == true)
 			_root.hero = heroAbilities.giveSword(_root.hero);
@@ -139,7 +141,7 @@
 		levels.makeGUI();
 		_root.hero = 
 			spawning.makeDrawedHitbox(
-			spawning.makeHealthy(_root.hero, 3));
+			spawning.makeHealthy(_root.hero, 3, 2, 120, 150, 240));
 	}
 	
 	static function makeHeroOnly(X, Y){

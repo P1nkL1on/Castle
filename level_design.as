@@ -84,9 +84,10 @@
 				utils.hero_has_items[0] = utils.hero_has_items[2] = utils.hero_has_items[3] = false;}
 				// !
 			
-		var dialog = spawning.spawnUnit('dialog_test', 130, 250);
+		var dialog = spawning.spawnUnit('dialog_test', 130, 250, true);
 		dialogs.makeModelTalking(dialog.model, new Array(3,6,9,12,15, 18, 21), 'test/test_fast');
 		dialog.onTalkFinish = function(who:MovieClip){items.spawnItem('key', who._x + 50, who._y);};
+		_root.dialog = dialog;
 	}
 	
 	static function deathCorridor(){
