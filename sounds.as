@@ -29,7 +29,7 @@
 		return sos;
 	}
 	static function abilitySounds():Array{
-		return new Array("footsteps/water/flush","weapons/sword_in","weapons/sword_attack","weapons/sword_out",
+		return new Array("footsteps/water/flush","weapons/sword_in","weapons/cross_in","weapons/cross_out","weapons/cross_use","weapons/sword_attack","weapons/sword_out",
 		"weapons/item_in","weapons/shield_out","weapons/bottle_out","weapons/shield_block","weapons/shield_unblock",
 		"weapons/sword_hit_metall", "weapons/sword_hit_blood", "weapons/sword_parry", "weapons/stunned");
 	}
@@ -68,6 +68,8 @@
 			sos.push('effects/prelight' + i);
 		for (var i = 0; i < 2; ++i)
 			sos.push('effects/deadhero' + (i));
+		for (var i = 0; i < 2; ++i)
+			sos.push('effects/dead' + (i));
 		return sos;
 	}
 	static function pushAllSounds(){

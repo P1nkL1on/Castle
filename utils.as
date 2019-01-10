@@ -134,6 +134,8 @@
 		
 		if (hero_has_items[0] == true)
 			_root.hero = heroAbilities.giveSword(_root.hero);
+		if (hero_has_items[1] == true)
+			_root.hero = heroAbilities.giveCross(_root.hero);	
 		if (hero_has_items[2] == true)
 			_root.hero = heroAbilities.giveShield(_root.hero);
 		if (hero_has_items[3] == true)

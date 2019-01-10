@@ -1,7 +1,7 @@
 ﻿class level_design {
 	
 	static function random_level_sequence (){
-		var res = new Array(12,11,0, -1, 12, 11); //new Array(0, -1, 12, 11, 10);
+		var res = new Array(0, -1, 12, 11); //new Array(0, -1, 12, 11, 10);
 		return res;
 			
 	}
@@ -65,7 +65,7 @@
 	
 	static function testRoom(){
 		// !
-		utils.hero_has_items[0] = utils.hero_has_items[2] = utils.hero_has_items[3] = true;
+		utils.hero_has_items[0] = utils.hero_has_items[1] = utils.hero_has_items[2] = utils.hero_has_items[3] = true;
 		
 		utils.setBasicConsts();
 		utils.makeBasicLayers();
@@ -87,12 +87,12 @@
 		lever.checkFunction = function(who:MovieClip){
 				_root.exitDoor.opened = true; 
 				_root.alwaysAddReflections = undefined;
-				//utils.hero_has_items[0] = utils.hero_has_items[2] = utils.hero_has_items[3] = false;
+				//utils.hero_has_items[0] = utils.hero_has_items[1] = utils.hero_has_items[2] = utils.hero_has_items[3] = false;
 			}
 				// !
 			
 		var dialog = spawning.spawnUnit('dialog_test', 130, 250, true);
-		dialogs.makeModelTalking(dialog.model, new Array(3,6,9,12,15, 18, 21), 'test/test_fast');
+		dialogs.makeModelTalking(dialog.model, new Array(3,6,9,12,15, 18, 21), 'test/test');
 		dialog.onTalkFinish = function(who:MovieClip){items.spawnItem('key', who._x + 50, who._y);};
 		_root.dialog = dialog;
 	}

@@ -5,11 +5,12 @@
 	static var swordFrame:Number = -1;
 	static var shieldKey:Number = 83;
 	static var shieldFrame:Number = -1;
-	static var bookKey:Number = 81;
+	static var crossKey:Number = 81;
+	static var crossFrame:Number = -1;
 	
-	static var anyKey:Array = new Array(bottleKey, swordKey, shieldKey, bookKey);
+	static var anyKey:Array = new Array(bottleKey, swordKey, shieldKey, crossKey);
 	static var anyLeftKey:Array = new Array(bottleKey, shieldKey);
-	static var anyRightKey:Array = new Array(swordKey, bookKey);
+	static var anyRightKey:Array = new Array(swordKey, crossKey);
 	
 	static function listenKey(now:Number, key:Number):Number{
 		if (Key.isDown(key))
@@ -106,7 +107,7 @@
 			dropLeftIfCan(who, bottleKey);
 			dropLeftIfCan(who, shieldKey);
 			dropRightIfCan(who, swordKey);
-			dropRightIfCan(who, bookKey);
+			dropRightIfCan(who, crossKey);
 		});
 		shad.slotsForExecute.push(function(who:MovieClip){
 			who.abilityLockedItem = false;
@@ -240,6 +241,7 @@
 			swordModelRotation += (swordNowRotation - swordModelRotation) / (1 + 4 / animating.worldTimeSpeed);
 			// . . . using
 			if (who.swordUse > 3 && (who.swordUse <= 15) && listenKey(0, swordKey) == 0){
+				who.model.righthand.cross_use.cruse.stop();
 				if (who.model.righthand._currentframe == 1){
 					who.model.righthand.gotoAndStop('sword');
 					sounds.playSound('weapons/sword_in');
@@ -272,6 +274,57 @@
 		});
 		return shad;
 	}
+	
+	static function giveCross(shad:MovieClip):MovieClip{
+		shad.crossUse = 0;
+		shad.isLighting = false;
+		shad.slotsForExecute.push(function(who:MovieClip){
+			if (who.abilityLockedRight==true && Key.isDown(crossKey))
+				dropRightItem(who);
+			if (who.locked == true || who.abilityLockedItem == true || who.abilityLockedRight == true)
+				return;
+			if (who.swordUse > 0)
+				who.crossUse = 0;
+			// . . . using
+			if (who.crossUse > 3 && who.crossUse <= 20 && listenKey(0, crossKey) == 0){
+				if (who.model.righthand._currentframe == 1){
+					who.model.righthand.gotoAndStop('cross');
+					sounds.playSound('weapons/cross_out');
+				} else {
+					who.model.righthand.gotoAndStop('empty');
+					sounds.playSound('weapons/cross_in');
+				}
+			}
+			// . . . using
+			if (who.model.righthand.cross_use.stat != 'start'
+				&& who.crossUse > 20 && listenKey(0, crossKey) == 1){ // still pressed
+				who.model.righthand.gotoAndStop('cross_use');
+				animating.changeStat(who.model.righthand.cross_use, 'start');
+				crossFrame = who.model.righthand._currentframe;
+				who.isLighting = true;
+				utils.trace('cross start light');
+			}
+			if (who.crossUse > 20 && listenKey(0, crossKey) == 0){
+				animating.changeStat(who.model.righthand.cross_use, 'stop');
+				//who.slowing = 0;
+				who.isLighting = false;
+				utils.trace('cross stop light');
+			}
+			// . . . action
+			//if (who.model.righthand.cross_use._currentframe == 7)
+			//	who.slowing = .6;
+			// . . . key listener
+			who.crossUse = listenKey(who.crossUse, crossKey);
+			
+			//who.model.righthand.shield._rotation = -who.model.righthand._rotation;
+			//who.model.righthand.shield._xscale = 100 * ((who.lastDirection == "back")*(-2) + 1);
+			//who.model.righthand.shield.gotoAndStop(1 + 1 * (who.lastDirection == "side"));
+			who.lastCreatedReflection.righthand.cross_use.gotoAndStop(who.model.righthand.cross_use._currentframe);
+			animating.animateOnly(who.model.righthand.cross_use, 1/2);
+		});
+		return shad;
+	}
+	
 	static function makeHitable(shad:MovieClip):MovieClip{
 		shad.wasHited = false;
 		if (shad.hitable != undefined){
