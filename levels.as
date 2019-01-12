@@ -132,10 +132,11 @@ class levels{
 		newButton.keyP = heroAbilities.anyKey[KEY];
 		GUIplace(newButton, newButton.numX, newButton.numY);
 		newButton.gotoAndStop(newButton.keyP+"_");
-		newButton.onEnterFrame = function(){
+		newButton.cacheAsBitmap = true;
+		//newButton.onEnterFrame = function(){
 			//GUIplace(this, this.numX, this.numY);
-			this.gotoAndStop(this.keyP+"_"+((Key.isDown(this.keyP))?"pressed" : ""));
-		}
+			//this.gotoAndStop(this.keyP+"_"+((Key.isDown(this.keyP))?"pressed" : ""));
+		//}
 	}
 	static var prevItem:MovieClip = null;
 	static function makeGUI(){
@@ -150,7 +151,7 @@ class levels{
 				prevItem = levels.hero.wantFirstItem;
 				checkGUI();
 			}
-			if (this.updateNeed && animating.each(this, 1/60)){
+			if (this.updateNeed || animating.each(this, 1/600)){
 				this.updateNeed = false;	
 				checkGUI();	
 			}
@@ -166,11 +167,13 @@ class levels{
 					return;
 				this.needUpdate = false;
 				if (GUIactions.length > this.numY){
-					this.descr.text = GUIactions[this.numY];
-					this.numX = GUIkeys[this.numY].length - 1;
+					this.texthandler.removeMovieClip();
+					this.texthandler = fontengine.printIn(GUIactions[sortedGUIactionIndexes[this.numY]], this, undefined, 10, 0, 200, false, 255,255,255);
+					this.texthandler._xscale = this.texthandler._yscale = 220;
+					this.numX = GUIkeys[sortedGUIactionIndexes[this.numY]].length - 1;
 				}
 				else
-					this.descr.text = '	';
+					this.texthandler.removeMovieClip();
 				GUIplace(this, this.numX, this.numY);
 			}
 		}
@@ -181,11 +184,13 @@ class levels{
 	}
 	static function updateGUI(){
 		clearButtons();
-		for (var i = 0; i < 8; i++){
-			_root.layer_GUI['gui'+i].needUpdate = true;
+		trace(sortedGUIactionIndexes)
+		for (var pp = 0; pp < 8; pp++){
+			var i = sortedGUIactionIndexes[pp];
+			_root.layer_GUI['gui'+pp].needUpdate = true;
 			if (i < GUIkeys.length)
 				for (var j = 0; j < GUIkeys[i].length; j++)
-					spawnKey(j,i, GUIkeys[i][j]);
+					spawnKey(j,pp, GUIkeys[i][j]);
 		}
 		utils.trace('GUI updated;');
 	}
@@ -195,6 +200,7 @@ class levels{
 		Arr.push(X);
 		return Arr;
 	}
+	static var sortedGUIactionIndexes;
 	static function checkGUI(){
 		GUIactions = new Array();
 		GUIkeys = new Array();
@@ -207,34 +213,36 @@ class levels{
 			else
 				GUIactions.push('interract');
 			GUIkeys.push(new Array(0,1,2,3));
+			sortedGUIactionIndexes = new Array();
+			sortedGUIactionIndexes.push(0)
 			// . . . update 
 			updateGUI();
 			return;
 		}
 		if (prevItem == null){
+				// . . . shield
+				if (hero.shieldUse != undefined && hero.leftItem == null){
+					if (hero.model.lefthand._currentframe == 4
+						|| hero.model.lefthand._currentframe == 5){
+							GUIactions.push('to hide shield');
+							GUIactions.push('} to block');
+							GUIkeys.push(A0(2), A0(2));
+						} else {
+							GUIactions.push('shield');
+							GUIkeys.push(A0(2));
+						}
+				}
 				// . . . water
 				if (hero.bottleUse != undefined && hero.leftItem == null){
 					
 					if (hero.model.lefthand._currentframe == 2
 						|| hero.model.lefthand._currentframe == 3){
-							GUIactions.push('hide bottle');
-							GUIactions.push('HOLD : spill water');
+							GUIactions.push('to hide bottle');
+							GUIactions.push('} to spill water');
 							GUIkeys.push(A0(0), A0(0));
 						} else {
-							GUIactions.push('take bottle');
+							GUIactions.push('bottle');
 							GUIkeys.push(A0(0));
-						}
-				}
-				// . . . shield
-				if (hero.shieldUse != undefined && hero.leftItem == null){
-					if (hero.model.lefthand._currentframe == 4
-						|| hero.model.lefthand._currentframe == 5){
-							GUIactions.push('hide shield');
-							GUIactions.push('HOLD : block');
-							GUIkeys.push(A0(2), A0(2));
-						} else {
-							GUIactions.push('take shield');
-							GUIkeys.push(A0(2));
 						}
 				}
 				// . . . cross
@@ -242,11 +250,11 @@ class levels{
 					
 					if (hero.model.righthand._currentframe == 4
 						|| hero.model.righthand._currentframe == 5){
-							GUIactions.push('hide cross');
-							GUIactions.push('HOLD : bless');
+							GUIactions.push('to hide cross');
+							GUIactions.push('} to bless');
 							GUIkeys.push(A0(3), A0(3));
 						} else {
-							GUIactions.push('take cross');
+							GUIactions.push('cross');
 							GUIkeys.push(A0(3));
 						}
 				}
@@ -254,11 +262,11 @@ class levels{
 				if (hero.swordUse != undefined && hero.rightItem == null){
 					if (hero.model.righthand._currentframe == 2
 						|| hero.model.righthand._currentframe == 3){
-							GUIactions.push('hide sword');
-							GUIactions.push('HOLD : attack');
+							GUIactions.push('to hide sword');
+							GUIactions.push('} to attack');
 							GUIkeys.push(A0(1), A0(1));
 						}else{
-							GUIactions.push('take sword');
+							GUIactions.push('sword');
 							GUIkeys.push(A0(1));
 						}
 				}
@@ -279,6 +287,7 @@ class levels{
 			pushOrAdd('take ' + prevItem.itemName + ' in right hand',new Array(1,3));
 		}
 		// . . . update 
+		sortedGUIactionIndexes = GUIactions.sort(Array.CASEINSENSITIVE | Array.RETURNINDEXEDARRAY);
 		updateGUI();
 	}
 	static function pushOrAdd(S:String, Keys:Array){

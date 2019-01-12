@@ -183,6 +183,7 @@
 					who.model.lefthand.gotoAndStop('empty');
 					sounds.playSound('weapons/item_in');
 				}
+				levels.checkGUI();
 			}
 			if (who.bottleUse > 20 && listenKey(0, bottleKey) == 0){
 				animating.changeStat(who.model.lefthand.bottle_use, 'stop');
@@ -252,6 +253,7 @@
 					who.model.righthand.gotoAndStop('empty');
 					sounds.playSound('weapons/sword_out');
 				}
+				levels.checkGUI();
 			}
 			// , , ,
 			if (who.swordUse > 15 /* && listenKey(0, swordKey) == 0 */
@@ -280,8 +282,9 @@
 	
 	static function giveCross(shad:MovieClip):MovieClip{
 		shad.crossUse = 0;
-		shad.isLighting = false;
+		shad.isBlessing = false;
 		shad.slotsForExecute.push(function(who:MovieClip){
+			
 			if (who.abilityLockedRight==true && Key.isDown(crossKey))
 				dropRightItem(who);
 			if (who.locked == true || who.abilityLockedItem == true || who.abilityLockedRight == true)
@@ -298,26 +301,25 @@
 					who.model.righthand.gotoAndStop('empty');
 					sounds.playSound('weapons/cross_in');
 				}
+				levels.checkGUI();
 			}
 			// . . . using
+			
 			if (who.model.righthand.cross_use.stat != 'start'
 				&& who.crossUse > 20 && listenKey(0, crossKey) == 1
 				&& (who.model.righthand._currentframe == 4 || who.model.righthand.cross_use.stat == 'stop')){ // still pressed
 				who.model.righthand.gotoAndStop('cross_use');
 				animating.changeStat(who.model.righthand.cross_use, 'start');
 				crossFrame = who.model.righthand._currentframe;
-				who.isLighting = true;
 				utils.trace('cross start light');
 			}
 			if (who.crossUse > 20 && listenKey(0, crossKey) == 0){
 				animating.changeStat(who.model.righthand.cross_use, 'stop');
 				//who.slowing = 0;
-				who.isLighting = false;
 				utils.trace('cross stop light');
 			}
 			// . . . action
-			//if (who.model.righthand.cross_use._currentframe == 7)
-			//	who.slowing = .6;
+			who.isBlessing = (who.model.righthand.cross_use._currentframe == 7);
 			// . . . key listener
 			who.crossUse = listenKey(who.crossUse, crossKey);
 			
@@ -387,6 +389,7 @@
 					who.model.lefthand.gotoAndStop('empty');
 					sounds.playSound('weapons/item_in');
 				}
+				levels.checkGUI();
 			}
 			// . . . using
 			if (who.model.lefthand.shield_use.stat != 'start'
@@ -395,18 +398,15 @@
 				who.model.lefthand.gotoAndStop('shield_use');
 				animating.changeStat(who.model.lefthand.shield_use, 'start');
 				shieldFrame = who.model.lefthand._currentframe;
-				who.isBlocking = true;
 				utils.trace('block');
 			}
 			if (who.shieldUse > 20 && listenKey(0, shieldKey) == 0){
 				animating.changeStat(who.model.lefthand.shield_use, 'stop');
-				who.slowing = 0;
-				who.isBlocking = false;
 				utils.trace('stop');
 			}
 			// . . . action
-			if (who.model.lefthand.shield_use._currentframe == 4)
-				who.slowing = .6;
+			who.isBlocking = (who.model.lefthand.shield_use._currentframe == 6);
+			
 			// . . . key listener
 			who.shieldUse = listenKey(who.shieldUse, shieldKey);
 			

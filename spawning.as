@@ -252,6 +252,9 @@
 					if (grounds[i].hitTest(who._x, who._y, true))
 						{ who.standingOn = grounds[i]; break;} 
 		});
+		shad.slotsForExecute.push(function(who:MovieClip){
+			who.slowing = 0.5 * (who.isBlessing == true || who.isBlocking == true);
+		});
 		return shad;
 	}
 	static var statCalculated:String = "none";
