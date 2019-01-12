@@ -121,13 +121,17 @@
 		/// strange point
 		newShadow._visible = false;
 		//if (newModel.cacheAsBackground != true)
-		newShadow.mustHaveReflection = unitName.indexOf("ground") < 0;
+		newShadow.mustHaveReflection = ((unitName.indexOf("foreground") < 0) && (prohibitedForReflectionObjectNames.indexOf("@" + unitName + "@") < 0));
+		utils.trace("A reflection must " + ((newShadow.mustHaveReflection)? "" : "not") + " be created for " + unitName, utils.t_create);
 		ground.maybeAddReflections();
 		// .. clear for nonbuggy other
 		newModel = newShadow = null;
 		
 		return units[units.length - 1];
 	}
+	// use this list to prohibit some objects to have a shadow
+	static var prohibitedForReflectionObjectNames = "@electro_mage@_@lizard_body@_";
+	
 	static var movementKeys:Array = new Array(37,38,39,40,18);
 	
 	static function keyLeft(){return movementKeys[0];}

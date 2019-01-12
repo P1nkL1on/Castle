@@ -174,8 +174,9 @@
 			if (who.shieldUse > 0)
 				who.bottleUse = 0;
 			// . . . using
-			if (who.bottleUse > 3 && who.bottleUse <= 20 && listenKey(0, bottleKey) == 0){
-				if (who.model.lefthand._currentframe == 1){
+			var handleNothing = (who.model.lefthand._currentframe == 1);
+			if (who.bottleUse > 3 && (who.bottleUse <= 20 || handleNothing) && listenKey(0, bottleKey) == 0){
+				if (handleNothing){
 					who.model.lefthand.gotoAndStop('bottle');
 					sounds.playSound('weapons/bottle_out');
 				} else {
@@ -189,7 +190,8 @@
 			}
 			if (/* who.model.lefthand._currentframe != bottleFrame &&  */
 				who.model.lefthand.bottle_use.stat != 'start'
-				&& who.bottleUse > 20 && listenKey(0, bottleKey) == 1){ // still pressed
+				&& who.bottleUse > 20 && listenKey(0, bottleKey) == 1
+				&& (who.model.lefthand._currentframe == 2 || who.model.lefthand.bottle_use.stat == 'stop')){ // still pressed
 				who.model.lefthand.gotoAndStop('bottle_use');
 				animating.changeStat(who.model.lefthand.bottle_use, 'start');
 				bottleFrame = who.model.lefthand._currentframe;
@@ -240,9 +242,10 @@
 				}
 			swordModelRotation += (swordNowRotation - swordModelRotation) / (1 + 4 / animating.worldTimeSpeed);
 			// . . . using
-			if (who.swordUse > 3 && (who.swordUse <= 15) && listenKey(0, swordKey) == 0){
+			var handleNothing = (who.model.righthand._currentframe == 1);
+			if (who.swordUse > 3 && (who.swordUse <= 15 || handleNothing) && listenKey(0, swordKey) == 0){
 				who.model.righthand.cross_use.cruse.stop();
-				if (who.model.righthand._currentframe == 1){
+				if (handleNothing){
 					who.model.righthand.gotoAndStop('sword');
 					sounds.playSound('weapons/sword_in');
 				} else {
@@ -286,8 +289,9 @@
 			if (who.swordUse > 0)
 				who.crossUse = 0;
 			// . . . using
-			if (who.crossUse > 3 && who.crossUse <= 20 && listenKey(0, crossKey) == 0){
-				if (who.model.righthand._currentframe == 1){
+			var handleNothing = (who.model.righthand._currentframe == 1);
+			if (who.crossUse > 3 && (who.crossUse <= 20 || handleNothing) && listenKey(0, crossKey) == 0){
+				if (handleNothing){
 					who.model.righthand.gotoAndStop('cross');
 					sounds.playSound('weapons/cross_out');
 				} else {
@@ -297,7 +301,8 @@
 			}
 			// . . . using
 			if (who.model.righthand.cross_use.stat != 'start'
-				&& who.crossUse > 20 && listenKey(0, crossKey) == 1){ // still pressed
+				&& who.crossUse > 20 && listenKey(0, crossKey) == 1
+				&& (who.model.righthand._currentframe == 4 || who.model.righthand.cross_use.stat == 'stop')){ // still pressed
 				who.model.righthand.gotoAndStop('cross_use');
 				animating.changeStat(who.model.righthand.cross_use, 'start');
 				crossFrame = who.model.righthand._currentframe;
@@ -373,8 +378,9 @@
 			if (who.bottleUse > 0)
 				who.shieldUse = 0;
 			// . . . using
-			if (who.shieldUse > 3 && who.shieldUse <= 20 && listenKey(0, shieldKey) == 0){
-				if (who.model.lefthand._currentframe == 1){
+			var handleNothing = (who.model.lefthand._currentframe == 1);
+			if (who.shieldUse > 3 && (who.shieldUse <= 20 || handleNothing) && listenKey(0, shieldKey) == 0){
+				if (handleNothing){
 					who.model.lefthand.gotoAndStop('shield');
 					sounds.playSound('weapons/shield_out');
 				} else {
@@ -384,7 +390,8 @@
 			}
 			// . . . using
 			if (who.model.lefthand.shield_use.stat != 'start'
-				&& who.shieldUse > 20 && listenKey(0, shieldKey) == 1){ // still pressed
+				&& who.shieldUse > 20 && listenKey(0, shieldKey) == 1
+				&& (who.model.lefthand._currentframe == 4 || who.model.lefthand.shield_use.stat == 'stop')){ // still pressed
 				who.model.lefthand.gotoAndStop('shield_use');
 				animating.changeStat(who.model.lefthand.shield_use, 'start');
 				shieldFrame = who.model.lefthand._currentframe;

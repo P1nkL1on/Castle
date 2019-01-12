@@ -6,6 +6,7 @@
 			
 	}
 	
+	
 	static function set_level_design (level_idnex:Number){
 		switch(level_idnex){
 			 case 10:
