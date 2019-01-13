@@ -329,6 +329,11 @@
 			who.lastCreatedReflection.righthand.cross_use.gotoAndStop(who.model.righthand.cross_use._currentframe);
 			animating.animateOnly(who.model.righthand.cross_use, 1/2);
 		});
+		//standingOn
+		shad.slotsForExecute.push(function(who:MovieClip){
+			if (who.isBlessing && who.standingOn.isWater == true)
+				who.standingOn.isBlessed = true;
+		});
 		return shad;
 	}
 	

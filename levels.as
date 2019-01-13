@@ -184,7 +184,7 @@ class levels{
 	}
 	static function updateGUI(){
 		clearButtons();
-		trace(sortedGUIactionIndexes)
+		//trace(sortedGUIactionIndexes)
 		for (var pp = 0; pp < 8; pp++){
 			var i = sortedGUIactionIndexes[pp];
 			_root.layer_GUI['gui'+pp].needUpdate = true;

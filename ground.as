@@ -55,7 +55,6 @@
 		utils.trace('Created reflection for ' + shad + ' :: ' + newReflection, utils.t_create);
 		return newReflection;
 	}	
-	static var waterCollisionK = .45;
 	static var deltaWater:Number = 0;
 	static var waterExchangeSpeed = .05;
 	static var xOff:Number = 0;
@@ -126,47 +125,147 @@
 			if (animating.each(who, 1 / 15) > 0){
 				who.V -= animating.worldTimeSpeed * (who.maxFrame + 2 - who.drop._currentframe)/who.maxFrame / (10 * 20 / who.temperature);
 				who.foundNeightboors = 0;
-				if (who.checkingForOther == true)
-					for (var i = 0; i < spawning.grounds.length; i++){
-						var gr:MovieClip = spawning.grounds[i];
-						if (gr != who && gr.isWater == true && (
-							gr._x + gr._width * waterCollisionK > who._x - who._width * waterCollisionK
-							&& gr._x - gr._width * waterCollisionK < who._x + who._width * waterCollisionK
-							&& gr._y + gr._height * waterCollisionK > who._y - who._height * waterCollisionK
-							&& gr._y - gr._height * waterCollisionK < who._y + who._height * waterCollisionK)){
-								// exchange V
-								who.foundNeightboors++;
-								if (Math.abs(gr.V - who.V) > 1){
-									gr.checkingForOther = true;
-									deltaWater = (gr.V - who.V) * waterExchangeSpeed * animating.worldTimeSpeed;
-									gr.V -= deltaWater;
-									who.V += deltaWater;
-								}
-							}
+				if (who.checkingForOther == true){
+					var neis = foundAllWaterNeightBoors(who);
+					who.foundNeightboors = neis.length;
+					for (var i = 0; i < neis.length; ++i){
+						// exchange V
+						var gr = neis[i];
+						if (Math.abs(gr.V - who.V) > 1){
+							gr.checkingForOther = true;
+							deltaWater = (gr.V - who.V) * waterExchangeSpeed * animating.worldTimeSpeed;
+							gr.V -= deltaWater;
+							who.V += deltaWater;
+							if (who.isBlessed == true || gr.isBlessed == true)
+								who.isBlessed = gr.isBlessed = true;
+						}
 					}
+				}
 				//who._alpha = 50 + 50 * who.checkingForOther;	
 				who.checkingForOther = (who.foundNeightboors > 0);
 			}
 		});
-		if (newWater._name.indexOf("reflection") < 0)
-		newWater.slotsForExecute.push(function(who:MovieClip){
-			who.blessTimer= (who.blessTimer == undefined)? 0 : (who.blessTimer - animating.worldTimeSpeed;);
-			if (who.blessTimer < 0){
-				who.blessTimer = (100 - who.drop._currentframe) / 5;
-				
-				who.lastSpawnedBless = ground.spawnEffect('effect_blessing', 
-				who._x + random(Math.round(who._width)) - who._width / 2, 
-				who._y+ random(Math.round(who._height)) - who._height / 2, 
-				undefined, _root.layer_effects);
-				who.lastSpawnedBless.isSmall = true;
-			}
-		});
+		if (newWater._name.indexOf("reflection") < 0){
+			newWater.isBlessed = false;
+			newWater.blessTimer = 0;
+			newWater.slotsForExecute.push(function(who:MovieClip){
+				if (!who.isBlessed) 
+					return;
+				who.blessTimer -= animating.worldTimeSpeed;
+				if (who.blessTimer < 0){
+					who.blessTimer = (100 - who.drop._currentframe) / 5;
+					
+					who.lastSpawnedBless = ground.spawnEffect('effect_blessing', 
+					who._x + random(Math.round(who._width)) - who._width / 2, 
+					who._y+ random(Math.round(who._height)) - who._height / 2, 
+					undefined, _root.layer_effects);
+					who.lastSpawnedBless.isSmall = true;
+				}
+			});
+		}
 		addWaterReflection(newWater);
 		waters.push(newWater);
 		maybeAddReflections();
 		
 		return newWater;
 	}
+	static var waterCollisionKDefault = .45;
+	static function foundAllWaterNeightBoors (who:MovieClip, waterCollisionK) : Array{
+		var arr = new Array();
+		if (waterCollisionK == undefined) 
+			waterCollisionK = waterCollisionKDefault;
+		if (who == null) 
+			return arr;
+		for (var i = 0; i < spawning.grounds.length; i++){
+			var gr:MovieClip = spawning.grounds[i];
+			if (gr != who && gr.isWater == true && (
+				gr._x + gr._width * waterCollisionK > who._x - who._width * waterCollisionK
+				&& gr._x - gr._width * waterCollisionK < who._x + who._width * waterCollisionK
+				&& gr._y + gr._height * waterCollisionK > who._y - who._height * waterCollisionK
+				&& gr._y - gr._height * waterCollisionK < who._y + who._height * waterCollisionK))
+			arr.push(gr);
+		}
+		return arr;
+	}
+	
+	static function foundALLWaterNeightBoors (who:MovieClip):Array{
+		var resArr = new Array();
+		var startFrom = 0;
+		resArr.push(who)
+		for (var step = 0; step < 5; ++step){
+			var newRes = resArr;
+			var added = 0;
+			for (var cW = startFrom; cW < resArr.length; ++cW){
+				var addToArr = foundAllWaterNeightBoors(resArr[cW], .5);
+				added += addToArr;
+				if (added == 0) continue;
+				for (var i = 0; i < addToArr.length; ++i){
+					var canAdd = true;
+					for (var j = 0; j < newRes.length; ++j)
+						if (newRes[j] == addToArr[i])
+							{canAdd = false; break;}
+					if (canAdd)
+						newRes.push(addToArr[i]);
+				}
+			}
+			if (added == 0) return resArr;
+			startFrom = resArr.length;
+			resArr = newRes;
+		}
+		return resArr;
+	}
+	
+	static function isAnyWaterIn (X, Y):MovieClip{
+		for (var i = 0; i < spawning.grounds.length; i++)
+			if (spawning.grounds[i].isWater == true && (spawning.grounds[i].drop.hitTest(X, Y, true))) 
+				return spawning.grounds[i];
+		return null;
+	}
+	static var zoneFromX = -1;
+	static var zoneFromY = -1;
+	static var zoneToX = -1;
+	static var zoneToY = -1;
+	static function findHitBoxOfMovieClips(selectedMCs:Array){
+		zoneFromX = selectedMCs[0]._x - selectedMCs[0]._width / 2;
+		zoneFromY = selectedMCs[0]._y - selectedMCs[0]._height / 2;
+		zoneToX = zoneFromX + selectedMCs[0]._width;
+		zoneToY = zoneFromY + selectedMCs[0]._height;
+		for (var i = 1; i < selectedMCs.length; ++i){
+			var zoneFromXp = selectedMCs[i]._x - selectedMCs[i]._width / 2;
+			var zoneFromYp = selectedMCs[i]._y - selectedMCs[i]._height / 2;
+			var zoneToXp = zoneFromXp + selectedMCs[i]._width;
+			var zoneToYp = zoneFromYp + selectedMCs[i]._height;
+			
+			if (zoneFromXp < zoneFromX) zoneFromX = zoneFromXp;
+			if (zoneFromYp < zoneFromY) zoneFromY = zoneFromYp;
+			if (zoneToXp > zoneToX) zoneToX = zoneToXp;
+			if (zoneToYp > zoneToY) zoneToY = zoneToYp;
+		}
+		// finish
+	}
+	static var efStep = 18;
+	static var distMn = 300;
+	static function forEachWaterInGroupSpawnEffect(effectName, array, center, effectStep){
+		if (center == undefined) center = null;
+		if (effectStep == undefined) effectStep = efStep;
+		findHitBoxOfMovieClips(array);
+		
+		var i = 0;
+		for (var k = zoneFromX; k < zoneToX; k += effectStep, ++i)
+		for (var k2 = zoneFromY; k2 < zoneToY; k2 += effectStep / 2)
+			for (var ii = 0; ii < array.length; ++ii)
+				if (array[ii].hitTest(k, k2)){
+					var ef = ground.spawnEffect(effectName, k + random(5)-2 + (effectStep / 2 * (i % 2)), k2);
+					if (center == null) break;
+					var distK = Math.max(.3, 1 - Math.sqrt((k - center._x) * (k - center._x) + (k2 - center._y) * (k2 - center._y)) / distMn);
+					ef._xscale *= distK;
+					ef._yscale *= distK;
+					break;
+				}
+		
+	}
+	
+	
 	static function addWaterReflection(newWater:MovieClip){
 		utils.trace('Adding a water filter', utils.t_create);
 		var newReflection:MovieClip = spawning.spawnReflect("effect_water_drop");

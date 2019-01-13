@@ -38,9 +38,25 @@ class enemies_elm{
 				var last = ground.spawnEffect('effect_bolt', 0, 0, undefined, _root.layer_effects);
 				last.gotoAndStop(boltNames.charAt(i) + random(boltVariants[i]));
 				last.t = 3-i;
+				last.isDamaging = (i == 2);
 				last.onEnterFrame = function(){
 					if (animating.each(this, 1 / enemies_elm.boltFrameLength[this.t]) > 0){
 						this.nextFrame(); ++this.t;
+						if (!this.isDamaging) return;
+						if (this.t == 5){
+							var hitWater = ground.isAnyWaterIn(this.Xt, this.Yt);
+							if (hitWater != null){
+								var origWaterHited = hitWater;
+								hitWater =  ground.foundALLWaterNeightBoors(hitWater);
+								hitWater.push(origWaterHited);
+								ground.forEachWaterInGroupSpawnEffect('effect_water_electro', hitWater, origWaterHited);
+							}
+						}
+							// for (var k = -100; k < 100; k += 30)
+							// for (var k2 = -100; k2 < 100; k2 += 30)
+							// ground.spawnEffect('effect_water_electro', 
+									// this.Xt + k, 
+									// this.Yt + k2 / 2);
 					}
 				}
 				bolt.push(last);
@@ -60,6 +76,8 @@ class enemies_elm{
 			bolt[2]._x = coordMid[2]; bolt[2]._y = coordMid[3];
 			bolt[2]._height *= distanceKBetween(coordMid[2], coordMid[3], Xt, Yt, 150);
 			bolt[2]._rotation = angleBetween(coordMid[2], coordMid[3], Xt, Yt) - 90;
+			bolt[2].Xt = Xt; bolt[2].Yt = Yt;
+			
 		}
 	}
 	static function angleBetween(x0,y0,x1,y1):Number{
