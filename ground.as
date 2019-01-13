@@ -148,6 +148,19 @@
 				who.checkingForOther = (who.foundNeightboors > 0);
 			}
 		});
+		if (newWater._name.indexOf("reflection") < 0)
+		newWater.slotsForExecute.push(function(who:MovieClip){
+			who.blessTimer= (who.blessTimer == undefined)? 0 : (who.blessTimer - animating.worldTimeSpeed;);
+			if (who.blessTimer < 0){
+				who.blessTimer = (100 - who.drop._currentframe) / 5;
+				
+				who.lastSpawnedBless = ground.spawnEffect('effect_blessing', 
+				who._x + random(Math.round(who._width)) - who._width / 2, 
+				who._y+ random(Math.round(who._height)) - who._height / 2, 
+				undefined, _root.layer_effects);
+				who.lastSpawnedBless.isSmall = true;
+			}
+		});
 		addWaterReflection(newWater);
 		waters.push(newWater);
 		maybeAddReflections();

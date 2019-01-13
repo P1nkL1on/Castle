@@ -145,8 +145,8 @@ class levels{
 		var thinker:MovieClip = _root.layer_GUI.attachMovie('GUI_thinker', 'thinker', _root.layer_GUI.getNextHighestDepth());
 		prevItem = null;
 		thinker.onEnterFrame = function (){
-			if (heroAbilities.anyKeyPressed() == true)
-				this.updateNeed = true;
+			//if (heroAbilities.anyKeyPressed() == true)
+			//	this.updateNeed = true;
 			if (levels.hero.wantFirstItem != prevItem){
 				prevItem = levels.hero.wantFirstItem;
 				checkGUI();
