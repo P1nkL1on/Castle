@@ -62,6 +62,7 @@
 		spawning.spawnUnit('door', 300, 60), 0, -40);
 
 		levels.spawnCamera(300,200,1.43,true,true);
+		utils.setAllQuality('medium');
 	}
 	
 	static function testRoom(){
