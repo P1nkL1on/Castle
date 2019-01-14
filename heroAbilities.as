@@ -424,4 +424,25 @@
 		});
 		return shad;
 	}
+	
+	static var deadVars = new Array('_bite','_lie','_hit','_fall','_drow','_electro');
+	static var heroDyingEffect = null;
+	static function killHero (who:MovieClip, way:String){
+		_root.hero.locked = true;
+		if (who.destroyed == true)
+			return;
+		if (way == undefined) 
+			way = deadVars[random(deadVars.length)]//'hit';
+		who.destroyed = true;
+		var deadAnim = ground.spawnEffect(
+			'main_hero_deadanim', 
+			who._x, who._y, 
+			undefined, _root.layer_units);
+		who.model._visible = false;
+		deadAnim.gotoAndStop('dead' + way);
+		deadAnim._xscale *= (who.model._xscale / Math.abs(who.model._xscale));
+		spawning.colorSomething(deadAnim.tint, utils.hero_armor_color[0], utils.hero_armor_color[1], utils.hero_armor_color[2]);
+		levels.prepareDieScreen();
+		heroDyingEffect = deadAnim;
+	}
 }

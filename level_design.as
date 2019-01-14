@@ -120,15 +120,12 @@
 		var lever = hazards.spawnLever(300, 300);
 		lever.dddd = false;
 		lever.slotsForExecute.push(function(who:MovieClip){
-			if (who.hitTest(_root.hero)){
-				
-				_root.hero.locked = true;
-				if (who.dddd == false){
-					who.dddd = true;
-					_root.hero.model.gotoAndStop('dead_hit');
-					levels.prepareDieScreen();
-				}
-			}
+			if (who.hitTest(_root.hero))
+				heroAbilities.killHero(_root.hero, '_lie');
+			if (_root.hero._x < 200)
+				heroAbilities.killHero(_root.hero, '_fall');
+			if (_root.hero._x > 425)
+				heroAbilities.killHero(_root.hero, '_drow');
 		});
 
 		g.num.text = param+"";

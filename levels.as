@@ -322,11 +322,12 @@ class levels{
 			var dp:MovieClip = _root.layer_GUI.attachMovie('GUI_thinker', 'deading_process', _root.layer_GUI.getNextHighestDepth());
 			dp.onEnterFrame = function (){
 				// dead proccss activating
-				deadTimer += animating.worldTimeSpeed;
-				if (deadTimer == 60)
+				if (heroAbilities.heroDyingEffect.finished == true)
+					deadTimer += animating.worldTimeSpeed;
+				if (deadTimer == 10)
 					_root.stopAllSounds();
 				
-				if (deadTimer == 120){
+				if (deadTimer == 50){
 					dieOnLevel(_root._currentframe);
 					this.removeMovieClip();
 					isDeading = false;
