@@ -90,7 +90,6 @@
 				_root.alwaysAddReflections = undefined;
 				//utils.hero_has_items[0] = utils.hero_has_items[1] = utils.hero_has_items[2] = utils.hero_has_items[3] = false;
 			}
-				// !
 			
 		var dialog = spawning.spawnUnit('dialog_test', 130, 250, true);
 		dialogs.makeModelTalking(dialog.model, new Array(3,6,9,12,15, 18, 21), 'test/test');

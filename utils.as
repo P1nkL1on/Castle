@@ -9,8 +9,9 @@
 	static var t_delete = 6;
 	static var t_game = 7;
 	static var t_combat = 8;
-	static var able_messages =  "-++++--++";
-	static var symbols:String = ">*#$%+~@!";
+	static var t_benchmark = 9;
+	static var able_messages =  "-++++--+++";
+	static var symbols:String = ">*#$%+~@!'";
 	static var ignored_messages = new Array();
 	static var ignore_message_count = 0;
 	static function clearIgnoredMessages(){
@@ -111,13 +112,14 @@
 		if (game_difficulty == 3) diff = 'master';
 		return diff;
 	}
-	
+	static var levelQual;
 	static function setAllQuality (qual){
-		if (graphics_quality == 'high'){
+		levelQual = qual;
+		if (graphics_quality.toLowerCase() == 'high'){
 			_quality = qual;
 			return;
 		}
-		if (graphics_quality == 'medium'){
+		if (graphics_quality.toLowerCase() == 'medium'){
 			if (qual == 'high') _quality = 'medium';
 			else	_quality = 'low';
 			return;

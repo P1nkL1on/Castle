@@ -255,11 +255,12 @@
 		for (var k2 = zoneFromY; k2 < zoneToY; k2 += effectStep / 2)
 			for (var ii = 0; ii < array.length; ++ii)
 				if (array[ii].hitTest(k, k2)){
-					var ef = ground.spawnEffect(effectName, k + random(5)-2 + (effectStep / 2 * (i % 2)), k2);
+					var ef = ground.spawnEffect(effectName, k, k2);
 					if (center == null) break;
-					var distK = Math.max(.3, 1 - Math.sqrt((k - center._x) * (k - center._x) + (k2 - center._y) * (k2 - center._y)) / distMn);
-					ef._xscale *= distK;
-					ef._yscale *= distK;
+					var distK =  1 - Math.sqrt((k - center._x) * (k - center._x) + (k2 - center._y) * (k2 - center._y)) / distMn;
+					ef._xscale *= Math.max(.3, distK);
+					ef._yscale *= Math.max(.3, distK);
+					ef.timerOffset = 30 * (1 - distK);
 					break;
 				}
 		

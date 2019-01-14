@@ -202,6 +202,7 @@ class levels{
 	}
 	static var sortedGUIactionIndexes;
 	static function checkGUI(){
+		//return;
 		GUIactions = new Array();
 		GUIkeys = new Array();
 		if (hero.anyKeyPressTo != undefined && hero.anyKeyPressTo != null){
