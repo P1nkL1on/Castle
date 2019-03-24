@@ -19,7 +19,7 @@ class saving{
 			//utils.game_timer_max = savefile.data.timer_max;
 			utils.game_timer_lasts = savefile.data.timer_now ;
 			utils.game_save_princess = savefile.data.saving_princess;
-			
+			lev
 			levels.testLevels = savefile.data.level_sequence;
 			levels.levelIndex = savefile.data.levelIndex;
 			utils.graphics_quality = savefile.data.graphics_quality;
@@ -35,16 +35,6 @@ class saving{
 		}
 		//spawnEffect(true);
 	}
-	
-	// static var saveEffectCount = 0;
-	// static function spawnEffect(isLoad){
-		// saveEffectCount++;
-		// var lastEffect:MovieClip = null;
-		// lastEffect = _root.attachMovie('GUI_save_effect', 'save_effect_'+saveEffectCount, _root.getNextHighestDepth());
-			
-		// if (isLoad != undefined)
-			// lastEffect.gotoAndStop(2);
-	// }
 	
 	static function traceFile(savefile0){
 		utils.trace('	Hero RGB			: ' + savefile0.data.heroRGB, utils.t_saveinfo);
